@@ -34,8 +34,10 @@ public class Player extends User{
     @Max(15)
     private int level;
 
-    public Player(String username, String password, Clan clan, InGameStats inGameStats){
+    public Player(String username, String password,String nickname, Clan clan, InGameStats inGameStats, DinoType dinoType){
         super(username, password);
+        setNickname(nickname);
+        setDinoType(dinoType);
         setClan(clan);
         setInGameStats(inGameStats);
     }

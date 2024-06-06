@@ -12,6 +12,7 @@ import lombok.*;
 @ToString
 @Table(name = "UserTable")
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 
 public class User {
 
@@ -31,4 +32,13 @@ public class User {
     @Size(min = 2, max = 30)
     @Column(name = "Password")
     private String password;
+
+
+
+
+
+    public User(String username, String password){
+        setUsername(username);
+        setPassword(password);
+    }
 }

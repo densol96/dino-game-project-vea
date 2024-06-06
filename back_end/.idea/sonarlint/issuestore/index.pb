@@ -11,3 +11,5 @@ o
 ?src/main/java/lv/vea_dino_game/back_end/BackEndApplication.java,2/2/222e477d2e338dd18564f88a286b34599d2bf937
 k
 ;src/main/java/lv/vea_dino_game/back_end/model/DinoType.java,b/e/befa461577b5015ed27749bfb9a82fde8a4d779c
+g
+7src/main/java/lv/vea_dino_game/back_end/model/user.java,2/e/2e7bc60d902f0d0f61cd0843e7360f76796c3f2e

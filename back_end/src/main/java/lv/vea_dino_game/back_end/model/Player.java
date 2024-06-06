@@ -1,8 +1,7 @@
 package lv.vea_dino_game.back_end.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -13,6 +12,12 @@ import lombok.*;
 
 @Table(name = "PlayerTable")
 public class Player extends User{
+
+    @Column(name = "Nickname")
+    @NotNull
+    @Size(min = 2, max = 30)
+    private String nickname;
+
     @ManyToOne
     @JoinColumn(name = "Idc")
     private Clan clan;

@@ -34,9 +34,6 @@ public class User {
     private String password;
 
 
-
-
-
     public User(String username, String password){
         setUsername(username);
         setPassword(password);

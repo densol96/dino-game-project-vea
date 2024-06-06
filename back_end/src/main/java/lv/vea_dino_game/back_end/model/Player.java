@@ -30,7 +30,7 @@ public class Player extends User{
     private DinoType dinoType;
 
     @Column(name = "Level")
-    @Min(0)
+    @Min(1)
     @Max(15)
     private int level;
 

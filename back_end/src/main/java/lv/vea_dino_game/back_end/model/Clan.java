@@ -19,19 +19,19 @@ public class Clan {
     private Integer id;
 
     @NotBlank
-    @Size(min = 4, max = 50)
+    @Size(min = 4, max = 50, message = "The title must be minimum 4 characters and maximum 50 characters")
     private String title;
 
     @NotBlank
-    @Size(min = 4, max = 50)
+    @Size(min = 4, max = 50, message = "The title must be minimum 4 characters and maximum 50 characters")
     private String description;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Maximum capacity can not be negative number")
+    @Max(value = 100, message = "Maximum capacity can not be greater than 100")
     private Integer maxCapacity;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Minimum player level can not be negative number")
+    @Max(value = 100, message = "Minimum player level can not be greater than 100")
     private Integer minPlayerLevel;
 
     @OneToMany(mappedBy = "clan")

@@ -16,35 +16,35 @@ public class PlayerStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Health value can not be less than 0")
+    @Max(value = 100, message = "Health value can not be greater than 100")
     private Integer health = 1;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Endurance value can not be less than 0")
+    @Max(value = 100, message = "Endurance value can not be greater than 100")
     private Integer endurance = 1;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Agility value can not be less than 0")
+    @Max(value = 100, message = "Agility value can not be greater than 100")
     private Integer agility = 1;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Damage value can not be less than 0")
+    @Max(value = 100, message = "Damage value can not be greater than 100")
     private Integer damage = 1;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Armor value can not be less than 0")
+    @Max(value = 100, message = "Armor value can not be greater than 100")
     private Integer armor = 1;
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Critical hit percentage value can not be less than 0")
+    @Max(value = 100, message = "Critical hit percentage value can not be greater than 100")
     private Integer criticalHitPercentage = 5;
 
     @OneToOne(mappedBy = "playerStats")
     @ToString.Exclude
     public Player player;
 
-    public PlayerStats(Integer healthPoints, Integer endurancePoints, Integer agilityPoints, Integer damagePoints, Integer armorPoints, Integer criticalHitPercentage){
+    public PlayerStats(Integer healthPoints, Integer endurancePoints, Integer agilityPoints, Integer damagePoints, Integer armorPoints, Integer criticalHitPercentage) {
         setHealth(healthPoints);
         setEndurance(endurancePoints);
         setAgility(agilityPoints);

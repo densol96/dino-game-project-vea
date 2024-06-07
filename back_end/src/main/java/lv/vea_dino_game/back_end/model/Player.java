@@ -29,11 +29,11 @@ public class Player {
     @NotNull
     private DinoType dinoType;
 
-    @Min(1)
-    @Max(15)
+    @Min(value = 1, message = "Level can not be less than 1")
+    @Max(value = 15, message = "Level can not be greater than 15")
     private Integer level;
 
-    public Player(Clan clan, PlayerStats playerStats, DinoType dinoType){
+    public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);

@@ -37,12 +37,12 @@ public class Combat {
     private Player defender;
 
 
-    @Min(1)
-    @Max(3)
+    @Min(value = 1, message = "Minimum player level can not be less than 1")
+    @Max(value = 3, message = "Maximum player level can not be greater than 3")
     private int level;
 
-    @Min(10)
-    @Max(20)
+    @Min(value = 10, message = "Turns amount value can not be less than 10")
+    @Max(value = 20, message = "Turns amount value can not greater than 20")
     private int turnsAmount;
 
     private LocalDateTime dateTime;

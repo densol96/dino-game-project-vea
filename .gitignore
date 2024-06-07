@@ -1,14 +1,15 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
 front_end/node_modules/
-.idea
 back_end/.idea
+back_end/*mvn*
+back_end/HELP*
+back_end/target/
+.vscode/
+
+# IDK what these are... Commented them out for now, fixed the rest
+# Default ignored files
+# /shelf/
+# /workspace.xml
+# /dataSources/
+# /dataSources.local.xml
+# Editor-based HTTP Client requests
+# /httpRequests/

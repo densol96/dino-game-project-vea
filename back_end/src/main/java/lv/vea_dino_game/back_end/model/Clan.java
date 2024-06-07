@@ -1,47 +1,38 @@
 package lv.vea_dino_game.back_end.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.util.List;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
+@NoArgsConstructor
 @Entity
-
-@Table(name = "ClanTable")
+@Table(name = "clans")
 public class Clan {
 
     @Setter(value = AccessLevel.NONE)
-    @Column(name = "Idc")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(name = "Title")
-    @NotNull
+    @NotBlank
     @Size(min = 4, max = 50)
-    public String title;
+    private String title;
 
-    @Column(name = "Description")
-    @NotNull
+    @NotBlank
     @Size(min = 4, max = 50)
-    public String description;
+    private String description;
 
     @Min(0)
     @Max(100)
-    @Column(name="MaxCapacity")
-    private int maxCapacity;
+    private Integer maxCapacity;
 
     @Min(0)
     @Max(100)
-    @Column(name="MinPlayerLevel")
-    private int minPlayerLevel;
+    private Integer minPlayerLevel;
 
     @OneToMany(mappedBy = "clan")
     @ToString.Exclude

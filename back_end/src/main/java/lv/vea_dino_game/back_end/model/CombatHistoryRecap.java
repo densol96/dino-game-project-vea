@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "CombatHistoryRecap")
+@Table(name = "combat_history_recaps")
 public class CombatHistoryRecap {
     @Setter(value = AccessLevel.NONE)
     @Id

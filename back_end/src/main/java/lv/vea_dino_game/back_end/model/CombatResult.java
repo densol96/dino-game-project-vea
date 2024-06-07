@@ -2,13 +2,14 @@ package lv.vea_dino_game.back_end.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lv.vea_dino_game.back_end.model.enums.EnumCombatResultType;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "CombatResult")
+@Table(name = "combat_results")
 public class CombatResult {
     @Setter(value = AccessLevel.NONE)
     @Id

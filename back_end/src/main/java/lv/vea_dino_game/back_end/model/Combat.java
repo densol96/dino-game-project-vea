@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "Combat")
+@Table(name = "combats")
 public class Combat {
 
     @Setter(value = AccessLevel.NONE)

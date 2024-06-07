@@ -1,41 +1,46 @@
 package lv.vea_dino_game.back_end.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@Table(name = "UserTable")
+@Table(name = "users")
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-
 public class User {
 
     @Setter(value = AccessLevel.NONE)
-    @Column(name = "Id")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 2, max = 30)
     @Pattern(regexp = "[A-Z]{1}[a-z]+")
-    @Column(name = "Username")
     private String username;
 
-    @NotNull
+    @NotBlank
     @Size(min = 2, max = 30)
-    @Column(name = "Password")
     private String password;
 
+    @NotBlank
+    @Size(min = 2, max = 30)
+    private String email;
 
-    public User(String username, String password){
+    private LocalDateTime lastLoggedIn;
+
+    @OneToOne
+    @JoinColumn(name="user_as_player")
+    private Player player;
+
+    public User(String username, String password, String email){
         setUsername(username);
         setPassword(password);
+        setEmail(email);
     }
 }

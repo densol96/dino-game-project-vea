@@ -3,43 +3,40 @@ package lv.vea_dino_game.back_end.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lv.vea_dino_game.back_end.model.enums.DinoType;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
+@NoArgsConstructor
 @Entity
+@Table(name = "players")
+public class Player {
 
-@Table(name = "PlayerTable")
-public class Player extends User{
-
-    @Column(name = "Nickname")
-    @NotNull
-    @Size(min = 2, max = 30)
-    private String nickname;
+    @Setter(value = AccessLevel.NONE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "Idc")
+    @JoinColumn(name = "clan_id")
     private Clan clan;
 
     @OneToOne
-    @JoinColumn(name = "IdIn")
-    private InGameStats inGameStats;
+    @JoinColumn(name = "player_stats")
+    private PlayerStats playerStats;
 
-    @Column(name = "DinoType")
+    @NotNull
     private DinoType dinoType;
 
-    @Column(name = "Level")
     @Min(1)
     @Max(15)
-    private int level;
+    private Integer level;
 
-    public Player(String username, String password,String nickname, Clan clan, InGameStats inGameStats, DinoType dinoType){
-        super(username, password);
-        setNickname(nickname);
+    public Player(Clan clan, PlayerStats playerStats, DinoType dinoType){
         setDinoType(dinoType);
         setClan(clan);
-        setInGameStats(inGameStats);
+        setPlayerStats(playerStats);
     }
 
 

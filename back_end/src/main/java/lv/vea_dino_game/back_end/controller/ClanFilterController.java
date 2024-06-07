@@ -1,4 +1,4 @@
-package lv.vea_dino_game.back_end.model.controller;
+package lv.vea_dino_game.back_end.controller;
 
 
 import lv.vea_dino_game.back_end.model.Clan;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.sql.Array;
 import java.util.ArrayList;
 
 @Controller

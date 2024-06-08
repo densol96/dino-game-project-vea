@@ -17,12 +17,13 @@ public class CombatResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne(mappedBy = "id")
+    @OneToOne
+    @JoinColumn(name="combat_id")
     @ToString.Exclude
     public Combat combat;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "winner_id")
     private Player winner;
 
     public EnumCombatResultType combatResultType;

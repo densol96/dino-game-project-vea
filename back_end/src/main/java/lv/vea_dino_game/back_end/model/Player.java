@@ -1,5 +1,7 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -20,10 +22,12 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "clan_id")
+    @JsonBackReference
     private Clan clan;
 
     @OneToOne
     @JoinColumn(name = "player_stats")
+    @JsonBackReference
     private PlayerStats playerStats;
 
     @NotNull

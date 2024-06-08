@@ -20,20 +20,18 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy="combat")
     private CombatResult combatResult;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "combat")
     private CombatHistoryRecap combatHistoryRecap;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "initiator_id")
     private Player initiator;
 
     @ManyToOne
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "defender_id")
     private Player defender;
 
 

@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -42,6 +43,7 @@ public class PlayerStats {
 
     @OneToOne(mappedBy = "playerStats")
     @ToString.Exclude
+   @JsonManagedReference
     public Player player;
 
     public PlayerStats(Integer healthPoints, Integer endurancePoints, Integer agilityPoints, Integer damagePoints, Integer armorPoints, Integer criticalHitPercentage) {

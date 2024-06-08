@@ -29,7 +29,7 @@ public class ClanFilterController {
         }
     }
 
-    @GetMapping("/show/byMinLevel")
+    @GetMapping("/show/byMinLevel/{level}")
     public ResponseEntity showClansByMinEntryLevel(@PathVariable("level") int level){
         try {
             return new ResponseEntity<ArrayList<Clan>>(clanService.retriveAllByMinEntryLevel(level), HttpStatus.OK);

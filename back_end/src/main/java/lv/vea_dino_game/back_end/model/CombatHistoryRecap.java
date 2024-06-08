@@ -15,7 +15,8 @@ public class CombatHistoryRecap {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne(mappedBy = "id")
+    @OneToOne
+    @JoinColumn(name = "combat_id")
     @ToString.Exclude
     public Combat combat;
 }

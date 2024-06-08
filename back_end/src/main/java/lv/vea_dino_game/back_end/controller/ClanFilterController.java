@@ -30,6 +30,13 @@ public class ClanFilterController {
       return new ResponseEntity<List<Clan>>(clanService.retriveAllByMinEntryLevel(level), HttpStatus.OK);
     }
 
+    @GetMapping("/show/{id}")
+    public ResponseEntity<Clan> getClanByID(@PathVariable("id") int id){
+
+        return new ResponseEntity<Clan>(clanService.retriveClanById(id), HttpStatus.OK);
+
+    }
+
     
 
 }

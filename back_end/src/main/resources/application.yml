@@ -1,6 +1,9 @@
 spring:
   application:
     name: back_end
+    properties:
+      app:
+        jwtSecret: solovjovstestjwt12345!!!1
   datasource:
     url: jdbc:h2:mem:testdb
     username: sa

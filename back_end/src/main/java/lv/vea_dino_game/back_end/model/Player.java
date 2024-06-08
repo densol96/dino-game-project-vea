@@ -25,7 +25,7 @@ public class Player {
     @JsonBackReference
     private Clan clan;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_stats")
     @JsonBackReference
     private PlayerStats playerStats;
@@ -35,7 +35,7 @@ public class Player {
 
     @Min(value = 1, message = "Level can not be less than 1")
     @Max(value = 15, message = "Level can not be greater than 15")
-    private Integer level;
+    private Integer level = 1;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);

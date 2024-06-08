@@ -1,10 +1,17 @@
 package lv.vea_dino_game.back_end.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lv.vea_dino_game.back_end.model.enums.Role;
 
 @Getter
 @Setter
@@ -12,7 +19,7 @@ import lombok.*;
 @ToString
 @Table(name = "users")
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Setter(value = AccessLevel.NONE)
     @Id
@@ -25,8 +32,7 @@ public class User {
     private String username;
 
     @NotBlank
-    @Size(min = 2, max = 30, message = "Password length must be between 2 and 30 characters")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password requires at least 8 characters, with at least one uppercase letter and one number")
+    // Password will be hashed = pattern constraint enforced on the DTO record
     private String password;
 
     @NotBlank
@@ -36,7 +42,10 @@ public class User {
 
     private LocalDateTime lastLoggedIn;
 
-    @OneToOne
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_as_player")
     private Player player;
 
@@ -44,5 +53,10 @@ public class User {
         setUsername(username);
         setPassword(password);
         setEmail(email);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+      return List.of(new SimpleGrantedAuthority(role.name()));
     }
 }

@@ -1,7 +1,7 @@
 package lv.vea_dino_game.back_end.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.EnumCombatResultType;
 

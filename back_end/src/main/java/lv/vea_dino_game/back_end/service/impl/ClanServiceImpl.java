@@ -40,12 +40,13 @@ public class ClanServiceImpl implements IClanFilterService {
 
 
     @Override
-    public Clan retriveClanById(int id) throws Exception {
+    public Clan retriveClanById(int id){
         if (clanRepo.count() == 0)
-            throw new Exception("There is no one clan");
+            throw new EmptyDataBaseTable("There are no any clans for display");
 
         Clan clan = clanRepo.findById(id);
-        if (clan == null) throw new Exception("There is no clan with id " + id);
+        if (clan == null)
+            throw new EmptyDataBaseTable("There is no clan with id " + id);
         return clan;
     }
 }

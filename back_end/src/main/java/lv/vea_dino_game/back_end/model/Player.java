@@ -7,9 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "players")
@@ -30,7 +28,8 @@ public class Player {
     @JsonBackReference
     private PlayerStats playerStats;
 
-    @NotNull
+    @NotNull(message = "Dino type cannot be null")
+    @Enumerated(EnumType.STRING)
     private DinoType dinoType;
 
     @Min(value = 1, message = "Level can not be less than 1")

@@ -1,17 +1,17 @@
-package lv.vea_dino_game.back_end.controllers;
+package lv.vea_dino_game.back_end.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
+
 import lv.vea_dino_game.back_end.model.dto.AuthResponse;
 import lv.vea_dino_game.back_end.model.dto.SignInDto;
 import lv.vea_dino_game.back_end.model.dto.SignUpDto;
-import lv.vea_dino_game.back_end.service.AuthService;
+import lv.vea_dino_game.back_end.service.impl.AuthServiceImpl;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService authService;
+  private final AuthServiceImpl authService;
   
   @PostMapping("/register")
   public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignUpDto signUpData) {

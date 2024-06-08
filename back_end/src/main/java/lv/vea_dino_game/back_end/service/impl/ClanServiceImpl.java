@@ -1,36 +1,40 @@
 package lv.vea_dino_game.back_end.service.impl;
 
+import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ClanServiceImpl implements IClanFilterService {
-    @Autowired
-    private IClanRepo clanRepo;
+
+    private final IClanRepo clanRepo;
 
     @Override
-    public ArrayList<Clan> retriveAll() throws Exception {
-
-        ArrayList<Clan> allClans = (ArrayList<Clan>) clanRepo.findAll();
-        if (allClans.isEmpty())
-            throw new Exception("There is no one clan");
-       return allClans;
+    public List<Clan> retriveAll() {
+      if(clanRepo.count() == 0)
+        throw new EmptyDataBaseTable("There are no any clans for display");
+      /*
+       * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
+       */
+      return clanRepo.findAll();
     }
 
     @Override
-    public ArrayList<Clan> retriveAllByMinEntryLevel(int level) throws Exception {
-        if (clanRepo.count() == 0) throw new Exception("There is no one clan");
-        ArrayList<Clan> allClans = clanRepo.findAllByMinPlayerLevelGreaterThanEqual(level);
-        if (allClans.isEmpty()) throw new Exception("There is no clans that is grater or equal " + level + " level");
-        return allClans;
+    public List<Clan> retriveAllByMinEntryLevel(Integer level){
+      if (clanRepo.count() == 0)
+        throw new EmptyDataBaseTable("There are no any clans for display");
+      
+      List<Clan> allClans = clanRepo.findAllByMinPlayerLevelGreaterThanEqual(level);
+      if (allClans.isEmpty())
+        throw new EmptyDataBaseTable("There are no any clans with the minimum entry level of " + level + " or higher for display");
+      return allClans;
     }
-
-
-
-
 }

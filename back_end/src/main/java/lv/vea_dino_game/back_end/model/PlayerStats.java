@@ -5,10 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "player_stats")
 public class PlayerStats {
@@ -42,8 +40,7 @@ public class PlayerStats {
     private Integer criticalHitPercentage = 5;
 
     @OneToOne(mappedBy = "playerStats")
-    @ToString.Exclude
-   @JsonManagedReference
+    @JsonManagedReference
     public Player player;
 
     public PlayerStats(Integer healthPoints, Integer endurancePoints, Integer agilityPoints, Integer damagePoints, Integer armorPoints, Integer criticalHitPercentage) {

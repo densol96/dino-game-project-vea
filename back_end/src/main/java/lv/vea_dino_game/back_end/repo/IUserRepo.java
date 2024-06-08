@@ -1,13 +1,13 @@
-package lv.vea_dino_game.back_end.repos;
+package lv.vea_dino_game.back_end.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import lv.vea_dino_game.back_end.model.User;
-import java.util.List;
+
 import java.util.Optional;
 
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface IUserRepo extends JpaRepository<User, Integer> {
   Optional<User> findByEmail(String email);
 
   Optional<User> findByUsername(String username);

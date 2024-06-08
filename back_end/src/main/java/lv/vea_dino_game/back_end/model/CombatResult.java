@@ -5,10 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.EnumCombatResultType;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "combat_results")
 public class CombatResult {
@@ -18,14 +16,16 @@ public class CombatResult {
     public long id;
 
     @OneToOne
-    @JoinColumn(name="combat_id")
-    @ToString.Exclude
+    @JoinColumn(name = "combat_id")
+    @NotNull(message = "Combat id cannot be null")
     public Combat combat;
 
     @ManyToOne
     @JoinColumn(name = "winner_id")
     private Player winner;
 
+    @NotNull(message = "Combat result type id cannot be null")
+    @Enumerated(EnumType.STRING)
     public EnumCombatResultType combatResultType;
 
     @Min(value = 0, message = "Initiator currency change can not be negative number")

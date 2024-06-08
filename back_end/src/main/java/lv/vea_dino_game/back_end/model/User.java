@@ -13,10 +13,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.Role;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Table(name = "users")
 @Entity
 public class User implements UserDetails {
@@ -26,22 +24,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
-    @Size(min = 2, max = 30, message = "Username length must be between 2 and 30 characters")
-    @Pattern(regexp = "[A-Z]{1}[a-z]+", message = "First username character must be upper-case and other can be lower-case characters")
+    @NotBlank(message = "Username cannot be blank/null")
+    @Pattern(regexp = "[A-Za-z][A-Za-z0-9_-]{4,14}", message = "Username must be between 5-15 characters long and can contain letters (A-Z, a-z), digits (0-9), and the special characters _ (underscore) and - (hyphen). The username must start with a letter and cannot contain any other special characters. Example: \"username123\", \"user-name\", \"user_name\".")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank/null")
     // Password will be hashed = pattern constraint enforced on the DTO record
     private String password;
 
-    @NotBlank
-    @Size(min = 2, max = 30)
+    @NotBlank(message = "Email cannot be blank/null")
+    @Size(max = 30)
     @Email(message = "Email should be valid")
     private String email;
 
     private LocalDateTime lastLoggedIn;
 
+    @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)
     private Role role;
 

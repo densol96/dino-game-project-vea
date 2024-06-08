@@ -2,10 +2,10 @@ package lv.vea_dino_game.back_end.service;
 
 import lv.vea_dino_game.back_end.model.Clan;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IClanFilterService {
-    ArrayList<Clan> retriveAll() throws Exception;
+    List<Clan> retriveAll();
 
-    ArrayList<Clan> retriveAllByMinEntryLevel(int level) throws Exception;
+    List<Clan> retriveAllByMinEntryLevel(Integer level);
 }

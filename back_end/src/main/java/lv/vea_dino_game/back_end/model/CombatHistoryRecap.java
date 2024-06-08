@@ -1,12 +1,11 @@
 package lv.vea_dino_game.back_end.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "combat_history_recaps")
 public class CombatHistoryRecap {
@@ -17,6 +16,6 @@ public class CombatHistoryRecap {
 
     @OneToOne
     @JoinColumn(name = "combat_id")
-    @ToString.Exclude
+    @NotNull(message = "Combat id cannot be null")
     public Combat combat;
 }

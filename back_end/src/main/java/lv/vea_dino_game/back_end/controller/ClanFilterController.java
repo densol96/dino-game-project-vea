@@ -11,31 +11,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@RequestMapping("/clan/filter")
+@RequestMapping("/api/v1/clans")
 public class ClanFilterController {
 
     @Autowired
     private IClanFilterService clanService;
 
-    @GetMapping("/show/all")
-    public ResponseEntity getAllClans(){
-        try{
-            return new ResponseEntity<ArrayList<Clan>>(clanService.retriveAll(), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping
+    public ResponseEntity<List<Clan>> getAllClans(){
+      return new ResponseEntity<List<Clan>>(clanService.retriveAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/show/byMinLevel/{level}")
-    public ResponseEntity showClansByMinEntryLevel(@PathVariable("level") int level){
-        try {
-            return new ResponseEntity<ArrayList<Clan>>(clanService.retriveAllByMinEntryLevel(level), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/minlevel/{level}")
+    public ResponseEntity<List<Clan>> showClansByMinEntryLevel(@PathVariable("level") Integer level){
+      return new ResponseEntity<List<Clan>>(clanService.retriveAllByMinEntryLevel(level), HttpStatus.OK);
     }
 
 

@@ -31,7 +31,7 @@ public class ClanFilterController {
     }
 
     @GetMapping("/show/{id}")
-    public ResponseEntity<Clan> getClanByID(@PathVariable("id") int id){
+    public ResponseEntity<Clan> getClanByID(@PathVariable("id") Integer id){
 
         return new ResponseEntity<Clan>(clanService.retriveClanById(id), HttpStatus.OK);
 

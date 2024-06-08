@@ -26,7 +26,7 @@ public class ClanServiceImpl implements IClanFilterService {
     public ArrayList<Clan> retriveAllByMinEntryLevel(int level) throws Exception {
         if (clanRepo.count() == 0) throw new Exception("There is no one clan");
         ArrayList<Clan> allClans = clanRepo.findAllByMinPlayerLevelGreaterThanEqual(level);
-        if (allClans.isEmpty()) throw new Exception("There is no clans that is grater or equal " + level + "level");
+        if (allClans.isEmpty()) throw new Exception("There is no clans that is grater or equal " + level + " level");
         return allClans;
     }
 

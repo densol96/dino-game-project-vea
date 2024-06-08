@@ -26,11 +26,16 @@ public class BackEndApplication {
 			public void run(String... args) throws Exception {
 				PlayerStats stats = new PlayerStats();
 				playerStatsRepo.save(stats);
+				PlayerStats stats1 = new PlayerStats();
+				playerStatsRepo.save(stats1);
 				Clan clan1 = new Clan("MyClan", "new clan that is good", 7,2);
 				clanRepo.save(clan1);
 				Player player1 = new Player(clan1, stats, DinoType.carnivore);
 				playerRepo.save(player1);
-				
+				Player player2 = new Player(clan1, stats1, DinoType.herbivore);
+				playerRepo.save(player2);
+				Clan clan2 = new Clan("MyClan2", "new2 clan that is good", 20,1);
+				clanRepo.save(clan2);
 			}
 		};
 	}

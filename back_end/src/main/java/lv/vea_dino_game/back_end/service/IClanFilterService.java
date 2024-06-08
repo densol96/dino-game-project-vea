@@ -9,5 +9,5 @@ public interface IClanFilterService {
 
     List<Clan> retriveAllByMinEntryLevel(Integer level);
 
-    Clan retriveClanById(int id);
+    Clan retriveClanById(Integer id);
 }

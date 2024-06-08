@@ -8,4 +8,6 @@ public interface IClanFilterService {
     List<Clan> retriveAll();
 
     List<Clan> retriveAllByMinEntryLevel(Integer level);
+
+    Clan retriveClanById(int id) throws Exception;
 }

@@ -30,5 +30,6 @@ public class ClanFilterController {
       return new ResponseEntity<List<Clan>>(clanService.retriveAllByMinEntryLevel(level), HttpStatus.OK);
     }
 
+    
 
 }

@@ -37,4 +37,15 @@ public class ClanServiceImpl implements IClanFilterService {
         throw new EmptyDataBaseTable("There are no any clans with the minimum entry level of " + level + " or higher for display");
       return allClans;
     }
+
+
+    @Override
+    public Clan retriveClanById(int id) throws Exception {
+        if (clanRepo.count() == 0)
+            throw new Exception("There is no one clan");
+
+        Clan clan = clanRepo.findById(id);
+        if (clan == null) throw new Exception("There is no clan with id " + id);
+        return clan;
+    }
 }

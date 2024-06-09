@@ -31,6 +31,11 @@ public class AppConfig {
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
+  @Bean
+  public UserDetailsService userDetailsService() {
+    return username -> userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No user with such username"));
+  }
     
   @Bean
   public AuthenticationProvider authenticationProvider() {
@@ -44,26 +49,5 @@ public class AppConfig {
   AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
-        
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return username -> userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No user with such username"));
-  }
-
-  /* At first thought lambda can make code less readable but actually it looks much clearer compared to abstract classes:
-   * return new UserDetailsService() {
-   * @Override
-   *  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-   *   return userRepo.findByUsername(username)
-   *                   .orElseThrow(new Supplier<UsernameNotFoundException>() {
-   *                     @Override
-   *                     public UsernameNotFoundException get() {
-   *                         return new UsernameNotFoundException("No user with such username");
-   *                     } 
-   *                   });
-   * }
-   * };
-   */ 
-  
 }
         

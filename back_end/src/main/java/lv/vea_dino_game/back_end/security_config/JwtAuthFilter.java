@@ -41,9 +41,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       // "Bearer " [0:6] => need to cut it off
       String jwt = authHeader.substring(7);
       
-      if (jwtService.isJwtValid(jwt)) {
+      try {
+        // JWT validation performed on parsing by the library
         String username = jwtService.extractUsername(jwt);
-  
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
           UserDetails userDetails = userDetailsService.loadUserByUsername(username);
           UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -53,6 +54,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
           authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
           SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+      } catch (Exception e) {
+        /* 
+         * 2 possible scenarios:
+         * 1) JWT validation failed 
+         * 2) User with extracted username does not exist
+         * Either way, we do not need to do anything, simply move to the next filter without editing the authentication part in the Security Context
+         * 
+         * But out of testing purposes will keep the cout statement here:
+         */
+        System.out.println("User not authenticated due to -> " + e.getClass().getSimpleName() + ": " + e.getMessage());
+
       }
     }
     filterChain.doFilter(request, response);

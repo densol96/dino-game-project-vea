@@ -1,7 +1,9 @@
 package lv.vea_dino_game.back_end.service.impl;
 
 import lv.vea_dino_game.back_end.service.IAuthService;
+import lv.vea_dino_game.back_end.service.helpers.EmailSenderService;
 
+import org.hibernate.validator.internal.metadata.aggregated.ValidatableParametersMetaData;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,15 +12,20 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
 import lv.vea_dino_game.back_end.exceptions.InvalidAuthenticationDataException;
+import lv.vea_dino_game.back_end.exceptions.InvalidTokenException;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.exceptions.UserAlreadyExistsException;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.dto.AuthResponse;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.SignInDto;
 import lv.vea_dino_game.back_end.model.dto.SignUpDto;
 import lv.vea_dino_game.back_end.model.enums.Role;
@@ -33,9 +40,10 @@ public class AuthServiceImpl implements IAuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final EmailSenderService emailService;
 
   @Override
-  public AuthResponse signUp(SignUpDto signUpData) {
+  public BasicMessageResponse signUp(SignUpDto signUpData) {
     if (userRepo.existsByEmail(signUpData.email())) {
       throw new UserAlreadyExistsException("User email must be unique: user with such email already exists");
     } else if (userRepo.existsByUsername(signUpData.username())) {
@@ -53,11 +61,24 @@ public class AuthServiceImpl implements IAuthService {
     user.setEmail(signUpData.email());
     user.setRole(Role.USER);
     user.setPlayer(player);
+    user.setRegistrationDate(LocalDateTime.now());
 
-    // Cascading will do the rest
-    userRepo.save(user);
+    // In order to pass authentication, apart from valid credentials, email needs to be confirmed via confirmation token
+    String confirmationToken = createRandomToken();
+    String hashedToken = returnHashedToken(confirmationToken);
 
-    return new AuthResponse(jwtService.generateToken(user));
+    user.setEmailConfirmationToken(hashedToken);
+  
+    // Send the email with the token-link to email
+    try {
+      emailService.sendToAskToConfirmEmail(user, confirmationToken);
+      // Cascading will do the rest
+      userRepo.save(user);
+    } catch (Exception e) {
+      throw new ServiceCurrentlyUnavailableException(
+          "Sign up is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
+    }
+    return new BasicMessageResponse("User has been successfully created! Please check your email for activation link!");
   }
   
   @Override
@@ -72,6 +93,23 @@ public class AuthServiceImpl implements IAuthService {
     }
     User user = userRepo.findByUsername(signInCredentials.username()).get();
     return new AuthResponse(jwtService.generateToken(user));
+  }
+
+  @Override
+  public BasicMessageResponse confirmEmail(String confirmationToken) {
+    InvalidTokenException e = new InvalidTokenException(
+        "Invalid confirmation token. If you are sure this is a mistake, please let the administrator know.");
+    
+    // Since we are using the 32 byte token via base hex for actual representation in a string, it will be 64 chars exactly in a string
+    if(confirmationToken == null || confirmationToken.length() != 64)
+      throw e;
+    
+    String hashedToken = returnHashedToken(confirmationToken);
+    User user = userRepo.findByEmailConfirmationToken(hashedToken).orElseThrow(() -> e);
+    user.setEmailConfirmationToken(null);
+    user.setEmailConfirmed(true);
+    userRepo.save(user);
+    return new BasicMessageResponse("Your email has been confirmed! You can now try to log in!");
   }
   
   /*
@@ -107,9 +145,18 @@ public class AuthServiceImpl implements IAuthService {
   }
 
   // this will be stored in the DB
-  public String hashToken(String token) throws NoSuchAlgorithmException {
+  private String hashToken(String token) throws NoSuchAlgorithmException {
     MessageDigest hasher = MessageDigest.getInstance("SHA-256");
     byte[] hashedBytes = hasher.digest(token.getBytes());
     return bytesToHex(hashedBytes);
+  }
+
+  private String returnHashedToken(String token) {
+    try {
+      return hashToken(token);
+    } catch (Exception e) {
+      throw new ServiceCurrentlyUnavailableException(
+          "Sign up is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
+    }
   }
 }

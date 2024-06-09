@@ -41,10 +41,9 @@ public class User implements UserDetails {
 
     private LocalDateTime registrationDate;
 
-    
+    private boolean isEmailConfirmed = false;
 
-
-
+    private String emailConfirmationToken;
 
     @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)

@@ -55,7 +55,7 @@ public class GlobalErrorHandler {
   }
   
   // PLACE YOURHANDLER BELOW HERE:
-  
+  // ServiceCurrentlyUnavailableException UserAlreadyExistsException
 
   // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)

@@ -384,9 +384,9 @@
                           <tr>
                             <td>
                               <!-- CONTENT -->
-                              <p>Hi {%% USERNAME %%},</p>
+                              <p>Hi {%%USERNAME%%},</p>
                               <p>
-                                Welcome to DinoPortal, we're glad to have you!
+                                Welcome to DinoConflict, we're glad to have you!
                               </p>
                               <p>
                                 In order to be able to log into your account,
@@ -413,7 +413,7 @@
                                           <tr>
                                             <td>
                                               <a
-                                                href="http://127.0.0.1:3000/email-confirmation/6212fdfe886f21428b5d55544a3bfd01a1efdf1d3ff0e0ebeb1f72d555f4bb82"
+                                                href="http://127.0.0.1:8080/api/v1/auth/email-confirmation/{{%%TOKEN%%}}"
                                                 target="_blank"
                                                 >Confirm your email (click
                                                 me)</a
@@ -430,7 +430,7 @@
                                 If you did not create an account on DinoPortal,
                                 just ignore this email!
                               </p>
-                              <p>- DinoPortal team</p>
+                              <p>- DinoConflict team</p>
                             </td>
                           </tr>
                         </tbody>
@@ -451,7 +451,8 @@
                     <tr>
                       <td class="content-block">
                         <span class="apple-link"
-                          >Administrators of DinoPortal, 2024</span
+                          >Administrators of DinoConflict,
+                          {{%%CURRENT_YEAR%%}}</span
                         >
                       </td>
                     </tr>

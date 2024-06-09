@@ -18,9 +18,10 @@ import java.util.*;
 @Service
 public class JwtService {
 
+  private final Integer HOURS_VALID_FOR = 48;
   private final String jwtSecret;
   
-  public JwtService( @Value("a0cb8f1216516d6151b908b581e02d3d560ee0da80cc9d65872eb1c0fe7eb242") String jwtSecret) {
+  public JwtService(@Value("${spring.security.jwtSecret}") String jwtSecret) {
     this.jwtSecret = jwtSecret;
   }
 
@@ -31,9 +32,13 @@ public class JwtService {
   public Claims extractAllClaims(String jwt) {
     return Jwts
             .parserBuilder()
-            .setSigningKey(createKey()) // at this step Jwts should also validate the integrity of header and payload
+            .setSigningKey(createKey()) 
             .build()
-            .parseClaimsJws(jwt)
+            /*
+            * The method below does the JWT verification and might throw an error: 
+            * ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException;
+            */
+            .parseClaimsJws(jwt) 
             .getBody();
   }
     
@@ -47,13 +52,13 @@ public class JwtService {
   }
 
   public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-    final Integer hoursValidFor = 48;
+    
     return Jwts
             .builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setIssuedAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * hoursValidFor))
+            .setIssuedAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * HOURS_VALID_FOR))
             .signWith(createKey(), SignatureAlgorithm.HS256)
             .compact();
   }
@@ -61,30 +66,34 @@ public class JwtService {
   public String generateToken(UserDetails userDetails) {
     return generateToken(new HashMap<>(), userDetails);
   }
-
-  private boolean isJwtExpired(String jwt) {
-    return extractAllClaims(jwt).getExpiration().before(new Date());
-  }
-
-  public boolean isJwtValid(String jwt) {
-    try {
-      /*
-       * If the token is invalid due to malformation / invalid signature or anything 
-       * else, isJwtExpired will throw an error before returning a boolean. 
-       */
-      if(isJwtExpired(jwt)) {
-        /*
-         * AT this point, the issue is with the expiry date
-         */
-        throw new AuthenticationCredentialsNotFoundException("JWT is expired");
-      }
-      return true;
-    } 
-    catch(AuthenticationCredentialsNotFoundException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new AuthenticationCredentialsNotFoundException("JWT invalid");
-    }
-  }
+    
+    
+  /*
+  * Was going to do the validation in terms of expiry date, btu actually ExpiredJwtException is trown by Jwts.parse...()
+  */
+    
+  // private boolean isJwtExpired(String jwt) {
+  //   return extractAllClaims(jwt).getExpiration().before(new Date());
+  // }
+  // public boolean isJwtValid(String jwt) {
+  //   try {
+  //     /*
+  //      * If the token is invalid due to malformation / invalid signature or anything 
+  //      * else, isJwtExpired will throw an error before returning a boolean. 
+  //      */
+  //     if(isJwtExpired(jwt)) {
+  //       /*
+  //        * AT this point, the issue is with the expiry date
+  //        */
+  //       throw new AuthenticationCredentialsNotFoundException("JWT is expired");
+  //     }
+  //     return true;
+  //   } 
+  //   catch(AuthenticationCredentialsNotFoundException e) {
+  //     throw e;
+  //   }
+  //   catch (Exception e) {
+  //     throw new AuthenticationCredentialsNotFoundException("JWT invalid");
+  //   }
+  // }
 }

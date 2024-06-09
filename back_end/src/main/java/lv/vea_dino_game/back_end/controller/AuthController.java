@@ -14,6 +14,8 @@ import lv.vea_dino_game.back_end.service.impl.AuthServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -31,9 +34,9 @@ public class AuthController {
     return new ResponseEntity<AuthResponse>(authService.signUp(signUpData), HttpStatus.OK);
   }
   
-  @PostMapping("/authenticate")
-  public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody SignInDto signInCredentials) {
-      return new ResponseEntity<AuthResponse>(authService.signIn(signInCredentials), HttpStatus.OK);
+  @PostMapping("/login")
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody SignInDto signInCredentials) {
+    return new ResponseEntity<AuthResponse>(authService.signIn(signInCredentials), HttpStatus.OK);
   }
   
 }

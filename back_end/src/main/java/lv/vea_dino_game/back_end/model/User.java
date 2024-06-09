@@ -39,10 +39,19 @@ public class User implements UserDetails {
 
     private LocalDateTime lastLoggedIn;
 
+    private LocalDateTime registrationDate;
+
+    
+
+
+
+
     @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
+    ////////////////////// Required for game-logic part
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_as_player")
     private Player player;

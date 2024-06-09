@@ -49,10 +49,15 @@ public class GlobalErrorHandler {
   
   @ExceptionHandler(InvalidAuthenticationDataException.class)
   public ResponseEntity<ErrorResponse> handleInvalidAuthInput(InvalidAuthenticationDataException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("AUTH_ERR", "Unable to authenticate", e.getMessage(), null),
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("AUTH_ERR", "Unable to authenticate", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
   
+  // PLACE YOURHANDLER BELOW HERE:
+  
+
+  // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleAnyOtherException(Exception e) {

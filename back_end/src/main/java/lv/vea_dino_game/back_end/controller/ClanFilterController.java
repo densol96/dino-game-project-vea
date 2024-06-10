@@ -34,7 +34,11 @@ public class ClanFilterController {
     public ResponseEntity<Clan> getClanByID(@PathVariable("id") Integer id){
 
         return new ResponseEntity<Clan>(clanService.retriveClanById(id), HttpStatus.OK);
+    }
 
+    @GetMapping("/sort-level-desc")
+    public ResponseEntity<List<Clan>> getAllClansSorteredByMinLevelDesc(){
+        return new ResponseEntity<List<Clan>>(clanService.retriveAllSrteredByMinLevelDesc(), HttpStatus.OK);
     }
 
     

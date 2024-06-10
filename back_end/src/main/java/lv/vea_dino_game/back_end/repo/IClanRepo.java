@@ -16,4 +16,7 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
 
     @Query("SELECT el FROM Clan el ORDER BY el.minPlayerLevel DESC")
     List<Clan> findAllSortedByMinPlayerLevelDesc();
+
+    @Query("SELECT el FROM Clan el ORDER BY el.minPlayerLevel ASC")
+    List<Clan> findAllSortedByMinPlayerLevelAsc();
 }

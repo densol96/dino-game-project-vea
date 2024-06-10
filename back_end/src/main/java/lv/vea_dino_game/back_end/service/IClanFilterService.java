@@ -11,5 +11,7 @@ public interface IClanFilterService {
 
     Clan retriveClanById(Integer id);
 
-    List<Clan> retriveAllSrteredByMinLevelDesc();
+    List<Clan> retriveAllSorteredByMinLevelDesc();
+
+    List<Clan> retriveAllSorteredByMinLevelAsc();
 }

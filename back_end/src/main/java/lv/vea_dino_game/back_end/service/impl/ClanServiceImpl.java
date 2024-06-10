@@ -51,13 +51,23 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllSrteredByMinLevelDesc() {
+    public List<Clan> retriveAllSorteredByMinLevelDesc() {
         if(clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
         /*
          * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
          */
         return clanRepo.findAllSortedByMinPlayerLevelDesc();
+    }
+
+    @Override
+    public List<Clan> retriveAllSorteredByMinLevelAsc() {
+        if(clanRepo.count() == 0)
+            throw new EmptyDataBaseTable("There are no any clans for display");
+        /*
+         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
+         */
+        return clanRepo.findAllSortedByMinPlayerLevelAsc();
     }
 
 

@@ -80,5 +80,15 @@ public class ClanServiceImpl implements IClanFilterService {
         return clanRepo.findAllByOrderByTitleDesc();
     }
 
+    @Override
+    public List<Clan> retriveAllSorteredByTitleAsc() {
+        if(clanRepo.count() == 0)
+            throw new EmptyDataBaseTable("There are no any clans for display");
+        /*
+         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
+         */
+        return clanRepo.findAllByOrderByTitleAsc();
+    }
+
 
 }

@@ -51,6 +51,11 @@ public class ClanFilterController {
         return new ResponseEntity<List<Clan>>(clanService.retriveAllSorteredByTitleDesc(), HttpStatus.OK);
     }
 
+    @GetMapping("sort-title-asc")
+    public ResponseEntity<List<Clan>> getAllClansSorteredByTitleAsc(){
+        return new ResponseEntity<List<Clan>>(clanService.retriveAllSorteredByTitleAsc(), HttpStatus.OK);
+    }
+
     
 
 }

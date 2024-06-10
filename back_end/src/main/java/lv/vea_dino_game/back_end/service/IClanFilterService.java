@@ -16,4 +16,6 @@ public interface IClanFilterService {
     List<Clan> retriveAllSorteredByMinLevelAsc();
 
     List<Clan> retriveAllSorteredByTitleDesc();
+
+    List<Clan> retriveAllSorteredByTitleAsc();
 }

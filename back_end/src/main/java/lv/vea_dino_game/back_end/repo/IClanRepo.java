@@ -21,4 +21,6 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
     List<Clan> findAllSortedByMinPlayerLevelAsc();
 
     List<Clan> findAllByOrderByTitleDesc();
+
+    List<Clan> findAllByOrderByTitleAsc();
 }

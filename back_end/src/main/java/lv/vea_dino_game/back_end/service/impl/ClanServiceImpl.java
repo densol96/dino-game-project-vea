@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.service.impl;
 
+import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
@@ -88,6 +89,14 @@ public class ClanServiceImpl implements IClanFilterService {
          * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
          */
         return clanRepo.findAllByOrderByTitleAsc();
+    }
+
+    @Override
+    public Clan createClan(Clan clan) {
+        if (clan == null) throw new EmptyClanException("Clan is empty");
+        Clan newClan = clanRepo.findByTitle(clan.getTitle());
+        if (newClan!= null) throw new EmptyClanException("Clan with such title already exists");
+        return clanRepo.save(clan);
     }
 
 

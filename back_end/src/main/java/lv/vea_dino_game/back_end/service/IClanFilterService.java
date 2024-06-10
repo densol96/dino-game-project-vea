@@ -18,4 +18,6 @@ public interface IClanFilterService {
     List<Clan> retriveAllSorteredByTitleDesc();
 
     List<Clan> retriveAllSorteredByTitleAsc();
+
+    Clan createClan(Clan clan);
 }

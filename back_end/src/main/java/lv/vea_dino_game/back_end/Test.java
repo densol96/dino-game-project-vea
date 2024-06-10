@@ -1,10 +1,13 @@
 package lv.vea_dino_game.back_end;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Test {
   public static void main(String[] args) {
-    
-    System.out.println("c5c5eb9c7b12de730866cf58577fe53175e36571dc74c792045c85f646993522".length());
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    String formattedDate = now.format(formatter);
+    System.out.println(formattedDate);
   }
 }

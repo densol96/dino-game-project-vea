@@ -3,7 +3,6 @@ package lv.vea_dino_game.back_end.controller;
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -12,8 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import jakarta.validation.ConstraintViolationException;
 import lv.vea_dino_game.back_end.exceptions.InvalidAuthenticationDataException;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
+import lv.vea_dino_game.back_end.exceptions.UserAlreadyExistsException;
 import lv.vea_dino_game.back_end.model.dto.ErrorResponse;
 
 
@@ -37,6 +37,12 @@ public class GlobalErrorHandler {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse(type, name, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "User input validation error", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
   
   
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -53,9 +59,13 @@ public class GlobalErrorHandler {
         new ErrorResponse("AUTH_ERR", "Unable to authenticate", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
-  
-  // PLACE YOURHANDLER BELOW HERE:
-  // ServiceCurrentlyUnavailableException UserAlreadyExistsException
+
+  @ExceptionHandler(ServiceCurrentlyUnavailableException.class)
+  public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(InvalidAuthenticationDataException e) {
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("INT_SERV_ERR", "Currently unable to perform this action.", e.getMessage(), null),
+        HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
   // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)

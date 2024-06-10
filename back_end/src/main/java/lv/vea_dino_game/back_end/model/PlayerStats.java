@@ -1,6 +1,8 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -9,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "player_stats")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PlayerStats {
     @Setter(value = AccessLevel.NONE)
     @Id
@@ -40,7 +43,7 @@ public class PlayerStats {
     private Integer criticalHitPercentage = 5;
 
     @OneToOne(mappedBy = "playerStats")
-    @JsonManagedReference
+
     public Player player;
 
     public PlayerStats(Integer healthPoints, Integer endurancePoints, Integer agilityPoints, Integer damagePoints, Integer armorPoints, Integer criticalHitPercentage) {

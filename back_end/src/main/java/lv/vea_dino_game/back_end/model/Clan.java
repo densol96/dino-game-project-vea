@@ -1,6 +1,8 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "clans")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Clan {
 
     @Setter(value = AccessLevel.NONE)
@@ -36,7 +39,7 @@ public class Clan {
     private Integer minPlayerLevel;
 
     @OneToMany(mappedBy = "clan")
-    @JsonManagedReference
+
     @ToString.Exclude
     public List<Player> players;
 

@@ -49,4 +49,5 @@ public class ClanServiceImpl implements IClanFilterService {
             throw new EmptyDataBaseTable("There is no clan with id " + id);
         return clan;
     }
+    
 }

@@ -47,12 +47,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
           UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-          UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+          /*
+           * isEnabled checks for additional requirements to be true (isEmailConfirmed, are there no bans etc (see User model))
+           * We simply do not want to authenticate such token => skip this part and keep the user logged out.
+           * 
+           * During login process, authentication manager will throw an error, we send it as JSON to the client even tho it would not change much 
+           * (issued JWT would still not get the user past the security filters)
+           * 
+           * Exactly the behaviour we need for our app (upon loggin,. we want to inform the user the reason auth was declined, 
+           * for other responses, he will just see the pages as a "guest")
+           */ 
+
+          if (userDetails.isEnabled() && userDetails.isAccountNonLocked()) {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
               userDetails,
               null,
               userDetails.getAuthorities());
-          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-          SecurityContextHolder.getContext().setAuthentication(authToken);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+          }
+          
         }
       } catch (Exception e) {
         /* 

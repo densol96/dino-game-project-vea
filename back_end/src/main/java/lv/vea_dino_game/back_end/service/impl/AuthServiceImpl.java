@@ -3,8 +3,10 @@ package lv.vea_dino_game.back_end.service.impl;
 import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.helpers.EmailSenderService;
 
-import org.hibernate.validator.internal.metadata.aggregated.ValidatableParametersMetaData;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,8 @@ import lv.vea_dino_game.back_end.model.dto.SignUpDto;
 import lv.vea_dino_game.back_end.model.enums.Role;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.security_config.JwtService;
+
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -88,10 +91,28 @@ public class AuthServiceImpl implements IAuthService {
           new UsernamePasswordAuthenticationToken(
               signInCredentials.username(),
               signInCredentials.password()));
-    } catch (Exception e) {
+    } catch (BadCredentialsException e) {
       throw new InvalidAuthenticationDataException("Invalid username or password");
+    } catch (DisabledException e) {
+      throw new InvalidAuthenticationDataException(
+          "You have not confirmed your identity yet. Pleas check your email for confirmation letter.");
+    } catch (LockedException e) {
+      User user = userRepo.findByUsername(signInCredentials.username()).get();
+      String message = "Your account has been locked ";
+      if (user.getAccountDisabled() == true) {
+        message += "permanently. ";
+      } else {
+        LocalDateTime ban = user.getTempBanDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        String formattedDate = ban.format(formatter);
+        message += "untill " + formattedDate + ". ";
+      }
+
+      throw new InvalidAuthenticationDataException(message + "If you think this is a mistake, get in touch with the admin.");
     }
     User user = userRepo.findByUsername(signInCredentials.username()).get();
+    user.setLastLoggedIn(LocalDateTime.now());
+    userRepo.save(user);
     return new AuthResponse(jwtService.generateToken(user));
   }
 
@@ -107,7 +128,7 @@ public class AuthServiceImpl implements IAuthService {
     String hashedToken = returnHashedToken(confirmationToken);
     User user = userRepo.findByEmailConfirmationToken(hashedToken).orElseThrow(() -> e);
     user.setEmailConfirmationToken(null);
-    user.setEmailConfirmed(true);
+    user.setIsEmailConfirmed(true);
     userRepo.save(user);
     return new BasicMessageResponse("Your email has been confirmed! You can now try to log in!");
   }

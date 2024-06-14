@@ -55,6 +55,12 @@ public class ClanFilterController {
         return new ResponseEntity<List<Clan>>(clanService.retriveAllSorteredByTitleAsc(), HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<Clan> createClan(@RequestBody Clan clan){
+        Clan newClan = clanService.createClan(clan);
+        return new ResponseEntity<Clan>(newClan, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Clan> updateClan(@PathVariable("id") Integer id, @RequestBody Clan updatedClan){
         Clan clan = clanService.updateClan(id, updatedClan);

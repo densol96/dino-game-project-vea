@@ -1,5 +1,7 @@
 package lv.vea_dino_game.back_end.service.impl;
 
+import jakarta.transaction.Transactional;
+import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.repo.IClanRepo;

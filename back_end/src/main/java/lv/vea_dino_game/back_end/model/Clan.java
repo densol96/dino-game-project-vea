@@ -38,7 +38,7 @@ public class Clan {
     @NotNull(message = "Min player level cannot be null")
     private Integer minPlayerLevel;
 
-    @OneToMany(mappedBy = "clan")
+    @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
 
     @ToString.Exclude
     public List<Player> players;

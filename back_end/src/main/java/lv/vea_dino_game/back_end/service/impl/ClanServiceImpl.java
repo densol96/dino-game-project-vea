@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.service.impl;
 
+import jakarta.transaction.Transactional;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
@@ -88,6 +89,37 @@ public class ClanServiceImpl implements IClanFilterService {
          * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
          */
         return clanRepo.findAllByOrderByTitleAsc();
+    }
+
+
+    @Override
+    @Transactional
+    public Clan updateClan(Integer id, Clan updatedClan) {
+        if (clanRepo.count() == 0)
+            throw new EmptyDataBaseTable("There are no any clans for display");
+
+        Clan clan = clanRepo.findById(id);
+        if (clan == null)
+            throw new EmptyDataBaseTable("There is no clan with id " + id);
+
+        clan.setTitle(updatedClan.getTitle());
+        clan.setDescription(updatedClan.getDescription());
+        clan.setMinPlayerLevel(updatedClan.getMinPlayerLevel());
+        clanRepo.save(clan);
+        return clan;
+    }
+
+    @Override
+    @Transactional
+    public Clan deleteClan(Integer id) {
+        if (clanRepo.count() == 0)
+            throw new EmptyDataBaseTable("There are no any clans for display");
+
+        Clan clan = clanRepo.findById(id);
+        if (clan == null)
+            throw new EmptyDataBaseTable("There is no clan with id " + id);
+        clanRepo.delete(clan);
+        return clan;
     }
 
 

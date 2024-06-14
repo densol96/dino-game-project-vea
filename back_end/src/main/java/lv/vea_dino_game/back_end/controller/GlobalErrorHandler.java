@@ -73,13 +73,13 @@ public class GlobalErrorHandler {
     return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler(UserAlreadyExistsException.class)
+  @ExceptionHandler(InvalidClanException.class)
   public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(UserAlreadyExistsException.class)
+  @ExceptionHandler(InvalidPlayerException.class)
   public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);

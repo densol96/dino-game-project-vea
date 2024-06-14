@@ -3,6 +3,7 @@ package lv.vea_dino_game.back_end.service.impl;
 import jakarta.transaction.Transactional;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.exceptions.InvalidClanException;
+import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
@@ -11,6 +12,8 @@ import lv.vea_dino_game.back_end.service.IPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,11 +57,28 @@ public class PlayerServiceImpl implements IPlayerService {
         }
         Clan clan = player.getClan();
         if (player.getClan()==null)
-            throw new InvalidClanException("Player already is not in a clan");
+            throw new InvalidPlayerException("Player already is not in a clan");
         player.setClan(null);
         playerRepo.save(player);
         clanRepo.save(clan);
     }
+
+    @Override
+    public List<Player> getAllPlayersSortByLevelDesc() {
+        if (clanRepo.count() == 0){
+            throw new EmptyDataBaseTable("There are no any players for display");
+        }
+        return playerRepo.findAllByOrderByLevelDesc();
+    }
+
+    @Override
+    public List<Player> getAllPlayersSortByLevelAsc() {
+        if (clanRepo.count() == 0){
+            throw new EmptyDataBaseTable("There are no any players for display");
+        }
+        return playerRepo.findAllByOrderByLevelAsc();
+    }
+
 
 
 }

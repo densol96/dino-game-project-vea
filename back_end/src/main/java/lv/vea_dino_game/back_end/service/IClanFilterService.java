@@ -20,4 +20,8 @@ public interface IClanFilterService {
     List<Clan> retriveAllSorteredByTitleAsc();
 
     Clan createClan(Clan clan);
+
+    Clan updateClan(Integer id, Clan updatedClan);
+
+    Clan deleteClan(Integer id);
 }

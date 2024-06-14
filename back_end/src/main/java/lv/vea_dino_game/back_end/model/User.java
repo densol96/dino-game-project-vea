@@ -39,11 +39,18 @@ public class User implements UserDetails {
 
     private LocalDateTime lastLoggedIn;
 
+    @NotNull(message = "Registration date-time should be added upon persisting user model to DB")
     private LocalDateTime registrationDate;
 
-    private boolean isEmailConfirmed = false;
+    @NotNull(message = "Email confirmation status cannot be null") 
+    private Boolean isEmailConfirmed = false;
 
     private String emailConfirmationToken;
+
+    private LocalDateTime tempBanDateTime;
+
+    @NotNull(message = "Account activity status cannot be null") 
+    private Boolean accountDisabled = false;
 
     @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)
@@ -64,5 +71,15 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
       return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public boolean isEnabled() {
+      return isEmailConfirmed;
+    }
+
+     @Override
+    public boolean isAccountNonLocked() {
+      return !accountDisabled && (tempBanDateTime == null || tempBanDateTime.isBefore(LocalDateTime.now()));
     }
 }

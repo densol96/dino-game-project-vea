@@ -39,9 +39,10 @@ public class Clan {
     private Integer minPlayerLevel;
 
     @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
-
     @ToString.Exclude
     public List<Player> players;
+
+
 
     public Clan(String title, String description, int maxCapacity, int minPlayerLevel){
         setTitle(title);

@@ -23,7 +23,7 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "clan_id")
-    @JsonBackReference
+
     private Clan clan;
 
     @OneToOne(cascade = CascadeType.ALL)

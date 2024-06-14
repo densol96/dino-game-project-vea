@@ -2,6 +2,7 @@ package lv.vea_dino_game.back_end.controller;
 
 import java.util.*;
 
+import lv.vea_dino_game.back_end.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,9 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import lv.vea_dino_game.back_end.exceptions.InvalidAuthenticationDataException;
-import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
-import lv.vea_dino_game.back_end.exceptions.UserAlreadyExistsException;
 import lv.vea_dino_game.back_end.model.dto.ErrorResponse;
 
 
@@ -73,5 +71,17 @@ public class GlobalErrorHandler {
   public ResponseEntity<String> handleAnyOtherException(Exception e) {
     System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
     return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
+            HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
+            HttpStatus.BAD_REQUEST);
   }
 }

@@ -29,7 +29,7 @@ public class BackEndApplication {
 	public CommandLineRunner testDatabaseLayer(IClanRepo clanRepo, IPlayerRepo playerRepo, AuthServiceImpl service){
       return (String... args) -> {
         
-        Clan clanOne = new Clan("Carnivores", "We like meat and blood", 7,2);
+        Clan clanOne = new Clan("Carnivores", "We like meat and blood", 7,1);
         Clan clanTwo = new Clan("Herbivores", "We love peace and green", 20, 1);
         clanRepo.saveAll(List.of(clanOne, clanTwo));
 
@@ -39,8 +39,9 @@ public class BackEndApplication {
 
         Player playerOne = new Player(clanOne, statsOne, DinoType.carnivore);
         Player playerTwo = new Player(clanTwo, statsTwo, DinoType.herbivore);
+        Player playerThree = new Player(null, null,DinoType.herbivore);
         
-        playerRepo.saveAll(List.of(playerOne, playerTwo)); //stats cascaded
+        playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree)); //stats cascaded
       };
   }
 }

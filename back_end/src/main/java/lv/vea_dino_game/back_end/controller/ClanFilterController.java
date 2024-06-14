@@ -1,6 +1,7 @@
 package lv.vea_dino_game.back_end.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/clans")
+@RequiredArgsConstructor
 public class ClanFilterController {
 
-    @Autowired
-    private IClanFilterService clanService;
+    private final IClanFilterService clanService;
 
     @GetMapping
     public ResponseEntity<List<Clan>> getAllClans(){

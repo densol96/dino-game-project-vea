@@ -11,4 +11,6 @@ public interface IPlayerRepo extends JpaRepository<Player, Integer> {
     List<Player> findAllByOrderByLevelDesc();
 
     List<Player> findAllByOrderByLevelAsc();
+
+    List<Player> findAllByLevel(Integer level);
 }

@@ -13,4 +13,6 @@ public interface IPlayerService {
     List<Player> getAllPlayersSortByLevelDesc();
 
     List<Player> getAllPlayersSortByLevelAsc();
+
+    List<Player> getAllPlayersByLevel(Integer level);
 }

@@ -41,6 +41,10 @@ public class PlayerController {
     public ResponseEntity<List<Player>> getAllPlayersSortByLevelAsc() {
         return new ResponseEntity<List<Player>>(playerService.getAllPlayersSortByLevelAsc(), HttpStatus.OK);
     }
+    @GetMapping("/find-by-level/{level}")
+    public ResponseEntity<List<Player>> getAllPlayersByLevel(@PathVariable Integer level) {
+        return new ResponseEntity<List<Player>>(playerService.getAllPlayersByLevel(level), HttpStatus.OK);
+    }
 
 
 

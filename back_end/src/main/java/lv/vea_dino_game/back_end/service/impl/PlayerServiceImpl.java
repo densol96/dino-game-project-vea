@@ -68,17 +68,32 @@ public class PlayerServiceImpl implements IPlayerService {
         if (clanRepo.count() == 0){
             throw new EmptyDataBaseTable("There are no any players for display");
         }
-        return playerRepo.findAllByOrderByLevelDesc();
+        List<Player> player = playerRepo.findAllByOrderByLevelDesc();
+        if (player == null)
+            throw new EmptyDataBaseTable("There are no any players for display");
+        return player;
     }
 
     @Override
     public List<Player> getAllPlayersSortByLevelAsc() {
-        if (clanRepo.count() == 0){
+        if (playerRepo.count() == 0){
             throw new EmptyDataBaseTable("There are no any players for display");
         }
-        return playerRepo.findAllByOrderByLevelAsc();
+        List<Player> player =  playerRepo.findAllByOrderByLevelAsc();
+        if (player == null)
+            throw new EmptyDataBaseTable("There are no any players for display");
+        return player;
     }
 
+    @Override
+    public List<Player> getAllPlayersByLevel(Integer level) {
+        if (playerRepo.count() == 0){throw new EmptyDataBaseTable("There are no players");}
+
+        List<Player> player = playerRepo.findAllByLevel(level);
+        if (player == null)
+            throw new EmptyDataBaseTable("There are no players");
+        return player;
+    }
 
 
 }

@@ -25,7 +25,7 @@ public class AnnouncementController {
         return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByUser(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/find-by-user/{clanId}")
+    @GetMapping("/find-by-clan/{clanId}")
     public ResponseEntity<List<Announcement>> getAnnouncementByClan(@PathVariable("clanId") Integer clanId){
         return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByClan(clanId), HttpStatus.OK);
     }

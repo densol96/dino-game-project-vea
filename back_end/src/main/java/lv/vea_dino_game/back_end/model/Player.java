@@ -1,16 +1,19 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "players")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Player {
 
     @Setter(value = AccessLevel.NONE)
@@ -20,18 +23,21 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "clan_id")
+
     private Clan clan;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_stats")
+
     private PlayerStats playerStats;
 
-    @NotNull
+    @NotNull(message = "Dino type cannot be null")
+    @Enumerated(EnumType.STRING)
     private DinoType dinoType;
 
     @Min(value = 1, message = "Level can not be less than 1")
     @Max(value = 15, message = "Level can not be greater than 15")
-    private Integer level;
+    private Integer level = 1;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);

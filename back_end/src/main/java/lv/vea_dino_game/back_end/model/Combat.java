@@ -3,14 +3,13 @@ package lv.vea_dino_game.back_end.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "combats")
 public class Combat {
@@ -20,30 +19,30 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy="combat")
     private CombatResult combatResult;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "combat")
     private CombatHistoryRecap combatHistoryRecap;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "initiator_id")
+    @NotNull(message = "Initiator cannot be null")
     private Player initiator;
 
     @ManyToOne
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "defender_id")
+    @NotNull(message = "Defender cannot be null")
     private Player defender;
 
 
     @Min(value = 1, message = "Minimum player level can not be less than 1")
     @Max(value = 3, message = "Maximum player level can not be greater than 3")
-    private int level;
+    private Integer level;
 
     @Min(value = 10, message = "Turns amount value can not be less than 10")
     @Max(value = 20, message = "Turns amount value can not greater than 20")
-    private int turnsAmount;
+    private Integer turnsAmount;
 
     private LocalDateTime dateTime;
 

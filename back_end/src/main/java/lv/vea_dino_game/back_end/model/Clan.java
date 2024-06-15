@@ -42,6 +42,9 @@ public class Clan {
     @ToString.Exclude
     public List<Player> players;
 
+    @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Announcement> announcements;
+
 
 
     public Clan(String title, String description, int maxCapacity, int minPlayerLevel){

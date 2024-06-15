@@ -39,6 +39,9 @@ public class Player {
     @Max(value = 15, message = "Level can not be greater than 15")
     private Integer level = 1;
 
+    @OneToOne(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Announcement announcement;
+
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);

@@ -2,6 +2,7 @@ package lv.vea_dino_game.back_end.repo;
 
 import lv.vea_dino_game.back_end.model.Clan;
 
+import lv.vea_dino_game.back_end.model.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,4 +26,6 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
     List<Clan> findAllByOrderByTitleAsc();
 
     Clan findByTitle(String title);
+
+    Clan findByPlayers(Player player);
 }

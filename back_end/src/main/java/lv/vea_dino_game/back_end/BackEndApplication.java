@@ -40,8 +40,10 @@ public class BackEndApplication {
         Player playerOne = new Player(clanOne, statsOne, DinoType.carnivore);
         Player playerTwo = new Player(clanTwo, statsTwo, DinoType.herbivore);
         Player playerThree = new Player(null, null,DinoType.herbivore);
-        
-        playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree)); //stats cascaded
+        Player player4 = new Player(null, null,DinoType.herbivore);
+        player4.setLevel(3);
+
+        playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree, player4)); //stats cascaded
       };
   }
 }

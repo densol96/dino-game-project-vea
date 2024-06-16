@@ -1,7 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,10 +36,14 @@ public class Announcement {
     private LocalDateTime date;
 
     @ManyToOne
+    //@JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "clan_id")
     private Clan clan;
 
-    @OneToOne
+    @ManyToOne
+    @JsonIgnore
+   // @JsonBackReference
     @JoinColumn(name = "player_id")
     private Player author;
 

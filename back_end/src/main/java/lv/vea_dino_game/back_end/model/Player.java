@@ -36,7 +36,7 @@ public class Player {
     private DinoType dinoType;
 
     @Min(value = 1, message = "Level can not be less than 1")
-    @Max(value = 15, message = "Level can not be greater than 15")
+    @Max(value = 3, message = "Level can not be greater than 3")
     private Integer level = 1;
 
     @OneToOne(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)

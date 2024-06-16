@@ -16,8 +16,9 @@ public class AnnouncementController {
     private final IAnnouncementService announcementService;
 
     @PostMapping("/{userId}")
-    public void addAnnouncement(@PathVariable("userId") Integer userId, @RequestBody Announcement announcement){
+    public ResponseEntity<Void> addAnnouncement(@PathVariable("userId") Integer userId, @RequestBody Announcement announcement) {
         announcementService.addAnnouncement(userId, announcement);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/find-by-player/{userId}")
@@ -28,6 +29,18 @@ public class AnnouncementController {
     @GetMapping("/find-by-clan/{clanId}")
     public ResponseEntity<List<Announcement>> getAnnouncementByClan(@PathVariable("clanId") Integer clanId){
         return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByClan(clanId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{playerId}/{announcementId}")
+    public ResponseEntity<Announcement> updateAnnouncement(@PathVariable("playerId") Integer playerId, @PathVariable("announcementId") Integer announcementId, @RequestBody Announcement upadatedAnnouncement){
+        Announcement announcement = announcementService.updateAnnouncementByAnnouncementId(playerId, announcementId, upadatedAnnouncement);
+        return new ResponseEntity<Announcement>(announcement, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{playerId}/{announcementId}")
+    public ResponseEntity<Announcement> deleteAnnouncement(@PathVariable("playerId") Integer playerId, @PathVariable("announcementId") Integer announcementId){
+        Announcement announcement = announcementService.deleteAnnouncement(playerId, announcementId);
+        return new ResponseEntity<Announcement>(announcement, HttpStatus.OK);
     }
 
 

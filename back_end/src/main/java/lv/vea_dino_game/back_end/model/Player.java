@@ -9,6 +9,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -39,8 +41,9 @@ public class Player {
     @Max(value = 3, message = "Level can not be greater than 3")
     private Integer level = 1;
 
-    @OneToOne(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Announcement announcement;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference
+    private List<Announcement> announcement;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);

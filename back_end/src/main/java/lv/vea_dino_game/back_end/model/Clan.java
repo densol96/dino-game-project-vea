@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -40,9 +41,11 @@ public class Clan {
 
     @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    //@JsonManagedReference
     public List<Player> players;
 
     @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference
     private List<Announcement> announcements;
 
 

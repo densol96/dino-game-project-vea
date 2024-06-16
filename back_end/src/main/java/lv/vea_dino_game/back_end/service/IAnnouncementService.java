@@ -12,4 +12,9 @@ public interface IAnnouncementService {
     List<Announcement> getAnnouncementByUser(Integer userId);
 
     List<Announcement> getAnnouncementByClan(Integer clanId);
+
+
+    Announcement updateAnnouncementByAnnouncementId(Integer playerId, Integer announcementId, Announcement upadatedAnnouncement);
+
+    Announcement deleteAnnouncement(Integer playerId, Integer announcementId);
 }

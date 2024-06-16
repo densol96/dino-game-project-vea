@@ -62,4 +62,45 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (announcement == null) {throw new InvalidAnnouncementException("No announcement with this clan");}
         return announcement;
     }
+
+    @Override
+    public Announcement updateAnnouncementByAnnouncementId(Integer playerId, Integer announcementId, Announcement updatedAnnouncement) {
+        if (announcementId == null || announcementId < 0) {
+            throw new InvalidAnnouncementException("Incorrect announcement id");
+        }
+        Announcement announcement = announcementRepo.findById(announcementId).orElseThrow(() -> new InvalidAnnouncementException("Announcement with id " + announcementId + " does not exist"));
+
+        if (!announcement.getAuthor().getId().equals(playerId)) {
+            throw new InvalidPlayerException("You have no right to update this announcement");
+        }
+
+        if (updatedAnnouncement.getTitle() != null) {
+            announcement.setTitle(updatedAnnouncement.getTitle());
+        }
+        if (updatedAnnouncement.getContent() != null) {
+            announcement.setContent(updatedAnnouncement.getContent());
+        }
+        if (updatedAnnouncement.getClan() != null) {
+            announcement.setClan(updatedAnnouncement.getClan());
+        }
+
+        return announcementRepo.save(announcement);
+    }
+
+    @Override
+    public Announcement deleteAnnouncement(Integer playerId, Integer announcementId) {
+        if (announcementId == null || announcementId < 0) {
+            throw new InvalidAnnouncementException("Incorrect announcement ID");
+        }
+        Announcement announcement = announcementRepo.findById(announcementId).orElseThrow(() -> new InvalidAnnouncementException("Announcement with ID " + announcementId + " does not exist"));
+
+        if (!announcement.getAuthor().getId().equals(playerId)) {
+            throw new InvalidPlayerException("You have no right to delete this announcement");
+        }
+        announcementRepo.delete(announcement);
+        return announcement;
+    }
+
+
 }
+

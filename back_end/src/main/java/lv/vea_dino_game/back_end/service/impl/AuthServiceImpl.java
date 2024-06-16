@@ -68,14 +68,13 @@ public class AuthServiceImpl implements IAuthService {
 
     // In order to pass authentication, apart from valid credentials, email needs to be confirmed via confirmation token
     String confirmationToken = createRandomToken();
-    String hashedToken = returnHashedToken(confirmationToken);
 
-    user.setEmailConfirmationToken(hashedToken);
+    // Hashed token stored in DB
+    user.setEmailConfirmationToken(returnHashedToken(confirmationToken));
   
     // Send the email with the token-link to email
     try {
-      emailService.sendToAskToConfirmEmail(user, confirmationToken);
-      // Cascading will do the rest
+      emailService.sendToAskToConfirmEmail(user, confirmationToken);  
       userRepo.save(user);
     } catch (Exception e) {
       throw new ServiceCurrentlyUnavailableException(

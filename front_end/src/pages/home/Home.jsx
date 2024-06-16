@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { useEffect, useReducer } from 'react';
+
+import { useEffect, useReducer, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import styles from './Home.module.scss';
+
+import ModalLogin from './login/ModalLogin.jsx/ModalLogin';
+import { useUserContext } from '../../context/UserProvider';
 
 const DinoType = {
   CARNIVORE: 'carnivore',
@@ -25,20 +32,7 @@ function signUpReducer(state, action) {
   }
 }
 
-function modalReducer(state, action) {
-  switch (action.type) {
-    case 'SET_USERNAME':
-      return { ...state, username: action.value };
-    case 'SET_PASSWORD':
-      return { ...state, password: action.value };
-    case 'SET_OPEN_CLOSED':
-      return { username: '', password: '', isOpen: action.value };
-    default:
-      throw new Error('💥ERROR -> Check signInReducer');
-  }
-}
-
-function reponseReducer(state, action) {
+function resultReducer(state, action) {
   switch (action.type) {
     case 'SUCCESS':
       return {
@@ -129,8 +123,11 @@ async function sendSignUpRequest(data, resultDisptach) {
   const { username, password, passwordConfirm, email, dinoType } = data;
 
   // CHECK FOR EMPTY FIELDS
+  resultDisptach({ type: 'IS_LOADING' });
   if (!username || !password || !passwordConfirm || !email) {
-    resultDisptach({ type: 'CLOSE' });
+    setTimeout(() => {
+      resultDisptach({ type: 'CLOSE' });
+    }, 250);
     setTimeout(() => {
       resultDisptach({
         type: 'ERROR',
@@ -146,7 +143,9 @@ async function sendSignUpRequest(data, resultDisptach) {
 
   // CHECK THAT PASSWORDS MATCH
   if (password !== passwordConfirm) {
-    resultDisptach({ type: 'CLOSE' });
+    setTimeout(() => {
+      resultDisptach({ type: 'CLOSE' });
+    }, 250);
     setTimeout(() => {
       resultDisptach({
         type: 'ERROR',
@@ -161,7 +160,6 @@ async function sendSignUpRequest(data, resultDisptach) {
 
   // SEND POST REQUEST
   try {
-    resultDisptach({ type: 'IS_LOADING' });
     const response = await axios.post(API_ENDPOINT, {
       username,
       password,
@@ -208,62 +206,6 @@ async function sendSignUpRequest(data, resultDisptach) {
   }
 }
 
-async function sendSignInRequest(data, resultDisptach) {
-  const API_ENDPOINT = 'http://localhost:8080/api/v1/auth/login';
-  const { username, password } = data;
-
-  // CHECK FOR EMPTY FIELDS
-  if (!username || !password) {
-    resultDisptach({ type: 'CLOSE' });
-    setTimeout(() => {
-      resultDisptach({
-        type: 'ERROR',
-        payload: {
-          heading: 'Invalid user input',
-          message: 'Please, make sure all the required fields are filled in!',
-        },
-      });
-    }, 500);
-
-    return;
-  }
-
-  // SEND POST REQUEST
-  try {
-    resultDisptach({ type: 'IS_LOADING' });
-    const response = await axios.post(API_ENDPOINT, {
-      username,
-      password,
-    });
-    console.log(response.data);
-  } catch (e) {
-    console.log(e);
-    if (e.code === 'ERR_BAD_REQUEST') {
-      const error = e.response.data;
-      resultDisptach({
-        type: 'ERROR',
-        payload: {
-          heading: error.name,
-          message: error.message,
-          type: error.type,
-          errors: error.errors,
-        },
-      });
-    } else if (e.code === 'ERR_NETWORK') {
-      resultDisptach({
-        type: 'ERROR',
-        payload: {
-          heading: 'Service is currently unavailable',
-          message:
-            'Registration is currently unavailable! Please,try again later!',
-          type: 'ERR_NETWORK',
-          errors: [],
-        },
-      });
-    }
-  }
-}
-
 function reduceValidationErrors(errors) {
   let parsedErrors = [];
   for (let field in errors) {
@@ -272,7 +214,10 @@ function reduceValidationErrors(errors) {
   return parsedErrors;
 }
 
-function App() {
+function Home() {
+  const { user } = useUserContext();
+  const navigate = useNavigate();
+
   // FOR SIGN UP
   const [signUpState, dispatchSignUp] = useReducer(signUpReducer, {
     username: '',
@@ -283,23 +228,11 @@ function App() {
   });
   const { username, password, email, passwordConfirm, dinoType } = signUpState;
 
-  // FOR SIGN IN
-  const [modalState, dispatchModal] = useReducer(modalReducer, {
-    username: '',
-    password: '',
-    isOpen: false,
-  });
-  const {
-    username: modalUsername,
-    password: modalPassword,
-    isOpen,
-  } = modalState;
-
   // RESULT OF THE REQUEST (either /login or /authenticate)
   const [
     { success, error, forDisplay, isLoading, buttonClickable },
     resultDispatch,
-  ] = useReducer(reponseReducer, {
+  ] = useReducer(resultReducer, {
     buttonClickable: true,
     isLoading: false,
     forDisplay: false,
@@ -325,76 +258,43 @@ function App() {
     return () => clearTimeout(timerId);
   }, [resultDispatch, error]);
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  function closeLogin() {
+    setModalIsOpen(false);
+  }
+
+  useEffect(() => {
+    if (user) {
+      navigate('/profile');
+    }
+  }, [user, navigate]);
+
   return (
     <>
-      {isOpen && (
-        <div className="modal-login">
-          <div className="login-container">
-            <button
-              className="login-container__close-btn"
-              onClick={() =>
-                dispatchModal({ type: 'SET_OPEN_CLOSED', value: false })
-              }
-            >
-              X
-            </button>
-            <h2 className="login-container__heading">
-              Enter your details to Sign In:
-            </h2>
-            <form className="login-container__form">
-              <label>Username:</label>
-              <input
-                type="text"
-                name="username"
-                id="username"
-                className="input"
-                value={modalUsername}
-                onChange={(e) =>
-                  dispatchModal({ type: 'SET_USERNAME', value: e.target.value })
-                }
-              />
-              <label>Password:</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className="input"
-                value={modalPassword}
-                onChange={(e) =>
-                  dispatchModal({ type: 'SET_PASSWORD', value: e.target.value })
-                }
-              />
-            </form>
-            <div className="login-container__buttons">
-              <button className="btn brown-btn">Sign In</button>
-              <button className="btn brown-btn--reversed">
-                Forgot password
-              </button>
-            </div>
-          </div>
-        </div>
+      {modalIsOpen && (
+        <ModalLogin closeLogin={closeLogin} resultDispatch={resultDispatch} />
       )}
       {(error.status || success.status) && forDisplay && (
         <div
-          className={`message-container ${
-            error.status ? 'error-color' : 'success-color'
+          className={`${styles['message-container']} ${
+            error.status ? styles['error-color'] : styles['success-color']
           }`}
         >
           <p
-            className="message-container__close-btn"
+            className={styles['message-container__close-btn']}
             onClick={() => resultDispatch({ type: 'CLOSE' })}
           >
             X
           </p>
-          <h2 className="message-container__heading">
+          <h2 className={styles['message-container__heading']}>
             {error.status ? error.heading : success.heading}
           </h2>
-          <p className="message-container__content">
+          <p className={styles['message-container__content']}>
             {error.status ? error.message : success.message}
           </p>
           <ul>
             {errors.map((e, i) => (
-              <li className="message-container__content" key={i}>
+              <li className={styles['message-container__content']} key={i}>
                 {e}
               </li>
             ))}
@@ -402,11 +302,15 @@ function App() {
         </div>
       )}
 
-      <div className="container">
-        <img className="central-logo" src="dino-logo.png" />
+      <div className={styles['container']}>
         <img
-          className={`left-logo logo ${
-            dinoType === DinoType.CARNIVORE ? 'active-type' : ''
+          className={styles['central-logo']}
+          src="dino-logo.png"
+          alt="Dino Battle Main logo"
+        />
+        <img
+          className={`${styles['left-logo']} ${styles['logo']} ${
+            dinoType === DinoType.CARNIVORE ? styles['active-type'] : ''
           }`}
           src="carnivore-logo.png"
           alt="Carnivore dinosaur logo"
@@ -415,8 +319,8 @@ function App() {
           }}
         />
         <img
-          className={`right-logo logo ${
-            dinoType === DinoType.HERBIVORE ? 'active-type' : ''
+          className={`${styles['right-logo']} ${styles['logo']} ${
+            dinoType === DinoType.HERBIVORE ? styles['active-type'] : ''
           }`}
           src="herbivore-logo.png"
           alt="Herbivore dinosaur logo"
@@ -424,12 +328,12 @@ function App() {
             dispatchSignUp({ type: 'SET_TYPE', value: DinoType.HERBIVORE });
           }}
         />
-        <h3 className="carnivore-heading"> Carnivore </h3>
-        <h3 className="herbivore-heading"> Herbivore </h3>
-        <main className="main">
-          <div className="dino-type">
+        <h3 className={styles['carnivore-heading']}> Carnivore </h3>
+        <h3 className={styles['herbivore-heading']}> Herbivore </h3>
+        <main className={styles['main']}>
+          <div className={styles['dino-type']}>
             <img
-              className="profile-pic"
+              className={styles['profile-pic']}
               src={`${
                 dinoType === DinoType.CARNIVORE
                   ? 'carnivore-logo.png'
@@ -439,12 +343,12 @@ function App() {
             />
           </div>
 
-          <div className="input-container">
-            <h2 className="input-container__heading">
+          <div className={styles['input-container']}>
+            <h2 className={styles['input-container__heading']}>
               Enter your details to start playing:
             </h2>
             <form
-              className="form"
+              className={styles.form}
               onSubmit={(e) => {
                 e.preventDefault();
                 sendSignUpRequest(signUpState, resultDispatch);
@@ -500,7 +404,7 @@ function App() {
               />
               <button
                 disabled={!buttonClickable}
-                className={`brown-btn btn ${isLoading ? 'disabled-btn' : ''}`}
+                className="brown-btn btn"
                 onClick={(e) => {
                   e.preventDefault();
                   sendSignUpRequest(signUpState, resultDispatch);
@@ -510,10 +414,8 @@ function App() {
               </button>
             </form>
             <button
-              className="link"
-              onClick={() =>
-                dispatchModal({ type: 'SET_OPEN_CLOSED', value: true })
-              }
+              className={styles['link']}
+              onClick={() => setModalIsOpen(true)}
             >
               Already have an account
             </button>

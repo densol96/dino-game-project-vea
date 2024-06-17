@@ -65,8 +65,9 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
+  background-attachment: fixed;
   // for main page
-  overflow-y: hidden;
+  // overflow-y: hidden;
 }
 
 .input {

@@ -7,7 +7,12 @@ import { jwtDecode } from 'jwt-decode';
 import styles from './ModalLogin.module.scss';
 import { useUserContext } from '../../../../context/UserProvider';
 
-async function sendSignInRequest(data, resultDisptach, navigate, setUser) {
+async function sendSignInRequest(
+  data,
+  resultDisptach,
+  navigate,
+  setUserFullInfo
+) {
   const API_ENDPOINT = 'http://localhost:8080/api/v1/auth/login';
   const { username, password } = data;
 
@@ -36,7 +41,7 @@ async function sendSignInRequest(data, resultDisptach, navigate, setUser) {
     const { jwt } = response.data;
     localStorage.setItem('dino_jwt', jwt);
     const user = jwtDecode(jwt).sub;
-    setUser(user);
+    setUserFullInfo(user);
     navigate('/profile');
   } catch (e) {
     console.log(e);
@@ -71,7 +76,7 @@ function ModalLogin({ closeLogin, resultDispatch }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setUser } = useUserContext();
+  const { setUserFullInfo } = useUserContext();
 
   return (
     <div className={styles['modal-login']}>
@@ -113,7 +118,7 @@ function ModalLogin({ closeLogin, resultDispatch }) {
                 { username, password },
                 resultDispatch,
                 navigate,
-                setUser
+                setUserFullInfo
               )
             }
           >

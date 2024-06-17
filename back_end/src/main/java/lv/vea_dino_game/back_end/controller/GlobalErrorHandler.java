@@ -59,7 +59,7 @@ public class GlobalErrorHandler {
   }
 
   @ExceptionHandler(ServiceCurrentlyUnavailableException.class)
-  public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(InvalidAuthenticationDataException e) {
+  public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(ServiceCurrentlyUnavailableException e) {
     return new ResponseEntity<ErrorResponse>(
         new ErrorResponse("INT_SERV_ERR", "Currently unable to perform this action.", e.getMessage(), null),
         HttpStatus.INTERNAL_SERVER_ERROR);

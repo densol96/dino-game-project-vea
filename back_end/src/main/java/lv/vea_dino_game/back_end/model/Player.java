@@ -9,7 +9,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,17 +38,17 @@ public class Player {
     private DinoType dinoType;
 
     @Min(value = 1, message = "Level can not be less than 1")
-    @Max(value = 15, message = "Level can not be greater than 15")
+    @Max(value = 3, message = "Level can not be greater than 3")
     private Integer level = 1;
 
-    private LocalDateTime immuneUntil;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference
+    private List<Announcement> announcement;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
-        setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
-
     }
 
 

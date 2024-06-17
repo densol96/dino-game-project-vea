@@ -20,7 +20,7 @@ public class ClanServiceImpl implements IClanFilterService {
     private final IClanRepo clanRepo;
 
     @Override
-    public List<Clan> retriveAll() {
+    public List<Clan> retrieveAll() {
       if(clanRepo.count() == 0)
         throw new EmptyDataBaseTable("There are no any clans for display");
       /*
@@ -30,7 +30,7 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllByMinEntryLevel(Integer level){
+    public List<Clan> retrieveAllByMinEntryLevel(Integer level){
       if (clanRepo.count() == 0)
         throw new EmptyDataBaseTable("There are no any clans for display");
       
@@ -42,7 +42,7 @@ public class ClanServiceImpl implements IClanFilterService {
 
 
     @Override
-    public Clan retriveClanById(Integer id){
+    public Clan retrieveClanById(Integer id){
         if (clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
 
@@ -53,7 +53,7 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllSorteredByMinLevelDesc() {
+    public List<Clan> retrieveAllSortedByMinLevelDesc() {
         if(clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
         /*
@@ -63,7 +63,7 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllSorteredByMinLevelAsc() {
+    public List<Clan> retrieveAllSortedByMinLevelAsc() {
         if(clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
         /*
@@ -73,7 +73,7 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllSorteredByTitleDesc() {
+    public List<Clan> retrieveAllSortedByTitleDesc() {
         if(clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
         /*
@@ -83,7 +83,7 @@ public class ClanServiceImpl implements IClanFilterService {
     }
 
     @Override
-    public List<Clan> retriveAllSorteredByTitleAsc() {
+    public List<Clan> retrieveAllSortedByTitleAsc() {
         if(clanRepo.count() == 0)
             throw new EmptyDataBaseTable("There are no any clans for display");
         /*

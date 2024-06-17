@@ -5,19 +5,19 @@ import lv.vea_dino_game.back_end.model.Clan;
 import java.util.List;
 
 public interface IClanFilterService {
-    List<Clan> retriveAll();
+    List<Clan> retrieveAll();
 
-    List<Clan> retriveAllByMinEntryLevel(Integer level);
+    List<Clan> retrieveAllByMinEntryLevel(Integer level);
 
-    Clan retriveClanById(Integer id);
+    Clan retrieveClanById(Integer id);
 
-    List<Clan> retriveAllSorteredByMinLevelDesc();
+    List<Clan> retrieveAllSortedByMinLevelDesc();
 
-    List<Clan> retriveAllSorteredByMinLevelAsc();
+    List<Clan> retrieveAllSortedByMinLevelAsc();
 
-    List<Clan> retriveAllSorteredByTitleDesc();
+    List<Clan> retrieveAllSortedByTitleDesc();
 
-    List<Clan> retriveAllSorteredByTitleAsc();
+    List<Clan> retrieveAllSortedByTitleAsc();
 
     Clan createClan(Clan clan);
 

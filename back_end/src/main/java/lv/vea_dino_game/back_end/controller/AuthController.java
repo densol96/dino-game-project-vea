@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
-
+import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.dto.AuthResponse;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.SignInDto;
 import lv.vea_dino_game.back_end.model.dto.SignUpDto;
+import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.service.impl.AuthServiceImpl;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 
@@ -47,6 +47,12 @@ public class AuthController {
   public ResponseEntity<BasicMessageResponse> confirmEmail(@PathVariable String confirmationToken) {
     return new ResponseEntity<BasicMessageResponse>(authService.confirmEmail(confirmationToken), HttpStatus.OK);
   }
+
+  @GetMapping("/me")
+  public UserMainDTO getMethodName() {
+    return authService.getMe();
+  }
+  
   
   
 }

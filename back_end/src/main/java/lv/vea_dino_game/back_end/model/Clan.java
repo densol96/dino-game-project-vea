@@ -48,6 +48,10 @@ public class Clan {
     //@JsonManagedReference
     private List<Announcement> announcements;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name="admin")
+    private Player admin;
+
 
 
     public Clan(String title, String description, int maxCapacity, int minPlayerLevel){

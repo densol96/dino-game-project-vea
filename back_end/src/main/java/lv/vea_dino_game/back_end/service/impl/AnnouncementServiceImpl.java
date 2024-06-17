@@ -27,39 +27,51 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
 
     @Override
     public void addAnnouncement(Integer userId, Announcement announcement) {
-        if (userId == null) {throw new InvalidPlayerException("userId is null");}
-        Player player = playerRepo.findById(userId).get();
-        if (player == null) {throw new InvalidPlayerException("Player does not exist");}
+        if (userId == null) {
+            throw new InvalidPlayerException("userId is null");
+        }
+        Player player = playerRepo.findById(userId).orElseThrow(() -> new InvalidPlayerException("Player does not exist"));
         Clan clan = clanRepo.findByPlayers(player);
-        if (clan == null) {throw new InvalidClanException("User does not have a clan");}
-        Announcement newAnnouncement = new Announcement();
-        newAnnouncement.setTitle(announcement.getTitle());
-        newAnnouncement.setContent(announcement.getContent());
+        if (clan == null) {
+            throw new InvalidClanException("User does not have a clan");
+        }
+        Announcement newAnnouncement = new Announcement(announcement.getTitle(), announcement.getContent(), clan, player);
         newAnnouncement.setDate();
-        newAnnouncement.setClan(clan);
-        newAnnouncement.setAuthor(player);
         announcementRepo.save(newAnnouncement);
     }
 
     @Override
     public List<Announcement> getAnnouncementByUser(Integer userId) {
-        if (announcementRepo.count() == 0) {throw new InvalidAnnouncementException("No announcement");}
-        if (userId < 0) {throw new InvalidPlayerException("Incorrect user id");}
-        Player player = playerRepo.findById(userId).get();
-        if (player == null) {throw new InvalidPlayerException("Player does not exist");}
+        if (announcementRepo.count() == 0) {
+            throw new InvalidAnnouncementException("No announcement");
+        }
+        if (userId < 0) {
+            throw new InvalidPlayerException("Incorrect user id");
+        }
+        Player player = playerRepo.findById(userId).orElseThrow(() -> new InvalidPlayerException("Player does not exist"));
         List<Announcement> announcement = announcementRepo.findAllByAuthor(player);
-        if (announcement == null) {throw new InvalidAnnouncementException("No announcement with this author");}
+        if (announcement == null) {
+            throw new InvalidAnnouncementException("No announcement with this author");
+        }
         return announcement;
     }
 
     @Override
     public List<Announcement> getAnnouncementByClan(Integer clanId) {
-        if (announcementRepo.count() == 0) {throw new InvalidAnnouncementException("No announcement");}
-        if (clanId < 0) {throw new InvalidClanException("Incorrect clan id");}
+        if (announcementRepo.count() == 0) {
+            throw new InvalidAnnouncementException("No announcement");
+        }
+        if (clanId < 0) {
+            throw new InvalidClanException("Incorrect clan id");
+        }
         Clan clan = clanRepo.findById(clanId);
-        if (clan == null) {throw new InvalidClanException("Clan with id " + " do not exist");}
+        if (clan == null) {
+            throw new InvalidClanException("Clan with id " + " do not exist");
+        }
         List<Announcement> announcement = announcementRepo.findAllByClan(clan);
-        if (announcement == null) {throw new InvalidAnnouncementException("No announcement with this clan");}
+        if (announcement == null) {
+            throw new InvalidAnnouncementException("No announcement with this clan");
+        }
         return announcement;
     }
 
@@ -69,11 +81,9 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
             throw new InvalidAnnouncementException("Incorrect announcement id");
         }
         Announcement announcement = announcementRepo.findById(announcementId).orElseThrow(() -> new InvalidAnnouncementException("Announcement with id " + announcementId + " does not exist"));
-
         if (!announcement.getAuthor().getId().equals(playerId)) {
             throw new InvalidPlayerException("You have no right to update this announcement");
         }
-
         if (updatedAnnouncement.getTitle() != null) {
             announcement.setTitle(updatedAnnouncement.getTitle());
         }
@@ -83,7 +93,6 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (updatedAnnouncement.getClan() != null) {
             announcement.setClan(updatedAnnouncement.getClan());
         }
-
         return announcementRepo.save(announcement);
     }
 
@@ -93,7 +102,6 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
             throw new InvalidAnnouncementException("Incorrect announcement ID");
         }
         Announcement announcement = announcementRepo.findById(announcementId).orElseThrow(() -> new InvalidAnnouncementException("Announcement with ID " + announcementId + " does not exist"));
-
         if (!announcement.getAuthor().getId().equals(playerId)) {
             throw new InvalidPlayerException("You have no right to delete this announcement");
         }

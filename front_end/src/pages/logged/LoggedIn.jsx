@@ -12,11 +12,11 @@ function styleNavLink(isActive) {
     : styles.navLink;
 }
 
-function Profile() {
+function LoggedIn() {
   const { user, setUserFullInfo, logoutUser } = useUserContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  setTimeout(() => {
     if (!user) {
       navigate('/');
     }
@@ -112,4 +112,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default LoggedIn;

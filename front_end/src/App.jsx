@@ -6,6 +6,7 @@ import LoggedIn from './pages/logged/LoggedIn';
 import ModalLogin from './pages/ModalLogin/ModalLogin';
 import Profile from './pages/Profile/Profile';
 import NotFound from './pages/NotFound.jsx/NotFound';
+import Settings from './pages/settings/Settings';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/in" element={<LoggedIn />}>
             <Route index replace element={<Navigate to="profile" />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -9,7 +9,7 @@ import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IPlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 

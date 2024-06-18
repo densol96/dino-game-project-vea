@@ -141,13 +141,19 @@ public class AuthServiceImpl implements IAuthService {
   }
 
   @Override
-  public UserMainDTO getMe() {
+  public User getLoggedInUser() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || !(auth.getPrincipal() instanceof UserDetails))
       throw new ServiceCurrentlyUnavailableException("Service 'get-me' is temporarily not working");
-    User currentUser = (User) auth.getPrincipal();
-    return mapper.fromUserToDto(currentUser);
+    return (User) auth.getPrincipal();
   }
+
+  @Override
+  public UserMainDTO getMe() {
+    return mapper.fromUserToDto(getLoggedInUser());
+  }
+
+  
   
 
 

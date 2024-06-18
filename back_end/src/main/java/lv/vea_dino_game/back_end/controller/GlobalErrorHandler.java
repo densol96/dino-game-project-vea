@@ -70,6 +70,7 @@ public class GlobalErrorHandler {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResponseEntity<String> handleAnyOtherException(Exception e) {
     System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
+    System.out.println(e.getMessage());
     return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

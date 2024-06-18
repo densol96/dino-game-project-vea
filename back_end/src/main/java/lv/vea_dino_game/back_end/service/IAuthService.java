@@ -15,4 +15,6 @@ public interface IAuthService {
   BasicMessageResponse confirmEmail(String confirmationToken);
 
   UserMainDTO getMe();
+
+  User getLoggedInUser();
 }

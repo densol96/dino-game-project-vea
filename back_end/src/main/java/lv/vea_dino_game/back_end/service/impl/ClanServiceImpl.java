@@ -3,10 +3,19 @@ package lv.vea_dino_game.back_end.service.impl;
 import jakarta.transaction.Transactional;
 import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
+import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.Clan;
+import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
+import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
 
+import lv.vea_dino_game.back_end.service.IPlayerService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +27,12 @@ import java.util.List;
 public class ClanServiceImpl implements IClanFilterService {
 
     private final IClanRepo clanRepo;
+
+    private final IPlayerRepo playerRepo;
+
+    private final IPlayerService playerService;
+
+    private final AuthServiceImpl authService;
 
     @Override
     public List<Clan> retrieveAll() {
@@ -94,10 +109,26 @@ public class ClanServiceImpl implements IClanFilterService {
 
     @Override
     public Clan createClan(Clan clan) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof UserDetails))
+            throw new ServiceCurrentlyUnavailableException("Service 'get-me' is temporarily not working");
+        User currentUser = (User) auth.getPrincipal();
+        System.out.println(currentUser.getPlayer().getId());
+        System.out.println("___________________________________");
+        Integer id = currentUser.getPlayer().getId();
+
+        Player admin = playerRepo.findById(id).get();
+        if (admin == null)
+            throw new InvalidPlayerException("No player");
         if (clan == null) throw new EmptyClanException("Clan is empty");
         Clan newClan = clanRepo.findByTitle(clan.getTitle());
+
         if (newClan!= null) throw new EmptyClanException("Clan with such title already exists");
+        clan.setAdmin(admin);
+        clan.setSinglePlayer(admin);
         return clanRepo.save(clan);
+
+
     }
 
 

@@ -44,6 +44,7 @@ public class PlayerServiceImpl implements IPlayerService {
             throw new IllegalStateException("Player does not meet the minimum level requirement for the clan");
         }
         player.setClan(clan);
+
         //clan.getPlayers().add(player);
         playerRepo.save(player);
         clanRepo.save(clan);

@@ -3,11 +3,18 @@ package lv.vea_dino_game.back_end.controller;
 
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.Clan;
+import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
+import lv.vea_dino_game.back_end.service.IPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +26,8 @@ import java.util.List;
 public class ClanFilterController {
 
     private final IClanFilterService clanService;
+
+    private final IPlayerService playerService;
 
     @GetMapping
     public ResponseEntity<List<Clan>> getAllClans(){

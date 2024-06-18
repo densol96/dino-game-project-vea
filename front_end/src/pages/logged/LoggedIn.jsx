@@ -1,10 +1,16 @@
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, NavLink } from 'react-router-dom';
 
 import { useEffect } from 'react';
 
 import { useUserContext } from '../../context/UserProvider';
 
 import styles from './LoggedIn.module.scss';
+
+function styleNavLink(isActive) {
+  return isActive.isActive
+    ? `${styles.isActive} ${styles.navLink}`
+    : styles.navLink;
+}
 
 function Profile() {
   const { user, setUserFullInfo, logoutUser } = useUserContext();
@@ -15,8 +21,6 @@ function Profile() {
       navigate('/');
     }
   }, [user]);
-
-  console.log(user);
 
   return user ? (
     <div className={styles.container}>
@@ -44,34 +48,47 @@ function Profile() {
       <section className={styles.section}>
         <aside className={styles.aside}>
           <ul>
-            <li className={styles.listItem}>
-              <ion-icon name="accessibility-outline"></ion-icon>
-              <span className={styles.listItem__text}>Profile</span>
-              <ion-icon name="accessibility-outline"></ion-icon>
-            </li>
-            <li className={styles.listItem}>
-              <ion-icon name="ribbon-outline"></ion-icon>
-              <span className={styles.listItem__text}>Arena</span>
-              <ion-icon name="ribbon-outline"></ion-icon>
-            </li>
-            <li className={styles.listItem}>
-              <ion-icon name="leaf-outline"></ion-icon>
-              <span className={styles.listItem__text}>Farm</span>
-              <ion-icon name="leaf-outline"></ion-icon>
-            </li>
-            <li className={styles.listItem}>
-              <ion-icon name="people-circle-outline"></ion-icon>
-              <span className={styles.listItem__text}>Clan</span>
-              <ion-icon name="people-circle-outline"></ion-icon>
-            </li>
+            <NavLink className={styleNavLink} to="profile">
+              <li className={styles.listItem}>
+                <ion-icon name="accessibility-outline"></ion-icon>
+
+                <span className={styles.listItem__text}>Profile</span>
+
+                <ion-icon name="accessibility-outline"></ion-icon>
+              </li>
+            </NavLink>
+            <NavLink className={styleNavLink} to="arena">
+              <li className={styles.listItem}>
+                <ion-icon name="ribbon-outline"></ion-icon>
+                <span className={styles.listItem__text}>Arena</span>
+                <ion-icon name="ribbon-outline"></ion-icon>
+              </li>
+            </NavLink>
+            <NavLink className={styleNavLink} to="farm">
+              <li className={styles.listItem}>
+                <ion-icon name="leaf-outline"></ion-icon>
+                <span className={styles.listItem__text}>Farm</span>
+                <ion-icon name="leaf-outline"></ion-icon>
+              </li>
+            </NavLink>
+            <NavLink className={styleNavLink} to="clan">
+              <li className={styles.listItem}>
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span className={styles.listItem__text}>Clan</span>
+                <ion-icon name="people-circle-outline"></ion-icon>
+              </li>
+            </NavLink>
           </ul>
 
           <ul>
-            <li className={styles.listItem}>
-              <ion-icon name="settings-outline"></ion-icon>
-              <span className={styles.listItem__text}>Settings</span>
-              <ion-icon name="settings-outline"></ion-icon>
-            </li>
+            <NavLink className={styleNavLink} to="settings">
+              <li className={styles.listItem}>
+                <ion-icon name="settings-outline"></ion-icon>
+                <span className={styles.listItem__text}>Settings</span>
+                <ion-icon name="settings-outline"></ion-icon>
+              </li>
+            </NavLink>
+
             <li
               className={styles.listItem}
               onClick={() => {

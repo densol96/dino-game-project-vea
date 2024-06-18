@@ -132,6 +132,16 @@
   }
 }
 
+.navLink {
+  color: #6e2c00;
+  text-decoration: none;
+}
+
+.isActive {
+  background-color: #6e2c00;
+  color: white;
+}
+
 .section {
   display: flex;
   // headerPadding - aside max-width - aside margin-left

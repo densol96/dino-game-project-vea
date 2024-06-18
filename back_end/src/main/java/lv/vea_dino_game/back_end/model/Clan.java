@@ -44,7 +44,7 @@ public class Clan {
     @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     //@JsonManagedReference
-    public List<Player> players;
+    public List<Player> players = new ArrayList<>();
 
     @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonManagedReference
@@ -53,6 +53,12 @@ public class Clan {
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="admin")
     private Player admin;
+
+    public void setSinglePlayer(Player player) {
+        this.players.clear();
+        this.players.add(player);
+        player.setClan(this);
+    }
 
 
 

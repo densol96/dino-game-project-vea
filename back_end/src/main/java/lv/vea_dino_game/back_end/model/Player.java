@@ -9,6 +9,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,16 +30,23 @@ public class Player {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_stats")
-
     private PlayerStats playerStats;
 
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
 
+    @Min(value = 0, message = "xp can not be less than 0")
+    private Integer experience = 0;
+
+    @Min(value = 0, message = "currency can not be less than 0")
+    private Integer currency = 0;
+
     @Min(value = 1, message = "Level can not be less than 1")
-    @Max(value = 3, message = "Level can not be greater than 3")
+    @Max(value = 10, message = "Level can not be greater than 10")
     private Integer level = 1;
+
+    private LocalDateTime immuneUntil;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonManagedReference
@@ -48,6 +56,7 @@ public class Player {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
+        setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
     }
 
 

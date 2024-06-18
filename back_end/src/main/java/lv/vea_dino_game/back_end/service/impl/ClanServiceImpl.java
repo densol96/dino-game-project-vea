@@ -125,7 +125,10 @@ public class ClanServiceImpl implements IClanFilterService {
 
         if (newClan!= null) throw new EmptyClanException("Clan with such title already exists");
         clan.setAdmin(admin);
-        clanRepo.save(clan);
+        Clan newClan2 = clanRepo.save(clan);
+        Integer id1 = newClan2.getId();
+        System.out.println(admin.getId()+ " ____________" + newClan2.getId());
+
         return clan;
     }
 

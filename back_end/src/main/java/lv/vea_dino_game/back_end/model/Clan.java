@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -60,4 +62,6 @@ public class Clan {
         setMaxCapacity(maxCapacity);
         setMinPlayerLevel(minPlayerLevel);
     }
+
+
 }

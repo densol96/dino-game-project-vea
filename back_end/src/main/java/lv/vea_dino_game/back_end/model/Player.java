@@ -1,9 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -51,6 +48,11 @@ public class Player {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonManagedReference
     private List<Announcement> announcement;
+
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnore
+    private User user;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);

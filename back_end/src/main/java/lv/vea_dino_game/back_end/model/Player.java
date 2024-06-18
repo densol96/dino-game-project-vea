@@ -25,7 +25,6 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "clan_id")
-
     private Clan clan;
 
     @OneToOne(cascade = CascadeType.ALL)

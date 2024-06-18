@@ -79,6 +79,16 @@ function ModalLogin() {
   const { setUserFullInfo } = useUserContext();
   const { resultDispatch } = useOutletContext();
 
+  function login(e) {
+    e.preventDefault();
+    sendSignInRequest(
+      { username, password },
+      resultDispatch,
+      navigate,
+      setUserFullInfo
+    );
+  }
+
   return (
     <div className={styles['modal-login']}>
       <div className={styles['login-container']}>
@@ -91,7 +101,7 @@ function ModalLogin() {
         <h2 className={styles['login-container__heading']}>
           Enter your details to Sign In:
         </h2>
-        <form className={styles['login-container__form']}>
+        <form className={styles['login-container__form']} onSubmit={login}>
           <label>Username:</label>
           <input
             type="text"
@@ -110,19 +120,10 @@ function ModalLogin() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <button style={{ display: 'none' }}></button>
         </form>
         <div className={`${styles['login-container__buttons']}`}>
-          <button
-            className={`btn brown-btn ${styles.btn}`}
-            onClick={() =>
-              sendSignInRequest(
-                { username, password },
-                resultDispatch,
-                navigate,
-                setUserFullInfo
-              )
-            }
-          >
+          <button className={`btn brown-btn ${styles.btn}`} onClick={login}>
             Sign In
           </button>
           <button className={`btn brown-btn--reversed ${styles.btn}`}>

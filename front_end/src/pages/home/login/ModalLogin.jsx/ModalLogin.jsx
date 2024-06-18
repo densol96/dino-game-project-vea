@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -71,19 +71,20 @@ async function sendSignInRequest(
   }
 }
 
-function ModalLogin({ closeLogin, resultDispatch }) {
+function ModalLogin() {
   // FOR SIGN IN
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { setUserFullInfo } = useUserContext();
+  const { resultDispatch } = useOutletContext();
 
   return (
     <div className={styles['modal-login']}>
       <div className={styles['login-container']}>
         <button
           className={styles['login-container__close-btn']}
-          onClick={closeLogin}
+          onClick={() => navigate(-1)}
         >
           X
         </button>

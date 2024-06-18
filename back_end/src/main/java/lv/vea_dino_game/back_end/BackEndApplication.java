@@ -1,10 +1,12 @@
 package lv.vea_dino_game.back_end;
 
 import lv.vea_dino_game.back_end.model.Clan;
+import lv.vea_dino_game.back_end.model.Job;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
+import lv.vea_dino_game.back_end.repo.IJobRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 
 import lv.vea_dino_game.back_end.service.helpers.EmailSenderService;
@@ -15,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -26,7 +29,7 @@ public class BackEndApplication {
   }
 
 	@Bean
-	public CommandLineRunner testDatabaseLayer(IClanRepo clanRepo, IPlayerRepo playerRepo, AuthServiceImpl service){
+	public CommandLineRunner testDatabaseLayer(IClanRepo clanRepo, IPlayerRepo playerRepo, AuthServiceImpl service, IJobRepo jobRepo){
       return (String... args) -> {
         
         Clan clanOne = new Clan("Carnivores", "We like meat and blood", 7,1);
@@ -53,7 +56,15 @@ public class BackEndApplication {
         Player player4 = new Player(null, null,DinoType.herbivore);
         player4.setLevel(3);
 
+        Job job1 = new Job();
+        job1.setHoursDuration(1);
+        job1.setRewardCurrency(5);
+
+        playerOne.setCurrentJob(job1);
+        playerOne.setWorkingUntil(LocalDateTime.now().plusHours(job1.getHoursDuration()));
+
         playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree, player4)); //stats cascaded
+
       };
   }
 }

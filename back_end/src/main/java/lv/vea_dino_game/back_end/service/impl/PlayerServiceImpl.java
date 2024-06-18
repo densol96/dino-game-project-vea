@@ -7,14 +7,17 @@ import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.PlayerStats;
+import lv.vea_dino_game.back_end.model.Job;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.RequestLearnNewPlayerStats;
+import lv.vea_dino_game.back_end.model.dto.RequestStartJob;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IPlayerService;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -124,5 +127,34 @@ public class PlayerServiceImpl implements IPlayerService {
         return new BasicMessageResponse("New player stats has been successfully learned");
     }
 
+    @Override
+    public BasicMessageResponse startJob(RequestStartJob requestStartJob) {
+        Integer playerId = requestStartJob.playerId();
+        if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
+        Player player = playerRepo.findById(playerId).get();
+        Job job = new Job();
+        job.setRewardCurrency(requestStartJob.rewardCurrency());
+        job.setHoursDuration(requestStartJob.hoursDuration());
+        player.setCurrentJob(job);
+        player.setWorkingUntil(LocalDateTime.now().plusHours(job.getHoursDuration()));
+
+
+        playerRepo.save(player);
+
+        return new BasicMessageResponse("Job started successfully");
+    }
+
+    @Override
+    public BasicMessageResponse finishJob(Integer id) {
+        if (!playerRepo.existsById(id)) throw new InvalidPlayerException("Player with id " + id + " does not exist");
+        Player player = playerRepo.findById(id).get();
+        Job job = player.getCurrentJob();
+        player.setCurrency(player.getCurrency() + job.getRewardCurrency());
+        player.setCurrentJob(null);
+
+        playerRepo.save(player);
+
+        return new BasicMessageResponse("Job ended successfully");
+    }
 
 }

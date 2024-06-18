@@ -32,6 +32,9 @@ public class Player {
     @JoinColumn(name = "player_stats")
     private PlayerStats playerStats;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Job currentJob = null;
+
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
@@ -46,7 +49,9 @@ public class Player {
     @Max(value = 10, message = "Level can not be greater than 10")
     private Integer level = 1;
 
-    private LocalDateTime immuneUntil;
+    private LocalDateTime immuneUntil = LocalDateTime.now(); // set immuneUntil to 24 hours from now (now removed for testing purposes)
+
+    private LocalDateTime workingUntil = LocalDateTime.now();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonManagedReference
@@ -56,7 +61,6 @@ public class Player {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
-        setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
     }
 
 

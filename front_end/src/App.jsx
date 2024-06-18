@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { UserProvider } from './context/UserProvider';
 import Home from './pages/home/Home';
-import Profile from './pages/profile/Profile';
-import ModalLogin from './pages/home/login/ModalLogin.jsx/ModalLogin';
+import LoggedIn from './pages/logged/LoggedIn';
+import ModalLogin from './pages/ModalLogin/ModalLogin';
+import Profile from './pages/Profile/Profile';
 
 function App() {
   return (
@@ -13,8 +14,10 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route path="login" element={<ModalLogin />} />
           </Route>
-
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/in" element={<LoggedIn />}>
+            <Route index replace element={<Navigate to="profile" />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </UserProvider>

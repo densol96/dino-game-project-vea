@@ -5,7 +5,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 import styles from './ModalLogin.module.scss';
-import { useUserContext } from '../../../../context/UserProvider';
+import { useUserContext } from '../../context/UserProvider';
 
 async function sendSignInRequest(
   data,
@@ -42,7 +42,7 @@ async function sendSignInRequest(
     localStorage.setItem('dino_jwt', jwt);
     const user = jwtDecode(jwt).sub;
     setUserFullInfo(user);
-    navigate('/profile');
+    navigate('/in');
   } catch (e) {
     console.log(e);
     if (e.code === 'ERR_BAD_REQUEST') {

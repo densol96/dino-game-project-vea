@@ -11,15 +11,16 @@ const headersWithToken = () => ({
 const UserContext = createContext();
 
 function UserProvider({ children }) {
+  const [user, setUser] = useState(undefined);
+
   async function setUserFullInfo() {
     const API_ENDPOINT = 'http://localhost:8080/api/v1/auth/me';
 
     try {
       const response = await axios.get(API_ENDPOINT, headersWithToken());
-      console.log(response.data);
       setUser(response.data);
     } catch (e) {
-      // Did not pass the aut on the server => keep user undefined in the context of the React App
+      // Did not pass the auth on the server => keep user undefined in the context of the React App
     }
   }
 
@@ -27,8 +28,6 @@ function UserProvider({ children }) {
     localStorage.setItem('dino_jwt', undefined);
     setUser(undefined);
   }
-
-  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
     setUserFullInfo();

@@ -81,9 +81,10 @@ public class AuthServiceImpl implements IAuthService {
   
     // Send the email with the token-link to email
     try {
-      emailService.sendToAskToConfirmEmail(user, confirmationToken);  
+      // emailService.sendToAskToConfirmEmail(user, confirmationToken);  
       userRepo.save(user);
     } catch (Exception e) {
+      System.out.println("💥💥💥 Likely error sending email ---> " + e.getMessage());
       throw new ServiceCurrentlyUnavailableException(
           "Sign up is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
     }

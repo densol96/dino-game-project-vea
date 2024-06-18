@@ -5,7 +5,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 
 import styles from './Home.module.scss';
 
-import ModalLogin from './login/ModalLogin.jsx/ModalLogin';
+import ModalLogin from '../ModalLogin/ModalLogin';
 import { useUserContext } from '../../context/UserProvider';
 
 const DinoType = {
@@ -265,7 +265,7 @@ function Home() {
 
   useEffect(() => {
     if (user) {
-      navigate('/profile');
+      navigate('/in');
     }
   }, [user, navigate]);
 

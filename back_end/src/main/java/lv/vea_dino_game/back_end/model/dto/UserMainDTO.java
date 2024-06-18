@@ -12,6 +12,7 @@ public record UserMainDTO(
   DinoType dinoType,
   Integer level,
   Integer experience,
-  Integer currency
+  Integer currency,
+  String description
 ) {
 }

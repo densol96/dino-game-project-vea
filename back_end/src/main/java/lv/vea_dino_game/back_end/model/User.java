@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String password;
 
     @NotBlank(message = "Email cannot be blank/null")
-    @Size(max = 30)
+    @Size(max = 30, message = "Email is too long")
     @Email(message = "Email should be valid")
     private String email;
 

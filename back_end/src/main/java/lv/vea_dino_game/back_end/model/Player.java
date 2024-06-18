@@ -9,6 +9,8 @@ import lv.vea_dino_game.back_end.model.enums.DinoType;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -45,8 +47,10 @@ public class Player {
 
     private LocalDateTime immuneUntil;
 
+    @Size(max = 300, message = "Description cannot be longer than 300 chars")
+    private String description;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference
     private List<Announcement> announcement;
 
     @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)

@@ -21,8 +21,8 @@ public class PlayerStats {
     public Integer id;
 
     @Min(value = 0, message = "Health value can not be less than 0")
-    @Max(value = 100, message = "Health value can not be greater than 100")
-    private Integer health = 1;
+    @Max(value = 10000, message = "Health value can not be greater than 100")
+    private Integer health = 10;
 
     @Min(value = 0, message = "Endurance value can not be less than 0")
     @Max(value = 100, message = "Endurance value can not be greater than 100")
@@ -38,11 +38,11 @@ public class PlayerStats {
 
     @Min(value = 0, message = "Armor value can not be less than 0")
     @Max(value = 100, message = "Armor value can not be greater than 100")
-    private Integer armor = 1;
+    private Integer armor = 0;
 
     @Min(value = 0, message = "Critical hit percentage value can not be less than 0")
     @Max(value = 100, message = "Critical hit percentage value can not be greater than 100")
-    private Integer criticalHitPercentage = 5;
+    private Integer criticalHitPercentage = 0;
 
     @OneToOne(mappedBy = "playerStats")
     @JsonIgnore

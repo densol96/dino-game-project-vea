@@ -10,6 +10,8 @@ public record UserMainDTO(
   String clanTitle,
   PlayerStats playerStats,
   DinoType dinoType,
-  Integer level
+  Integer level,
+  Integer experience,
+  Integer currency
 ) {
 }

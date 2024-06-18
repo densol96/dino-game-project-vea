@@ -16,6 +16,8 @@ public class Mapper {
       user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
       user.getPlayer().getPlayerStats(),
       user.getPlayer().getDinoType(),
+      user.getPlayer().getLevel(),
+      user.getPlayer().getExperience(),
       user.getPlayer().getLevel()
     );
     

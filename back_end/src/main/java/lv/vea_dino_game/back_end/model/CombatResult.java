@@ -24,21 +24,24 @@ public class CombatResult {
     @JoinColumn(name = "winner_id")
     private Player winner;
 
+    @ManyToOne
+    @JoinColumn(name = "loser_id")
+    private Player loser;
+
     @NotNull(message = "Combat result type id cannot be null")
     @Enumerated(EnumType.STRING)
     public EnumCombatResultType combatResultType;
 
     @Min(value = 0, message = "Initiator currency change can not be negative number")
-    public Integer initiatorCurrencyChange = 0;
+    public Integer winnerCurrencyChange = 0;
 
-    @Min(value = 0, message = "Defender currency change can not be negative number")
-    public Integer defenderCurrencyChange = 0;
+    public Integer loserCurrencyChange = 0;
 
     @Min(value = 0, message = "Initiator exp reward can not be negative number")
-    public Integer initiatorExpReward = 0;
+    public Integer winnerExpReward = 0;
 
     @Min(value = 0, message = "Defender exp reward can not be negative number")
-    public Integer defenderExpReward = 0;
+    public Integer loserExpReward = 0;
 
 
 }

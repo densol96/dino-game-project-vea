@@ -36,12 +36,24 @@ public class BackEndApplication {
 
         PlayerStats statsOne = new PlayerStats();
         PlayerStats statsTwo = new PlayerStats();
+        statsOne.setHealth(20);
+        statsTwo.setHealth(20);
+        statsOne.setArmor(20);
+        statsTwo.setArmor(15);
+        statsOne.setDamage(2);
+        statsTwo.setDamage(3);
+        statsOne.setAgility(20);
+        statsTwo.setAgility(40);
+        statsOne.setCriticalHitPercentage(100);
+        statsTwo.setCriticalHitPercentage(30);
 
         Player playerOne = new Player(clanOne, statsOne, DinoType.carnivore);
         Player playerTwo = new Player(clanTwo, statsTwo, DinoType.herbivore);
         Player playerThree = new Player(null, null,DinoType.herbivore);
-        
-        playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree)); //stats cascaded
+        Player player4 = new Player(null, null,DinoType.herbivore);
+        player4.setLevel(3);
+
+        playerRepo.saveAll(List.of(playerOne, playerTwo,playerThree, player4)); //stats cascaded
       };
   }
 }

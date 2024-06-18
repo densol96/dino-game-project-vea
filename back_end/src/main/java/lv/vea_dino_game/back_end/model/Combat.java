@@ -19,7 +19,7 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne(mappedBy="combat")
+    @OneToOne(mappedBy="combat",cascade = CascadeType.ALL, orphanRemoval = true)
     private CombatResult combatResult;
 
     @OneToOne(mappedBy = "combat")
@@ -42,7 +42,7 @@ public class Combat {
 
     @Min(value = 10, message = "Turns amount value can not be less than 10")
     @Max(value = 20, message = "Turns amount value can not greater than 20")
-    private Integer turnsAmount;
+    private Integer maxTurnsAmount;
 
     private LocalDateTime dateTime;
 

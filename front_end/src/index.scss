@@ -1,7 +1,7 @@
 :root {
   // COLORS
   --color-primary: #eb2f64;
-  --color-primary-light: #ff3366;
+  --color-background-container: #fff9dbf1;
   --color-primary-dark: #ba265d;
 
   --color-grey-light-1: #faf9f9;
@@ -66,6 +66,7 @@ body {
   background-position: center;
   position: relative;
   background-attachment: fixed;
+  padding-top: 4rem;
   // for main page
   // overflow-y: hidden;
 }

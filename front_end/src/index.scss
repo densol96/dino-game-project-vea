@@ -67,6 +67,7 @@ body {
   background-position: center;
   position: relative;
   background-attachment: fixed;
+  padding: 4rem 0;
   // for main page
   // overflow-y: hidden;
 }
@@ -78,7 +79,7 @@ body {
   color: #777;
 
   &:focus {
-    outline-color: #6e2c00;
+    outline-color: var(--color-primary);
   }
 }
 
@@ -97,24 +98,78 @@ body {
 
 .brown-btn {
   color: #fff;
-  border-color: #6e2c00;
-  background-color: #6e2c00;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
 
   &:hover {
-    color: #6e2c00;
-    border-color: #6e2c00;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
     background-color: #fff;
   }
 
   &--reversed {
-    color: #6e2c00;
-    border-color: #6e2c00;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
     background-color: #fff;
 
     &:hover {
       color: #fff;
-      border-color: #6e2c00;
-      background-color: #6e2c00;
+      border-color: var(--color-primary);
+      background-color: var(--color-primary);
     }
   }
+}
+
+@keyframes move {
+  0% {
+    bottom: 0;
+  }
+
+  80% {
+    bottom: 10%;
+  }
+  100% {
+    bottom: 8%;
+    opacity: 1;
+  }
+}
+
+.message-container {
+  border-radius: 12px;
+  padding: 2.5rem 5rem;
+  width: 100%;
+  max-width: 50rem;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  opacity: 0;
+  animation: move 700ms ease-in-out forwards;
+  transition: var(--default-transition);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  &__content {
+    line-height: 1.6;
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    font-size: 2rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.error-color {
+  background-color: var(--color-error);
+}
+
+.success-color {
+  background-color: var(--color-success);
 }

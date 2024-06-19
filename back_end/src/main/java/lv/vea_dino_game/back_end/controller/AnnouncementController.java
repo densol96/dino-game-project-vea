@@ -17,7 +17,7 @@ import java.util.List;
 public class AnnouncementController {
     private final IAnnouncementService announcementService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<BasicMessageResponse> addAnnouncement(@Valid @RequestBody Announcement announcement) {
         return new ResponseEntity<BasicMessageResponse>(announcementService.addAnnouncement(announcement),HttpStatus.CREATED);
     }
@@ -38,7 +38,7 @@ public class AnnouncementController {
 
     }
 
-    @DeleteMapping("/delete/{playerId}/{announcementId}")
+    @DeleteMapping("/delete/{announcementId}")
     public ResponseEntity<BasicMessageResponse> deleteAnnouncement(@PathVariable("announcementId") Integer announcementId){
         return new ResponseEntity<BasicMessageResponse>(announcementService.deleteAnnouncement(announcementId),HttpStatus.CREATED);
     }

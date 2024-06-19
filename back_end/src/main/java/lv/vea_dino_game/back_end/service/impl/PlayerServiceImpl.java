@@ -6,10 +6,14 @@ import lv.vea_dino_game.back_end.exceptions.InvalidClanException;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
+import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.IPlayerService;
-
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -23,16 +27,19 @@ public class PlayerServiceImpl implements IPlayerService {
 
     private final IClanRepo clanRepo;
 
+    private final IAuthService authService;
+
+    private final Mapper mapper;
+
     @Override
-    @Transactional
-    public void joinClan(Integer playerId, Integer clanId) {
+    public BasicMessageResponse joinClan(Integer clanId) {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
         Clan clan = clanRepo.findById(clanId);
         if (clan == null) {
             throw new InvalidClanException("Clan does not exist");
-        }
-        Player player = playerRepo.findById(playerId).get();
-        if (player == null) {
-            throw new InvalidClanException("Player does not exist");
         }
         if (player.getClan()!=null)
             throw new InvalidClanException("Player is already in a clan, you must enroll from your current clan");
@@ -44,24 +51,25 @@ public class PlayerServiceImpl implements IPlayerService {
             throw new IllegalStateException("Player does not meet the minimum level requirement for the clan");
         }
         player.setClan(clan);
-
-        //clan.getPlayers().add(player);
         playerRepo.save(player);
         clanRepo.save(clan);
+
+        return new BasicMessageResponse("Contragulation! You sucessfuly have joined clan "+ clan.getTitle() + "!");
     }
 
     @Override
-    public void enrollClan(Integer playerId) {
-        Player player = playerRepo.findById(playerId).get();
-        if (player == null) {
-            throw new InvalidClanException("Player does not exist");
-        }
+    public BasicMessageResponse exitClan() {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
         Clan clan = player.getClan();
         if (player.getClan()==null)
             throw new InvalidPlayerException("Player already is not in a clan");
         player.setClan(null);
         playerRepo.save(player);
         clanRepo.save(clan);
+        return new BasicMessageResponse("Contragulation! You sucessfuly have exited clan "+ clan.getTitle() + "!");
     }
 
     @Override

@@ -7,6 +7,7 @@ import ModalLogin from './pages/ModalLogin/ModalLogin';
 import Profile from './pages/Profile/Profile';
 import NotFound from './pages/NotFound.jsx/NotFound';
 import Settings from './pages/settings/Settings';
+import Ratings from './pages/Ratings/Ratings';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route index replace element={<Navigate to="profile" />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="ratings" element={<Ratings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

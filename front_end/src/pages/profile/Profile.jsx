@@ -17,7 +17,7 @@ function Profile() {
       </div>
 
       <div className={styles.profileGrid__Description}>
-        {user.description
+        {!user.description
           ? user.description
           : 'Currently, your user info is empty. Check the settings to add a description..'}
       </div>

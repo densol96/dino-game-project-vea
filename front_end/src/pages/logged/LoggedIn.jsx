@@ -78,9 +78,15 @@ function LoggedIn() {
                 <ion-icon name="people-circle-outline"></ion-icon>
               </li>
             </NavLink>
-          </ul>
 
-          <ul>
+            <NavLink className={styleNavLink} to="ratings">
+              <li className={styles.listItem}>
+                <ion-icon name="trophy-outline"></ion-icon>
+                <span className={styles.listItem__text}>Ratings</span>
+                <ion-icon name="trophy-outline"></ion-icon>
+              </li>
+            </NavLink>
+
             <NavLink className={styleNavLink} to="settings">
               <li className={styles.listItem}>
                 <ion-icon name="settings-outline"></ion-icon>

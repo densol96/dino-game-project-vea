@@ -8,9 +8,10 @@
   min-height: 90vh;
   background-color: #fff9dbf1;
   border-radius: 20px;
-  color: #6e2c00;
+  color: var(--color-primary);
   font-family: 'Merriweather', serif;
   padding-right: 5rem;
+  padding-bottom: 5rem;
 }
 
 .header {
@@ -112,7 +113,6 @@
         left: 0;
         height: 100%;
         width: 3px;
-        background-color: #6e2c00;
         transform: scaleY(0);
         transform-origin: center;
         transition: transform 200ms, width 400ms cubic-bezier(1, 0, 0, 1) 200ms,
@@ -133,12 +133,12 @@
 }
 
 .navLink {
-  color: #6e2c00;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
 .isActive {
-  background-color: #6e2c00;
+  background-color: var(--color-primary);
   color: white;
 }
 
@@ -147,9 +147,10 @@
   // headerPadding - aside max-width - aside margin-left
   gap: calc(40rem - 30rem - 3rem);
   margin-top: 6rem;
+  align-items: start;
 }
 
 .main {
-  border: 1px solid red;
+  // border: 1px solid red;
   flex-grow: 1;
 }

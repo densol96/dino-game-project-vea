@@ -18,7 +18,8 @@ public class Mapper {
       user.getPlayer().getDinoType(),
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
-      user.getPlayer().getLevel()
+      user.getPlayer().getLevel(),
+      user.getPlayer().getDescription()
     );
     
   }

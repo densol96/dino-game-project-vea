@@ -8,6 +8,7 @@ import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.User;
+import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.CreateClanDto;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;

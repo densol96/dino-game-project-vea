@@ -1,12 +1,15 @@
 package lv.vea_dino_game.back_end.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.User;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.CreateClanDto;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
 import lv.vea_dino_game.back_end.service.IPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,21 +70,19 @@ public class ClanFilterController {
     }
 
     @PostMapping
-    public ResponseEntity<Clan> createClan(@RequestBody Clan clan){
-        Clan newClan = clanService.createClan(clan);
-        return new ResponseEntity<Clan>(newClan, HttpStatus.OK);
+    public ResponseEntity<BasicMessageResponse> createClan(@Valid @RequestBody CreateClanDto clanDto) {
+        return new ResponseEntity<BasicMessageResponse>(clanService.createClan(clanDto), HttpStatus.CREATED);
+
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Clan> updateClan(@PathVariable("id") Integer id, @RequestBody Clan updatedClan){
-        Clan clan = clanService.updateClan(id, updatedClan);
-        return new ResponseEntity<Clan>(clan, HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<BasicMessageResponse> updateClan(@Valid @RequestBody CreateClanDto updatedClanDto){
+        return new ResponseEntity<BasicMessageResponse>(clanService.updateClan(updatedClanDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Clan> deleteClan(@PathVariable("id") Integer id) {
-        Clan deletedClan = clanService.deleteClan(id);
-        return new ResponseEntity<Clan>(deletedClan, HttpStatus.OK);
+    @DeleteMapping()
+    public ResponseEntity<BasicMessageResponse> deleteClan() {
+        return new ResponseEntity<BasicMessageResponse>(clanService.deleteClan(), HttpStatus.CREATED);
     }
 
     

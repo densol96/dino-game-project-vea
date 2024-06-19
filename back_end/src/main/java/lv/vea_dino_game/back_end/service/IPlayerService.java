@@ -7,7 +7,7 @@ import java.util.List;
 public interface IPlayerService {
     void joinClan(Integer playerId, Integer clanId);
 
-    void enrollClan(Integer playerId);
+    void exitClan(Integer playerId);
 
 
     List<Player> getAllPlayersSortByLevelDesc();

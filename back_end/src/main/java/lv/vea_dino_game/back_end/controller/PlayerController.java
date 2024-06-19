@@ -28,8 +28,8 @@ public class PlayerController {
     }
 
     @PostMapping("/enroll/{playerId}")
-    public void enrollClan(@PathVariable Integer playerId) {
-        playerService.enrollClan(playerId);
+    public void exitClan(@PathVariable Integer playerId) {
+        playerService.exitClan(playerId);
     }
 
     @GetMapping("/sort-level-desc")

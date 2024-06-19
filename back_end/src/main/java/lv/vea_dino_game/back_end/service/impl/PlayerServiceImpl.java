@@ -9,6 +9,7 @@ import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IPlayerService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,10 @@ public class PlayerServiceImpl implements IPlayerService {
 
     private final IClanRepo clanRepo;
 
+    private final Mapper mapper;
+
     @Override
-    @Transactional
+
     public void joinClan(Integer playerId, Integer clanId) {
         Clan clan = clanRepo.findById(clanId);
         if (clan == null) {
@@ -45,13 +48,14 @@ public class PlayerServiceImpl implements IPlayerService {
         }
         player.setClan(clan);
 
-        //clan.getPlayers().add(player);
+
         playerRepo.save(player);
         clanRepo.save(clan);
     }
 
     @Override
-    public void enrollClan(Integer playerId) {
+    public void exitClan(Integer playerId) {
+
         Player player = playerRepo.findById(playerId).get();
         if (player == null) {
             throw new InvalidClanException("Player does not exist");

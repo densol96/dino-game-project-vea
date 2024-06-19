@@ -3,6 +3,7 @@ package lv.vea_dino_game.back_end.controller;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
@@ -22,14 +23,15 @@ public class PlayerController {
 
     private final IPlayerService playerService;
 
-    @PostMapping("/join/{playerId}/{clanId}")
-    public void joinClan(@PathVariable Integer playerId, @PathVariable Integer clanId) {
-        playerService.joinClan(playerId, clanId);
+    @PostMapping("/join/{clanId}")
+    public ResponseEntity<BasicMessageResponse> joinClan(@PathVariable Integer clanId) {
+        return new ResponseEntity<BasicMessageResponse>(playerService.joinClan(clanId), HttpStatus.CREATED);
     }
 
-    @PostMapping("/enroll/{playerId}")
-    public void exitClan(@PathVariable Integer playerId) {
-        playerService.exitClan(playerId);
+    @PostMapping("/exit")
+    public ResponseEntity<BasicMessageResponse> exitClan() {
+        return new ResponseEntity<BasicMessageResponse>(playerService.exitClan(), HttpStatus.CREATED);
+
     }
 
     @GetMapping("/sort-level-desc")

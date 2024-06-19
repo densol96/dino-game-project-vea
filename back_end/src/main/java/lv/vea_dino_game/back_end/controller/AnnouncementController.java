@@ -1,7 +1,9 @@
 package lv.vea_dino_game.back_end.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.Announcement;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.service.IAnnouncementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,9 @@ import java.util.List;
 public class AnnouncementController {
     private final IAnnouncementService announcementService;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<Void> addAnnouncement(@PathVariable("userId") Integer userId, @RequestBody Announcement announcement) {
-        announcementService.addAnnouncement(userId, announcement);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping("/")
+    public ResponseEntity<BasicMessageResponse> addAnnouncement(@Valid @RequestBody Announcement announcement) {
+        return new ResponseEntity<BasicMessageResponse>(announcementService.addAnnouncement(announcement),HttpStatus.CREATED);
     }
 
     @GetMapping("/find-by-player/{userId}")
@@ -26,21 +27,20 @@ public class AnnouncementController {
         return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByUser(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/find-by-clan/{clanId}")
-    public ResponseEntity<List<Announcement>> getAnnouncementByClan(@PathVariable("clanId") Integer clanId){
+    @GetMapping("/find-by-clan")
+    public ResponseEntity<List<Announcement>> getAnnouncementByClan( Integer clanId){
         return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByClan(clanId), HttpStatus.OK);
     }
 
-    @PutMapping("/{playerId}/{announcementId}")
-    public ResponseEntity<Announcement> updateAnnouncement(@PathVariable("playerId") Integer playerId, @PathVariable("announcementId") Integer announcementId, @RequestBody Announcement upadatedAnnouncement){
-        Announcement announcement = announcementService.updateAnnouncementByAnnouncementId(playerId, announcementId, upadatedAnnouncement);
-        return new ResponseEntity<Announcement>(announcement, HttpStatus.OK);
+    @PutMapping("/{announcementId}")
+    public ResponseEntity<BasicMessageResponse> updateAnnouncement(@PathVariable("announcementId") Integer announcementId, @RequestBody Announcement upadatedAnnouncement){
+        return new ResponseEntity<BasicMessageResponse>(announcementService.updateAnnouncementByAnnouncementId(announcementId, upadatedAnnouncement),HttpStatus.CREATED);
+
     }
 
     @DeleteMapping("/delete/{playerId}/{announcementId}")
-    public ResponseEntity<Announcement> deleteAnnouncement(@PathVariable("playerId") Integer playerId, @PathVariable("announcementId") Integer announcementId){
-        Announcement announcement = announcementService.deleteAnnouncement(playerId, announcementId);
-        return new ResponseEntity<Announcement>(announcement, HttpStatus.OK);
+    public ResponseEntity<BasicMessageResponse> deleteAnnouncement(@PathVariable("announcementId") Integer announcementId){
+        return new ResponseEntity<BasicMessageResponse>(announcementService.deleteAnnouncement(announcementId),HttpStatus.CREATED);
     }
 
 

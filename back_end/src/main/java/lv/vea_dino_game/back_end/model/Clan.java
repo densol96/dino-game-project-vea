@@ -41,16 +41,16 @@ public class Clan {
     @NotNull(message = "Min player level cannot be null")
     private Integer minPlayerLevel;
 
-    @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "clan")
     @ToString.Exclude
     //@JsonManagedReference
     public List<Player> players = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "clan")
     //@JsonManagedReference
     private List<Announcement> announcements;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne
     @JoinColumn(name="admin")
     private Player admin;
 

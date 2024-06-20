@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserProvider';
+import { useEffect } from 'react';
+
 import styles from './Profile.module.scss';
 
 function extractStats(obj) {

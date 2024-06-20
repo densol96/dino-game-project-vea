@@ -3,6 +3,8 @@ package lv.vea_dino_game.back_end.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.Announcement;
+import lv.vea_dino_game.back_end.model.dto.AllAnnouncementDto;
+import lv.vea_dino_game.back_end.model.dto.AnnouncementDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.service.IAnnouncementService;
 import org.springframework.http.HttpStatus;
@@ -18,23 +20,23 @@ public class AnnouncementController {
     private final IAnnouncementService announcementService;
 
     @PostMapping
-    public ResponseEntity<BasicMessageResponse> addAnnouncement(@Valid @RequestBody Announcement announcement) {
-        return new ResponseEntity<BasicMessageResponse>(announcementService.addAnnouncement(announcement),HttpStatus.CREATED);
+    public ResponseEntity<BasicMessageResponse> addAnnouncement(@Valid @RequestBody AnnouncementDto announcementDto) {
+        return new ResponseEntity<BasicMessageResponse>(announcementService.addAnnouncement(announcementDto),HttpStatus.CREATED);
     }
 
     @GetMapping("/find-by-player/{userId}")
-    public ResponseEntity<List<Announcement>> getAnnouncement(@PathVariable("userId") Integer userId){
-        return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByUser(userId), HttpStatus.OK);
+    public ResponseEntity<List<AllAnnouncementDto>> getAnnouncement(@PathVariable("userId") Integer userId){
+        return new ResponseEntity<List<AllAnnouncementDto>>(announcementService.getAnnouncementByUser(userId), HttpStatus.OK);
     }
 
     @GetMapping("/find-by-clan")
-    public ResponseEntity<List<Announcement>> getAnnouncementByClan( Integer clanId){
-        return new ResponseEntity<List<Announcement>>(announcementService.getAnnouncementByClan(clanId), HttpStatus.OK);
+    public ResponseEntity<List<AllAnnouncementDto>> getAnnouncementByClan( Integer clanId){
+        return new ResponseEntity<List<AllAnnouncementDto>>(announcementService.getAnnouncementByClan(clanId), HttpStatus.OK);
     }
 
     @PutMapping("/{announcementId}")
-    public ResponseEntity<BasicMessageResponse> updateAnnouncement(@PathVariable("announcementId") Integer announcementId, @RequestBody Announcement upadatedAnnouncement){
-        return new ResponseEntity<BasicMessageResponse>(announcementService.updateAnnouncementByAnnouncementId(announcementId, upadatedAnnouncement),HttpStatus.CREATED);
+    public ResponseEntity<BasicMessageResponse> updateAnnouncement(@PathVariable("announcementId") Integer announcementId, @RequestBody AnnouncementDto upadatedAnnouncementDto){
+        return new ResponseEntity<BasicMessageResponse>(announcementService.updateAnnouncementByAnnouncementId(announcementId, upadatedAnnouncementDto),HttpStatus.CREATED);
 
     }
 

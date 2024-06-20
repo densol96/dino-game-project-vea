@@ -21,12 +21,12 @@ public class MailMessage {
   private Integer id;
 
   @NotNull(message = "Mail message must have a from-user")
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "from_id")
   private User from;
 
   @NotNull(message = "Mail message must have a to-user")
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "to_id")
   private User to;
 

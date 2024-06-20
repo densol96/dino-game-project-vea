@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserProvider';
 import { useEffect } from 'react';
+import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 
 import styles from './Profile.module.scss';
 
@@ -17,7 +18,12 @@ function Profile() {
   const { agility, armor, damage, health, criticalHitPercentage } =
     user.playerStats;
   const max = Math.max(...extractStats(user.playerStats));
-  console.log(max);
+
+  const { checkIfNewMessages } = useNewMessagesContext();
+  useEffect(() => {
+    checkIfNewMessages();
+  });
+
   return (
     <div className={styles.profileGrid}>
       <div className={styles.profileGrid__Image}>

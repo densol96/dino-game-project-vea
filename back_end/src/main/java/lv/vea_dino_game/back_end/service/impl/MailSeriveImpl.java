@@ -5,8 +5,15 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import lombok.RequiredArgsConstructor;
+import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.exceptions.NoSuchUserException;
+import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
@@ -24,6 +31,8 @@ import lv.vea_dino_game.back_end.service.IMailService;
 @RequiredArgsConstructor
 public class MailSeriveImpl implements IMailService {
   
+  private final static Integer RESULTS_PER_PAGE = 5;
+
   private final IAuthService authService;
   // private final Mapper mapper;
   private final IUserRepo userRepo;
@@ -77,6 +86,50 @@ public class MailSeriveImpl implements IMailService {
   public HasNewMessagesDto hasUnreadMessages() {
     User user = authService.getLoggedInUser();
     return new HasNewMessagesDto(userMailMessageRepo.existsByUserIdAndIsUnread(user.getId(), true));
+  }
+
+  private List<BasicMailDto> getAllMail(Integer page, MailType type) {
+    if (page == null || page < 1 || page > 1000)
+      throw new InvalidUserInputException("Invalid user input for the page of " + page);
+    // With Pageable, pageNumber starts at 0 => 1 page is at 0 index, 2 at 1 etc. 
+    Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE);
+    List<UserMailMessage> userMailList = userMailMessageRepo
+        .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
+    // could check if the list size is 0 here, but I want to send an empty array back, BUT if any other exception to throw an exception(will make it easier to consume such API on React side)
+    return userMailList.stream().map((userMail) -> {
+      var actualMail = userMail.getMail();
+      return new BasicMailDto(
+          userMail.getId(),
+          actualMail.getFrom().getUsername(),
+          actualMail.getTo().getUsername(),
+          actualMail.getTitle(),
+          actualMail.getMessageText(),
+          actualMail.getSentAt());
+    }).toList();
+  }
+  
+  @Override
+  public List<BasicMailDto> getAllIncomingMail(Integer page) {
+    return getAllMail(page, MailType.TO);
+  }
+
+  @Override
+  public List<BasicMailDto> getAllOutgoingMail(Integer page) {
+    return getAllMail(page, MailType.FROM);
+  }
+  
+
+  @Override
+  public Integer getNumberOfPagesForAllIncomingMail() {
+    Integer resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(),
+        MailType.TO);
+    return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
+  }
+
+  @Override
+  public Integer getNumberOfPagesForAllOutgoingMail() {
+    Integer resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(), MailType.FROM);
+    return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
   }
   
 }

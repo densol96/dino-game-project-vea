@@ -1,6 +1,7 @@
+import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 import PlayerRatings from './PlayerRatings';
 import styles from './Ratings.module.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const type = {
   players: 0,
@@ -9,6 +10,12 @@ const type = {
 
 function Ratings() {
   const [activeTab, setActiveTab] = useState(type.players);
+
+  const { checkIfNewMessages } = useNewMessagesContext();
+  useEffect(() => {
+    checkIfNewMessages();
+  });
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>

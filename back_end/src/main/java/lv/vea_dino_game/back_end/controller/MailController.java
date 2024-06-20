@@ -1,5 +1,7 @@
 package lv.vea_dino_game.back_end.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
@@ -34,8 +37,28 @@ public class MailController {
   }
 
   @GetMapping("/has-new-messages")
-  public ResponseEntity<HasNewMessagesDto> getMethodName() {
+  public ResponseEntity<HasNewMessagesDto> hasAnyUnread() {
     return new ResponseEntity<>(mailSerive.hasUnreadMessages(), HttpStatus.OK);
+  }
+
+  @GetMapping("/get-all-incoming")
+  public ResponseEntity<List<BasicMailDto>> getAllIncoming(@RequestParam("page") Integer page) {
+    return new ResponseEntity<>(mailSerive.getAllIncomingMail(page), HttpStatus.OK);
+  }
+
+  @GetMapping("/get-all-outgoing")
+  public ResponseEntity<List<BasicMailDto>> getAllOutgoing(@RequestParam("page") Integer page) {
+    return new ResponseEntity<>(mailSerive.getAllOutgoingMail(page), HttpStatus.OK);
+  }
+
+  @GetMapping("/get-number-pages-incoming")
+  public ResponseEntity<Integer> getIncomingPagesNum() {
+    return new ResponseEntity<>(mailSerive.getNumberOfPagesForAllIncomingMail(), HttpStatus.OK);
+  }
+
+  @GetMapping("/get-number-pages-outgoing")
+  public ResponseEntity<Integer> getOutgoingPagesNum() {
+    return new ResponseEntity<>(mailSerive.getNumberOfPagesForAllOutgoingMail(), HttpStatus.OK);
   }
   
   

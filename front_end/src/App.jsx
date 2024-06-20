@@ -8,6 +8,8 @@ import Profile from './pages/Profile/Profile';
 import NotFound from './pages/NotFound.jsx/NotFound';
 import Settings from './pages/settings/Settings';
 import Ratings from './pages/Ratings/Ratings';
+import Mail from './pages/Mail/Mail';
+import ReadMail from './pages/Mail/ReadMail';
 
 function App() {
   return (
@@ -20,6 +22,11 @@ function App() {
           <Route path="/in" element={<LoggedIn />}>
             <Route index replace element={<Navigate to="profile" />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="mail">
+              <Route index replace element={<Navigate to="all" />} />
+              <Route path="all" element={<Mail />} />
+              <Route path="read/:id" element={<ReadMail />} />
+            </Route>
             <Route path="settings" element={<Settings />} />
             <Route path="ratings" element={<Ratings />} />
           </Route>

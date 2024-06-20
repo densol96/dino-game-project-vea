@@ -1,0 +1,33 @@
+.actionTd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  .icon {
+    transition: var(--default-transition);
+    font-size: 2rem;
+
+    &:hover {
+      color: var(--color-primary-light);
+      cursor: pointer;
+    }
+  }
+}
+
+.unreadMail {
+  font-weight: 700;
+}
+
+.readMail {
+}
+
+.writeLink {
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

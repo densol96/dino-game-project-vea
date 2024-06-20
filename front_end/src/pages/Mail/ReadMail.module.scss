@@ -1,0 +1,29 @@
+.message {
+  &__shortInfo {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__title {
+    display: flex;
+    gap: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  &__text {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    height: 25rem;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+}

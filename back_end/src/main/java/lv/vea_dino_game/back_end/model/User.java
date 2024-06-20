@@ -63,6 +63,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_as_player")
     private Player player;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserMailMessage> messages;
+
 
     // For testing purposes
     public User(String username, String email, String password, Role role, DinoType type, Clan clan, Integer experience, String description) {

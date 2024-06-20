@@ -6,7 +6,9 @@ import lv.vea_dino_game.back_end.exceptions.InvalidClanException;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.dto.AllPlayerInfoDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.PlayerInfoDto;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +57,7 @@ public class PlayerServiceImpl implements IPlayerService {
         playerRepo.save(player);
         clanRepo.save(clan);
 
-        return new BasicMessageResponse("Contragulation! You sucessfuly have joined clan "+ clan.getTitle() + "!");
+        return new BasicMessageResponse("Congratulations! You successfully have joined clan "+ clan.getTitle() + "!");
     }
 
     @Override
@@ -69,39 +72,58 @@ public class PlayerServiceImpl implements IPlayerService {
         player.setClan(null);
         playerRepo.save(player);
         clanRepo.save(clan);
-        return new BasicMessageResponse("Contragulation! You sucessfuly have exited clan "+ clan.getTitle() + "!");
+        return new BasicMessageResponse("Congratulations! You successfully have exited clan "+ clan.getTitle() + "!");
     }
 
     @Override
-    public List<Player> getAllPlayersSortByLevelDesc() {
+    public List<AllPlayerInfoDto> getAllPlayersSortByLevelDesc() {
         if (clanRepo.count() == 0){
             throw new EmptyDataBaseTable("There are no any players for display");
         }
         List<Player> player = playerRepo.findAllByOrderByLevelDesc();
         if (player == null)
             throw new EmptyDataBaseTable("There are no any players for display");
-        return player;
+        return player.stream().map(mapper::playerToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Player> getAllPlayersSortByLevelAsc() {
+    public List<AllPlayerInfoDto> getAllPlayersSortByLevelAsc() {
         if (playerRepo.count() == 0){
             throw new EmptyDataBaseTable("There are no any players for display");
         }
         List<Player> player =  playerRepo.findAllByOrderByLevelAsc();
         if (player == null)
             throw new EmptyDataBaseTable("There are no any players for display");
-        return player;
+        return player.stream().map(mapper::playerToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Player> getAllPlayersByLevel(Integer level) {
+    public List<AllPlayerInfoDto> getAllPlayersByLevel(Integer level) {
         if (playerRepo.count() == 0){throw new EmptyDataBaseTable("There are no players");}
 
         List<Player> player = playerRepo.findAllByLevel(level);
         if (player == null)
             throw new EmptyDataBaseTable("There are no players");
-        return player;
+        return player.stream().map(mapper::playerToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public PlayerInfoDto getPlayerById(Integer id) {
+        if (playerRepo.count() == 0){throw new EmptyDataBaseTable("There are no players");}
+
+        Player player = playerRepo.findById(id).get();
+        if (player == null)
+            throw new EmptyDataBaseTable("There are no players");
+        return mapper.onePlayerToDto(player);
+    }
+
+    @Override
+    public PlayerInfoDto getMyProfile() {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+        return mapper.onePlayerToDto(player);
     }
 
 

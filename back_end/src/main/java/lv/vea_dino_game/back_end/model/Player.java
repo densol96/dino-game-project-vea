@@ -50,11 +50,10 @@ public class Player {
     @Size(max = 300, message = "Description cannot be longer than 300 chars")
     private String description;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author")
     private List<Announcement> announcement;
 
-    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @OneToOne(mappedBy = "player")
     @JsonIgnore
     private User user;
 
@@ -63,6 +62,13 @@ public class Player {
         setClan(clan);
         setPlayerStats(playerStats);
         setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
+    }
+    
+    public Player(Clan clan, DinoType dinoType, Integer experience, String description) {
+        setDinoType(dinoType);
+        setClan(clan);
+        setDescription(description);
+        setExperience(experience);
     }
 
 

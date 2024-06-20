@@ -1,7 +1,9 @@
 package lv.vea_dino_game.back_end.service;
 
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.dto.AllPlayerInfoDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.PlayerInfoDto;
 
 import java.util.List;
 
@@ -11,9 +13,13 @@ public interface IPlayerService {
     BasicMessageResponse exitClan();
 
 
-    List<Player> getAllPlayersSortByLevelDesc();
+    List<AllPlayerInfoDto> getAllPlayersSortByLevelDesc();
 
-    List<Player> getAllPlayersSortByLevelAsc();
+    List<AllPlayerInfoDto> getAllPlayersSortByLevelAsc();
 
-    List<Player> getAllPlayersByLevel(Integer level);
+    List<AllPlayerInfoDto> getAllPlayersByLevel(Integer level);
+
+    PlayerInfoDto getPlayerById(Integer id);
+
+    PlayerInfoDto getMyProfile();
 }

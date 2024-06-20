@@ -1,21 +1,23 @@
 package lv.vea_dino_game.back_end.service;
 
 import lv.vea_dino_game.back_end.model.Announcement;
+import lv.vea_dino_game.back_end.model.dto.AllAnnouncementDto;
+import lv.vea_dino_game.back_end.model.dto.AnnouncementDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 
 import java.util.List;
 
 public interface IAnnouncementService {
 
-    BasicMessageResponse addAnnouncement(Announcement announcement);
+    BasicMessageResponse addAnnouncement(AnnouncementDto announcementDto);
 
 
-    List<Announcement> getAnnouncementByUser(Integer userId);
+    List<AllAnnouncementDto> getAnnouncementByUser(Integer userId);
 
-    List<Announcement> getAnnouncementByClan(Integer clanId);
+    List<AllAnnouncementDto> getAnnouncementByClan(Integer clanId);
 
 
-    BasicMessageResponse updateAnnouncementByAnnouncementId(Integer announcementId, Announcement upadatedAnnouncement);
+    BasicMessageResponse updateAnnouncementByAnnouncementId(Integer announcementId, AnnouncementDto upadatedAnnouncementDto);
 
     BasicMessageResponse deleteAnnouncement(Integer announcementId);
 }

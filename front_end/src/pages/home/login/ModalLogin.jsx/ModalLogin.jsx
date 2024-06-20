@@ -1,18 +1,13 @@
 import { useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 import styles from './ModalLogin.module.scss';
-import { useUserContext } from '../../context/UserProvider';
+import { useUserContext } from '../../../../context/UserProvider';
 
-async function sendSignInRequest(
-  data,
-  resultDisptach,
-  navigate,
-  setUserFullInfo
-) {
+async function sendSignInRequest(data, resultDisptach, navigate, setUser) {
   const API_ENDPOINT = 'http://localhost:8080/api/v1/auth/login';
   const { username, password } = data;
 
@@ -41,8 +36,8 @@ async function sendSignInRequest(
     const { jwt } = response.data;
     localStorage.setItem('dino_jwt', jwt);
     const user = jwtDecode(jwt).sub;
-    setUserFullInfo(user);
-    navigate('/in');
+    setUser(user);
+    navigate('/profile');
   } catch (e) {
     console.log(e);
     if (e.code === 'ERR_BAD_REQUEST') {
@@ -71,37 +66,26 @@ async function sendSignInRequest(
   }
 }
 
-function ModalLogin() {
+function ModalLogin({ closeLogin, resultDispatch }) {
   // FOR SIGN IN
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setUserFullInfo } = useUserContext();
-  const { resultDispatch } = useOutletContext();
-
-  function login(e) {
-    e.preventDefault();
-    sendSignInRequest(
-      { username, password },
-      resultDispatch,
-      navigate,
-      setUserFullInfo
-    );
-  }
+  const { setUser } = useUserContext();
 
   return (
     <div className={styles['modal-login']}>
       <div className={styles['login-container']}>
         <button
           className={styles['login-container__close-btn']}
-          onClick={() => navigate(-1)}
+          onClick={closeLogin}
         >
           X
         </button>
         <h2 className={styles['login-container__heading']}>
           Enter your details to Sign In:
         </h2>
-        <form className={styles['login-container__form']} onSubmit={login}>
+        <form className={styles['login-container__form']}>
           <label>Username:</label>
           <input
             type="text"
@@ -120,10 +104,19 @@ function ModalLogin() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button style={{ display: 'none' }}></button>
         </form>
         <div className={`${styles['login-container__buttons']}`}>
-          <button className={`btn brown-btn ${styles.btn}`} onClick={login}>
+          <button
+            className={`btn brown-btn ${styles.btn}`}
+            onClick={() =>
+              sendSignInRequest(
+                { username, password },
+                resultDispatch,
+                navigate,
+                setUser
+              )
+            }
+          >
             Sign In
           </button>
           <button className={`btn brown-btn--reversed ${styles.btn}`}>

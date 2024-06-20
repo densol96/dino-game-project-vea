@@ -1,33 +1,27 @@
 package lv.vea_dino_game.back_end.service;
 
 import lv.vea_dino_game.back_end.model.Clan;
-import lv.vea_dino_game.back_end.model.dto.AllClanInfoViewDto;
-import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
-import lv.vea_dino_game.back_end.model.dto.ClanDto;
-import lv.vea_dino_game.back_end.model.dto.CreateClanDto;
 
 import java.util.List;
 
 public interface IClanFilterService {
-    List<AllClanInfoViewDto> retrieveAll();
+    List<Clan> retrieveAll();
 
-    List<AllClanInfoViewDto> retrieveAllByMinEntryLevel(Integer level);
+    List<Clan> retrieveAllByMinEntryLevel(Integer level);
 
-    ClanDto retrieveClanById(Integer id);
+    Clan retrieveClanById(Integer id);
 
-    List<AllClanInfoViewDto> retrieveAllSortedByMinLevelDesc();
+    List<Clan> retrieveAllSortedByMinLevelDesc();
 
-    List<AllClanInfoViewDto> retrieveAllSortedByMinLevelAsc();
+    List<Clan> retrieveAllSortedByMinLevelAsc();
 
-    List<AllClanInfoViewDto> retrieveAllSortedByTitleDesc();
+    List<Clan> retrieveAllSortedByTitleDesc();
 
-    List<AllClanInfoViewDto> retrieveAllSortedByTitleAsc();
+    List<Clan> retrieveAllSortedByTitleAsc();
 
-    BasicMessageResponse createClan(CreateClanDto clanDto);
+    Clan createClan(Clan clan);
 
-    BasicMessageResponse updateClan(CreateClanDto updatedClanDto);
+    Clan updateClan(Integer id, Clan updatedClan);
 
-    BasicMessageResponse deleteClan();
-
-    ClanDto getClanWithMe();
+    Clan deleteClan(Integer id);
 }

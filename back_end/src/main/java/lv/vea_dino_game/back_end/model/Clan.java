@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,24 +39,14 @@ public class Clan {
     @NotNull(message = "Min player level cannot be null")
     private Integer minPlayerLevel;
 
-    @OneToMany(mappedBy = "clan")
+    @OneToMany(mappedBy = "clan",cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     //@JsonManagedReference
-    public List<Player> players = new ArrayList<>();
+    public List<Player> players;
 
-    @OneToMany(mappedBy = "clan")
+    @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonManagedReference
     private List<Announcement> announcements;
-
-    @OneToOne
-    @JoinColumn(name="admin")
-    private Player admin;
-
-    public void setSinglePlayer(Player player) {
-        this.players.clear();
-        this.players.add(player);
-        player.setClan(this);
-    }
 
 
 
@@ -68,6 +56,4 @@ public class Clan {
         setMaxCapacity(maxCapacity);
         setMinPlayerLevel(minPlayerLevel);
     }
-
-
 }

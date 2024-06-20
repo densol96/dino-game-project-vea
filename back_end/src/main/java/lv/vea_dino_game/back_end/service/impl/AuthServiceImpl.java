@@ -81,10 +81,9 @@ public class AuthServiceImpl implements IAuthService {
   
     // Send the email with the token-link to email
     try {
-      // emailService.sendToAskToConfirmEmail(user, confirmationToken);  
+      emailService.sendToAskToConfirmEmail(user, confirmationToken);  
       userRepo.save(user);
     } catch (Exception e) {
-      System.out.println("💥💥💥 Likely error sending email ---> " + e.getMessage());
       throw new ServiceCurrentlyUnavailableException(
           "Sign up is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
     }
@@ -141,19 +140,13 @@ public class AuthServiceImpl implements IAuthService {
   }
 
   @Override
-  public User getLoggedInUser() {
+  public UserMainDTO getMe() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || !(auth.getPrincipal() instanceof UserDetails))
       throw new ServiceCurrentlyUnavailableException("Service 'get-me' is temporarily not working");
-    return (User) auth.getPrincipal();
+    User currentUser = (User) auth.getPrincipal();
+    return mapper.fromUserToDto(currentUser);
   }
-
-  @Override
-  public UserMainDTO getMe() {
-    return mapper.fromUserToDto(getLoggedInUser());
-  }
-
-  
   
 
 

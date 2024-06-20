@@ -7,20 +7,13 @@ import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Announcement;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
-import lv.vea_dino_game.back_end.model.dto.AllAnnouncementDto;
-import lv.vea_dino_game.back_end.model.dto.AnnouncementDto;
-import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
-import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IAnnouncementRepo;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IAnnouncementService;
-import lv.vea_dino_game.back_end.service.IAuthService;
-import lv.vea_dino_game.back_end.service.helpers.Mapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,28 +25,23 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
 
     private final IClanRepo clanRepo;
 
-    private final IAuthService authService;
-
-    private final Mapper mapper;
-
     @Override
-    public BasicMessageResponse addAnnouncement(AnnouncementDto announcementDto) {
-        UserMainDTO user = authService.getMe();
-        Player player = playerRepo.findByUserId(user.id());
-        if (player == null)
-            throw new InvalidPlayerException("No player");
+    public void addAnnouncement(Integer userId, Announcement announcement) {
+        if (userId == null) {
+            throw new InvalidPlayerException("userId is null");
+        }
+        Player player = playerRepo.findById(userId).orElseThrow(() -> new InvalidPlayerException("Player does not exist"));
         Clan clan = clanRepo.findByPlayers(player);
         if (clan == null) {
             throw new InvalidClanException("User does not have a clan");
         }
-        Announcement newAnnouncement = new Announcement(announcementDto.title(), announcementDto.content(), clan, player);
+        Announcement newAnnouncement = new Announcement(announcement.getTitle(), announcement.getContent(), clan, player);
         newAnnouncement.setDate();
         announcementRepo.save(newAnnouncement);
-        return new BasicMessageResponse("Announcement has been successfully added to clan "+ clan.getTitle() + " !");
     }
 
     @Override
-    public List<AllAnnouncementDto> getAnnouncementByUser(Integer userId) {
+    public List<Announcement> getAnnouncementByUser(Integer userId) {
         if (announcementRepo.count() == 0) {
             throw new InvalidAnnouncementException("No announcement");
         }
@@ -65,11 +53,11 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (announcement == null) {
             throw new InvalidAnnouncementException("No announcement with this author");
         }
-        return announcement.stream().map(mapper::announcementToDto).collect(Collectors.toList());
+        return announcement;
     }
 
     @Override
-    public List<AllAnnouncementDto> getAnnouncementByClan(Integer clanId) {
+    public List<Announcement> getAnnouncementByClan(Integer clanId) {
         if (announcementRepo.count() == 0) {
             throw new InvalidAnnouncementException("No announcement");
         }
@@ -84,16 +72,11 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (announcement == null) {
             throw new InvalidAnnouncementException("No announcement with this clan");
         }
-        return announcement.stream().map(mapper::announcementToDto).collect(Collectors.toList());
+        return announcement;
     }
 
     @Override
-    public BasicMessageResponse updateAnnouncementByAnnouncementId(Integer announcementId, AnnouncementDto updatedAnnouncementDto) {
-        UserMainDTO user = authService.getMe();
-        Player player = playerRepo.findByUserId(user.id());
-        if (player == null)
-            throw new InvalidPlayerException("No player");
-        Integer playerId = player.getId();
+    public Announcement updateAnnouncementByAnnouncementId(Integer playerId, Integer announcementId, Announcement updatedAnnouncement) {
         if (announcementId == null || announcementId < 0) {
             throw new InvalidAnnouncementException("Incorrect announcement id");
         }
@@ -101,23 +84,20 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (!announcement.getAuthor().getId().equals(playerId)) {
             throw new InvalidPlayerException("You have no right to update this announcement");
         }
-        if (updatedAnnouncementDto.title() != null) {
-            announcement.setTitle(updatedAnnouncementDto.title());
+        if (updatedAnnouncement.getTitle() != null) {
+            announcement.setTitle(updatedAnnouncement.getTitle());
         }
-        if (updatedAnnouncementDto.content() != null) {
-            announcement.setContent(updatedAnnouncementDto.content());
+        if (updatedAnnouncement.getContent() != null) {
+            announcement.setContent(updatedAnnouncement.getContent());
         }
-        announcementRepo.save(announcement);
-        return new BasicMessageResponse("Announcement with title" + announcement.getTitle() + " for clan "+ announcement.getClan().getTitle() + " updated");
+        if (updatedAnnouncement.getClan() != null) {
+            announcement.setClan(updatedAnnouncement.getClan());
+        }
+        return announcementRepo.save(announcement);
     }
 
     @Override
-    public BasicMessageResponse deleteAnnouncement(Integer announcementId) {
-        UserMainDTO user = authService.getMe();
-        Player player = playerRepo.findByUserId(user.id());
-        if (player == null)
-            throw new InvalidPlayerException("No player");
-        Integer playerId = player.getId();
+    public Announcement deleteAnnouncement(Integer playerId, Integer announcementId) {
         if (announcementId == null || announcementId < 0) {
             throw new InvalidAnnouncementException("Incorrect announcement ID");
         }
@@ -125,13 +105,9 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         if (!announcement.getAuthor().getId().equals(playerId)) {
             throw new InvalidPlayerException("You have no right to delete this announcement");
         }
-
         announcementRepo.delete(announcement);
-        return new BasicMessageResponse("Announcement with title "+ announcement.getTitle()+" for clan "+announcement.getClan().getTitle()+ " deleted");
+        return announcement;
     }
-
-
-
 
 
 }

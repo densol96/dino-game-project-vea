@@ -138,6 +138,7 @@ public class ClanServiceImpl implements IClanFilterService {
             throw new InvalidPlayerException("No player");
         if (clanDto == null) throw new EmptyClanException("Clan is empty");
         Clan clan = new Clan(clanDto.title(), clanDto.description(), clanDto.maxCapacity(), clanDto.minPlayerLevel());
+        clan.setDinoType(admin.getDinoType());
         clan.setAdmin(player);
         clan.setSinglePlayer(player);
         clanRepo.save(clan);

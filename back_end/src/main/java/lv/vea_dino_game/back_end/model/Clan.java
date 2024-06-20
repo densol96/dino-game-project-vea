@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lv.vea_dino_game.back_end.model.enums.DinoType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,10 @@ public class Clan {
     @OneToOne
     @JoinColumn(name="admin")
     private Player admin;
+
+    @NotNull(message = "Dino type cannot be null")
+    @Enumerated(EnumType.STRING)
+    private DinoType dinoType;
 
     public void setSinglePlayer(Player player) {
         this.players.clear();

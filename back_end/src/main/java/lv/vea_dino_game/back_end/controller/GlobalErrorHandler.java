@@ -59,18 +59,10 @@ public class GlobalErrorHandler {
   }
 
   @ExceptionHandler(ServiceCurrentlyUnavailableException.class)
-  public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(InvalidAuthenticationDataException e) {
+  public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(ServiceCurrentlyUnavailableException e) {
     return new ResponseEntity<ErrorResponse>(
         new ErrorResponse("INT_SERV_ERR", "Currently unable to perform this action.", e.getMessage(), null),
         HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  // Keep this at the end for all the uncaught errors
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<String> handleAnyOtherException(Exception e) {
-    System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
-    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(InvalidClanException.class)
@@ -78,10 +70,27 @@ public class GlobalErrorHandler {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);
   }
-
+  
   @ExceptionHandler(InvalidPlayerException.class)
   public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
-            HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(NoSuchUserException.class)
+  public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e) {
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("INVALID_INPUT", "No such user", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+  
+  // Keep this at the end for all the uncaught errors
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseEntity<String> handleAnyOtherException(Exception e) {
+    System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
+    System.out.println(e.getMessage());
+    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

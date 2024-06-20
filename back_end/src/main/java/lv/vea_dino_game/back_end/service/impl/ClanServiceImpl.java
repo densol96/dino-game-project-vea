@@ -3,15 +3,29 @@ package lv.vea_dino_game.back_end.service.impl;
 import jakarta.transaction.Transactional;
 import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
+import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.Clan;
+import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.User;
+import lv.vea_dino_game.back_end.model.dto.*;
+import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
+import lv.vea_dino_game.back_end.repo.IPlayerRepo;
+import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IClanFilterService;
 
+import lv.vea_dino_game.back_end.service.IPlayerService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,116 +33,181 @@ public class ClanServiceImpl implements IClanFilterService {
 
     private final IClanRepo clanRepo;
 
+    private final IPlayerRepo playerRepo;
+
+    private final IUserRepo userRepo;
+
+    private final IPlayerService playerService;
+
+    private final AuthServiceImpl authService;
+    private final Mapper mapper;
+
+
     @Override
-    public List<Clan> retrieveAll() {
+    public List<AllClanInfoViewDto> retrieveAll() {
       if(clanRepo.count() == 0)
-        throw new EmptyDataBaseTable("There are no any clans for display");
-      /*
-       * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
-       */
-      return clanRepo.findAll();
+        throw new EmptyDataBaseTable("There are no any clans to display");
+
+      List<Clan> allClans = clanRepo.findAll();
+      if (allClans.isEmpty()){
+          throw new EmptyDataBaseTable("There are no any clans to display");
+      }
+      return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Clan> retrieveAllByMinEntryLevel(Integer level){
+    public List<AllClanInfoViewDto> retrieveAllByMinEntryLevel(Integer level){
       if (clanRepo.count() == 0)
-        throw new EmptyDataBaseTable("There are no any clans for display");
+        throw new EmptyDataBaseTable("There are no any clans to display");
       
       List<Clan> allClans = clanRepo.findAllByMinPlayerLevelGreaterThanEqual(level);
       if (allClans.isEmpty())
-        throw new EmptyDataBaseTable("There are no any clans with the minimum entry level of " + level + " or higher for display");
-      return allClans;
+        throw new EmptyDataBaseTable("There are no any clans with the minimum entry level of " + level + " or higher to display");
+      return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
 
     @Override
-    public Clan retrieveClanById(Integer id){
+    public ClanDto retrieveClanById(Integer id){
         if (clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
+            throw new EmptyDataBaseTable("There are no any clans to display");
 
         Clan clan = clanRepo.findById(id);
         if (clan == null)
             throw new EmptyDataBaseTable("There is no clan with id " + id);
-        return clan;
+        return mapper.clanToDto(clan);
     }
 
     @Override
-    public List<Clan> retrieveAllSortedByMinLevelDesc() {
+    public List<AllClanInfoViewDto> retrieveAllSortedByMinLevelDesc() {
         if(clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
-        /*
-         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
-         */
-        return clanRepo.findAllSortedByMinPlayerLevelDesc();
+            throw new EmptyDataBaseTable("There are no any clans to display");
+
+        List<Clan> allClans = clanRepo.findAllSortedByMinPlayerLevelDesc();
+        if (allClans.isEmpty()){
+            throw new EmptyDataBaseTable("There are no any clans to display");
+        }
+        return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Clan> retrieveAllSortedByMinLevelAsc() {
+    public List<AllClanInfoViewDto> retrieveAllSortedByMinLevelAsc() {
         if(clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
-        /*
-         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
-         */
-        return clanRepo.findAllSortedByMinPlayerLevelAsc();
+            throw new EmptyDataBaseTable("There are no any clans to display");
+
+        List<Clan> allClans = clanRepo.findAllSortedByMinPlayerLevelAsc();
+        if (allClans.isEmpty()){
+            throw new EmptyDataBaseTable("There are no any clans to display");
+        }
+        return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Clan> retrieveAllSortedByTitleDesc() {
+    public List<AllClanInfoViewDto> retrieveAllSortedByTitleDesc() {
         if(clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
-        /*
-         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
-         */
-        return clanRepo.findAllByOrderByTitleDesc();
+            throw new EmptyDataBaseTable("There are no any clans to display");
+
+        List<Clan> allClans = clanRepo.findAllByOrderByTitleDesc();
+        if (allClans.isEmpty()){
+            throw new EmptyDataBaseTable("There are no any clan to display");
+        }
+        return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Clan> retrieveAllSortedByTitleAsc() {
+    public List<AllClanInfoViewDto> retrieveAllSortedByTitleAsc() {
         if(clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
-        /*
-         * Once we start developing UI and consuming API on the React side, we will add dto-mapper logic here
-         */
-        return clanRepo.findAllByOrderByTitleAsc();
+            throw new EmptyDataBaseTable("There are no any clans to display");
+
+        List <Clan> allClans = clanRepo.findAllByOrderByTitleAsc();
+        if (allClans.isEmpty()){
+            throw new EmptyDataBaseTable("There are no any clans to display");
+        }
+        return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Clan createClan(Clan clan) {
-        if (clan == null) throw new EmptyClanException("Clan is empty");
-        Clan newClan = clanRepo.findByTitle(clan.getTitle());
-        if (newClan!= null) throw new EmptyClanException("Clan with such title already exists");
-        return clanRepo.save(clan);
-    }
-
-
-    @Override
-    @Transactional
-    public Clan updateClan(Integer id, Clan updatedClan) {
-        if (clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
-
-        Clan clan = clanRepo.findById(id);
-        if (clan == null)
-            throw new EmptyDataBaseTable("There is no clan with id " + id);
-
-        clan.setTitle(updatedClan.getTitle());
-        clan.setDescription(updatedClan.getDescription());
-        clan.setMinPlayerLevel(updatedClan.getMinPlayerLevel());
+    public BasicMessageResponse createClan(CreateClanDto clanDto) {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+        Integer id = player.getId();
+        Player admin = playerRepo.findById(id).get();
+        if (admin == null)
+            throw new InvalidPlayerException("No player");
+        if (clanDto == null) throw new EmptyClanException("Clan is empty");
+        Clan clan = new Clan(clanDto.title(), clanDto.description(), clanDto.maxCapacity(), clanDto.minPlayerLevel());
+        clan.setAdmin(player);
+        clan.setSinglePlayer(player);
         clanRepo.save(clan);
-        return clan;
+        return new BasicMessageResponse("Clan " + clanDto.title() + " has been successfully created! Now you are admin of this clan!");
+    }
+
+
+    @Override
+    public BasicMessageResponse updateClan(CreateClanDto updatedClanDto) {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+        Integer id = player.getId();
+        Player admin = playerRepo.findById(id).get();
+        if (admin == null)
+            throw new InvalidPlayerException("No player");
+        Clan clan = clanRepo.findByAdmin(admin);
+        if (clan == null)
+            throw new InvalidPlayerException("You are not admin to update the clan!");
+        if (updatedClanDto == null) throw new EmptyClanException("Clan is empty");
+
+        clan.setTitle(updatedClanDto.title());
+        clan.setDescription(updatedClanDto.description());
+        clan.setMaxCapacity(updatedClanDto.maxCapacity());
+        clan.setMinPlayerLevel(updatedClanDto.minPlayerLevel());
+        clanRepo.save(clan);
+        return new BasicMessageResponse("Clan "+ updatedClanDto.title()+" has been successfully updated!");
     }
 
     @Override
-    @Transactional
-    public Clan deleteClan(Integer id) {
+    public BasicMessageResponse deleteClan() {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+        Integer id = player.getId();
+        Player admin = playerRepo.findById(id).get();
+        if (admin == null)
+            throw new InvalidPlayerException("No player");
+        Clan clan = clanRepo.findByAdmin(admin);
+        if (clan == null)
+            throw new InvalidPlayerException("You are not admin to update the clan!");
         if (clanRepo.count() == 0)
-            throw new EmptyDataBaseTable("There are no any clans for display");
+            throw new EmptyDataBaseTable("There are no any clans to delete");
+        for (Player p : clan.getPlayers()) {
+            p.setClan(null);
+            playerRepo.save(p);
+        }
 
-        Clan clan = clanRepo.findById(id);
+        clan.setAdmin(null);
+        clanRepo.save(clan);
+        clanRepo.delete(clan);
+        return new BasicMessageResponse("Clan "+ clan.getTitle() +" has been successfully deleted!");
+    }
+
+    @Override
+    public ClanDto getClanWithMe() {
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+        Integer id = player.getId();
+        Player admin = playerRepo.findById(id).get();
+        if (admin == null)
+            throw new InvalidPlayerException("No player");
+        Clan clan = clanRepo.findByAdmin(admin);
         if (clan == null)
             throw new EmptyDataBaseTable("There is no clan with id " + id);
-        clanRepo.delete(clan);
-        return clan;
+        return mapper.clanToDto(clan);
     }
 
 

@@ -1,9 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -57,15 +54,28 @@ public class Player {
 
     private LocalDateTime workingUntil = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference
+    @Size(max = 300, message = "Description cannot be longer than 300 chars")
+    private String description;
+
+    @OneToMany(mappedBy = "author")
     private List<Announcement> announcement;
+
+    @OneToOne(mappedBy = "player")
+    @JsonIgnore
+    private User user;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
         setCombatStats(new PlayerCombatsStats());
+    }
+
+    public Player(Clan clan, DinoType dinoType, Integer experience, String description) {
+        setDinoType(dinoType);
+        setClan(clan);
+        setDescription(description);
+        setExperience(experience);
     }
 
 

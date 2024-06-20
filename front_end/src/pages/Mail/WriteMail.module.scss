@@ -1,0 +1,41 @@
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+label {
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.inputUnit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .toInput,
+  .titleInput {
+    width: 100%;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: 20%;
+  }
+}
+
+.messageUnit {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  textarea {
+    height: 20rem;
+    width: 80%;
+    overflow-y: auto;
+  }
+}
+
+.btns {
+  display: flex;
+  gap: 3rem;
+  margin: 0 auto;
+}

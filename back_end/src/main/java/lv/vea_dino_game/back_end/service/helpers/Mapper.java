@@ -13,16 +13,18 @@ public class Mapper {
 
   public UserMainDTO fromUserToDto(User user) {
     return new UserMainDTO(
-        user.getId(),
-        user.getUsername(),
-        user.getEmail(),
-        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
-        user.getPlayer().getPlayerStats(),
-        user.getPlayer().getDinoType(),
-        user.getPlayer().getLevel(),
-        user.getPlayer().getExperience(),
-        user.getPlayer().getLevel(),
-        user.getPlayer().getDescription());
+      user.getId(),
+      user.getUsername(),
+      user.getEmail(),
+      user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
+      user.getPlayer().getPlayerStats(),
+      user.getPlayer().getDinoType(),
+      user.getPlayer().getLevel(),
+      user.getPlayer().getExperience(),
+      user.getPlayer().getLevel(),
+      user.getPlayer().getDescription()
+    );
+
   }
 
   public AllAnnouncementDto announcementToDto(Announcement announcement){
@@ -40,6 +42,7 @@ public class Mapper {
             clan.getId(),
             clan.getTitle(),
             clan.getDescription(),
+            clan.getDinoType(),
             clan.getAdmin().getUser().getUsername(),
             clan.getMinPlayerLevel(),
             clan.getMaxCapacity()
@@ -60,6 +63,7 @@ public class Mapper {
             clan.getId(),
             clan.getTitle(),
             clan.getDescription(),
+            clan.getDinoType(),
             clan.getMaxCapacity(),
             clan.getMinPlayerLevel(),
             clan.getPlayers(),

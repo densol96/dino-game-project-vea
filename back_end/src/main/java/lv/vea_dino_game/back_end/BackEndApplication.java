@@ -58,7 +58,7 @@ public class BackEndApplication {
   //       playerRepo.saveAll(List.of(playerOne, playerTwo, playerThree, player4)); //stats cascaded
   //     };
   //   }
-  
+
   @Bean
   public CommandLineRunner createDefaultPlayers(IClanRepo clanRepo, IUserRepo userRepo, PasswordEncoder encoder) {
     return (String... args) -> {
@@ -87,10 +87,8 @@ public class BackEndApplication {
           18, null);
       User u10 = new User("itachi", "itachi@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore,
           null, 14, null);
-    
+
       userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10));
       };
   }
-
-  
 }

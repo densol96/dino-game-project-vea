@@ -70,7 +70,7 @@ public class GlobalErrorHandler {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);
   }
-  
+
   @ExceptionHandler(InvalidPlayerException.class)
   public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
     return new ResponseEntity<ErrorResponse>(
@@ -84,7 +84,7 @@ public class GlobalErrorHandler {
         new ErrorResponse("INVALID_INPUT", "No such user", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
-  
+
   // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)

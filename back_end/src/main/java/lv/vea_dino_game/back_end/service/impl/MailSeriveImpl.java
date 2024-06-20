@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.NoSuchUserException;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
 import lv.vea_dino_game.back_end.model.enums.MailType;
 import lv.vea_dino_game.back_end.model.MailMessage;
@@ -17,12 +18,11 @@ import lv.vea_dino_game.back_end.repo.IMailMessageRepo;
 import lv.vea_dino_game.back_end.repo.IUserMailMessageRepo;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
-import lv.vea_dino_game.back_end.service.IMailSerive;
-import lv.vea_dino_game.back_end.service.helpers.Mapper;
+import lv.vea_dino_game.back_end.service.IMailService;
 
 @Service
 @RequiredArgsConstructor
-public class MailSeriveImpl implements IMailSerive {
+public class MailSeriveImpl implements IMailService {
   
   private final IAuthService authService;
   // private final Mapper mapper;
@@ -36,8 +36,8 @@ public class MailSeriveImpl implements IMailSerive {
       throw new NoSuchUserException("Unable to send mail as no such user with username of " + dto.to());
     User from = authService.getLoggedInUser();
 
-    if(dto.to().equals(from.getUsername()))
-      throw new NoSuchUserException("You are not meant to send mail to yourself");
+    // if(dto.to().equals(from.getUsername()))
+    //   throw new NoSuchUserException("You are not meant to send mail to yourself");
     
     // At this point, we are sure there is such user
     User to = userRepo.findByUsername(dto.to()).get();
@@ -65,11 +65,18 @@ public class MailSeriveImpl implements IMailSerive {
     toMessage.setUser(to);
     toMessage.setIsUnread(true);
 
+    
 
     mailMessageRepo.save(mail);
     userMailMessageRepo.saveAll(List.of(fromMessage, toMessage));
 
     return new BasicMessageResponse("Your message has been sent");
+  }
+
+  @Override
+  public HasNewMessagesDto hasUnreadMessages() {
+    User user = authService.getLoggedInUser();
+    return new HasNewMessagesDto(userMailMessageRepo.existsByUserIdAndIsUnread(user.getId(), true));
   }
   
 }

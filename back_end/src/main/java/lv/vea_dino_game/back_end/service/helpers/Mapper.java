@@ -10,17 +10,15 @@ public class Mapper {
 
   public UserMainDTO fromUserToDto(User user) {
     return new UserMainDTO(
-      user.getId(),
-      user.getUsername(),
-      user.getEmail(),
-      user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
-      user.getPlayer().getPlayerStats(),
-      user.getPlayer().getDinoType(),
-      user.getPlayer().getLevel(),
-      user.getPlayer().getExperience(),
-      user.getPlayer().getLevel(),
-      user.getPlayer().getDescription()
-    );
-    
+        user.getId(),
+        user.getUsername(),
+        user.getEmail(),
+        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
+        user.getPlayer().getPlayerStats(),
+        user.getPlayer().getDinoType(),
+        user.getPlayer().getLevel(),
+        user.getPlayer().getExperience(),
+        user.getPlayer().getLevel(),
+        user.getPlayer().getDescription());
   }
 }

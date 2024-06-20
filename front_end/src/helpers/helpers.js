@@ -122,4 +122,8 @@ function reduceValidationErrors(errors) {
   return parsedErrors;
 }
 
-export { useResponseResult, reduceValidationErrors };
+function styleNavLink(isActive) {
+  return isActive.isActive ? `isActive navLink` : `navLink`;
+}
+
+export { useResponseResult, reduceValidationErrors, styleNavLink };

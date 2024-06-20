@@ -9,8 +9,6 @@ import lv.vea_dino_game.back_end.model.enums.DinoType;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.validator.constraints.Length;
-
 @Data
 @NoArgsConstructor
 @Entity
@@ -63,7 +61,7 @@ public class Player {
         setPlayerStats(playerStats);
         setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
     }
-    
+
     public Player(Clan clan, DinoType dinoType, Integer experience, String description) {
         setDinoType(dinoType);
         setClan(clan);

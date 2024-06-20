@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lv.vea_dino_game.back_end.model.enums.DinoType;
 import lv.vea_dino_game.back_end.model.enums.Role;
 
 @Data
@@ -43,7 +44,7 @@ public class User implements UserDetails {
     private LocalDateTime registrationDate;
 
     @NotNull(message = "Email confirmation status cannot be null") 
-    private Boolean isEmailConfirmed = false;
+    private Boolean isEmailConfirmed = true; // as service is temp down (run out of tokens, enables this by default)
 
     private String emailConfirmationToken;
 
@@ -54,7 +55,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
 
     ////////////////////// Required for game-logic part
@@ -62,6 +63,16 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_as_player")
     private Player player;
 
+
+    // For testing purposes
+    public User(String username, String email, String password, Role role, DinoType type, Clan clan, Integer experience, String description) {
+      setUsername(username);
+      setEmail(email);
+      setPassword(password);
+      setRole(role);
+      setPlayer(new Player(clan, type, experience, description));
+    }
+    
     public User(String username, String password, String email) {
         setUsername(username);
         setPassword(password);
@@ -79,7 +90,13 @@ public class User implements UserDetails {
     }
 
      @Override
-    public boolean isAccountNonLocked() {
-      return !accountDisabled && (tempBanDateTime == null || tempBanDateTime.isBefore(LocalDateTime.now()));
-    }
+     public boolean isAccountNonLocked() {
+       return !accountDisabled && (tempBanDateTime == null || tempBanDateTime.isBefore(LocalDateTime.now()));
+     }
+    
+     @PrePersist
+     public void setRegistrationDate() {
+       if (registrationDate == null) {
+         registrationDate = LocalDateTime.now();      }
+     }
 }

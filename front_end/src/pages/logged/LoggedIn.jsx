@@ -51,10 +51,15 @@ function LoggedIn() {
             <NavLink className={styleNavLink} to="profile">
               <li className={styles.listItem}>
                 <ion-icon name="accessibility-outline"></ion-icon>
-
                 <span className={styles.listItem__text}>Profile</span>
-
                 <ion-icon name="accessibility-outline"></ion-icon>
+              </li>
+            </NavLink>
+            <NavLink className={styleNavLink} to="mail">
+              <li className={styles.listItem}>
+                <ion-icon name="mail-unread"></ion-icon>
+                <span className={styles.listItem__text}>Mail</span>
+                <ion-icon name="mail"></ion-icon>
               </li>
             </NavLink>
             <NavLink className={styleNavLink} to="arena">
@@ -78,9 +83,15 @@ function LoggedIn() {
                 <ion-icon name="people-circle-outline"></ion-icon>
               </li>
             </NavLink>
-          </ul>
 
-          <ul>
+            <NavLink className={styleNavLink} to="ratings">
+              <li className={styles.listItem}>
+                <ion-icon name="trophy-outline"></ion-icon>
+                <span className={styles.listItem__text}>Ratings</span>
+                <ion-icon name="trophy-outline"></ion-icon>
+              </li>
+            </NavLink>
+
             <NavLink className={styleNavLink} to="settings">
               <li className={styles.listItem}>
                 <ion-icon name="settings-outline"></ion-icon>

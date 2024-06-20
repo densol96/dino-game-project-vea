@@ -42,6 +42,7 @@ public class Mapper {
             clan.getId(),
             clan.getTitle(),
             clan.getDescription(),
+            clan.getDinoType(),
             clan.getAdmin().getUser().getUsername(),
             clan.getMinPlayerLevel(),
             clan.getMaxCapacity()
@@ -62,6 +63,7 @@ public class Mapper {
             clan.getId(),
             clan.getTitle(),
             clan.getDescription(),
+            clan.getDinoType(),
             clan.getMaxCapacity(),
             clan.getMinPlayerLevel(),
             clan.getPlayers(),

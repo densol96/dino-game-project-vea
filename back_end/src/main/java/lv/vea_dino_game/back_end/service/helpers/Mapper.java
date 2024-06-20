@@ -1,12 +1,8 @@
 package lv.vea_dino_game.back_end.service.helpers;
 
-import lv.vea_dino_game.back_end.model.Announcement;
-import lv.vea_dino_game.back_end.model.Clan;
-import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.*;
 import lv.vea_dino_game.back_end.model.dto.*;
 import org.springframework.stereotype.Service;
-
-import lv.vea_dino_game.back_end.model.User;
 
 @Service
 public class Mapper {
@@ -79,6 +75,19 @@ public class Mapper {
             player.getLevel(),
             player.getExperience(),
             player.getDescription()
+    );
+  }
+
+  public FriendDto oneFriendToDto(Friend friend) {
+    return new FriendDto(
+            friend.getId(),
+            friend.getFriend().getUser().getUsername(),
+            friend.getFriend().getDinoType(),
+            friend.getFriend().getLevel(),
+            friend.getPlayer().getUser().getUsername(),
+            friend.getPlayer().getDinoType(),
+            friend.getPlayer().getLevel()
+
     );
   }
 }

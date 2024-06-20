@@ -20,4 +20,5 @@ public interface IAnnouncementService {
     BasicMessageResponse updateAnnouncementByAnnouncementId(Integer announcementId, AnnouncementDto upadatedAnnouncementDto);
 
     BasicMessageResponse deleteAnnouncement(Integer announcementId);
+
 }

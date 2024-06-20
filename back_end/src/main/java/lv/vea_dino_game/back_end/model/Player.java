@@ -55,6 +55,9 @@ public class Player {
     @JsonIgnore
     private User user;
 
+    @OneToMany(mappedBy = "player")
+    private List<Friend> friends;
+
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);

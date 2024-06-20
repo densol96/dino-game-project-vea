@@ -35,6 +35,10 @@ public class Player {
     @OneToOne(cascade = CascadeType.ALL)
     private Job currentJob = null;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_combat_stats")
+    private PlayerCombatsStats combatStats = null;
+
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
@@ -61,6 +65,7 @@ public class Player {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
+        setCombatStats(new PlayerCombatsStats());
     }
 
 

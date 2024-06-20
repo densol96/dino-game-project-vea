@@ -65,6 +65,26 @@ public class GlobalErrorHandler {
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  @ExceptionHandler(InvalidClanException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
+            HttpStatus.BAD_REQUEST);
+  }
+  
+  @ExceptionHandler(InvalidPlayerException.class)
+  public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(NoSuchUserException.class)
+  public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e) {
+    return new ResponseEntity<ErrorResponse>(
+        new ErrorResponse("INVALID_INPUT", "No such user", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+  
   // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -72,17 +92,5 @@ public class GlobalErrorHandler {
     System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
     System.out.println(e.getMessage());
     return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  @ExceptionHandler(InvalidClanException.class)
-  public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
-            HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(InvalidPlayerException.class)
-  public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
-            HttpStatus.BAD_REQUEST);
   }
 }

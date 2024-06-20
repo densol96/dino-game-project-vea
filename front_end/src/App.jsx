@@ -10,6 +10,7 @@ import Settings from './pages/settings/Settings';
 import Ratings from './pages/Ratings/Ratings';
 import Mail from './pages/Mail/Mail';
 import ReadMail from './pages/Mail/ReadMail';
+import WriteMail from './pages/Mail/WriteMail';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route index replace element={<Navigate to="all" />} />
               <Route path="all" element={<Mail />} />
               <Route path="read/:id" element={<ReadMail />} />
+              <Route path="write" element={<WriteMail />} />
             </Route>
             <Route path="settings" element={<Settings />} />
             <Route path="ratings" element={<Ratings />} />

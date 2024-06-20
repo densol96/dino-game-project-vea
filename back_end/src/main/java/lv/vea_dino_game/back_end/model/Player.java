@@ -27,7 +27,7 @@ public class Player {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_stats")
-    private PlayerStats playerStats;
+    private PlayerStats playerStats = new PlayerStats();
 
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)

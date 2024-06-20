@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useUserContext, headersWithToken } from '../../context/UserProvider';
+import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 import styles from './Settings.module.scss';
 import axios from 'axios';
 import {
@@ -110,6 +111,12 @@ function Settings() {
     logoutUser();
     navigate('/login');
   }
+
+  const { checkIfNewMessages } = useNewMessagesContext();
+  useEffect(() => {
+    checkIfNewMessages();
+  });
+
   return (
     <>
       {(error.status || success.status) && forDisplay && (

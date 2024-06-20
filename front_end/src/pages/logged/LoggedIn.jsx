@@ -3,6 +3,7 @@ import { useNavigate, Outlet, NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { useUserContext } from '../../context/UserProvider';
+import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 
 import styles from './LoggedIn.module.scss';
 
@@ -21,6 +22,8 @@ function LoggedIn() {
       navigate('/');
     }
   }, [user]);
+
+  const { hasNewMessages } = useNewMessagesContext();
 
   return user ? (
     <div className={styles.container}>
@@ -56,10 +59,18 @@ function LoggedIn() {
               </li>
             </NavLink>
             <NavLink className={styleNavLink} to="mail">
-              <li className={styles.listItem}>
-                <ion-icon name="mail-unread"></ion-icon>
+              <li
+                className={`${styles.listItem} ${
+                  hasNewMessages ? styles.hasMailIn : ''
+                }`}
+              >
+                <ion-icon
+                  name={hasNewMessages ? 'mail-unread' : 'mail'}
+                ></ion-icon>
                 <span className={styles.listItem__text}>Mail</span>
-                <ion-icon name="mail"></ion-icon>
+                <ion-icon
+                  name={hasNewMessages ? 'mail-unread' : 'mail'}
+                ></ion-icon>
               </li>
             </NavLink>
             <NavLink className={styleNavLink} to="arena">

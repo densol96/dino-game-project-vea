@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserProvider';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
+// import { IonIcon } from '@ionic/react';
+
 
 import styles from './Profile.module.scss';
+import axios from "axios";
+import {reduceValidationErrors, useResponseResult} from "../../helpers/helpers";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 function extractStats(obj) {
   const arr = [];
@@ -14,17 +19,109 @@ function extractStats(obj) {
 }
 
 function Profile() {
-  const { user } = useUserContext();
+  const { user, setUserFullInfo } = useUserContext();
+  const [{ success, error, forDisplay }, resultDispatch] = useResponseResult();
+  const errors = reduceValidationErrors(error.errors);
   const { agility, armor, damage, health, criticalHitPercentage } =
     user.playerStats;
   const max = Math.max(...extractStats(user.playerStats));
+
+  // const [agilityAdded, setAgilityAdded] = useState(0);
+  // const [armorAdded, setArmorAdded] = useState(0);
+  // const [critAdded, setCritAdded] = useState(0);
+  // const [damageAdded, setDamageAdded] = useState(0);
+  // const [healthAdded, setHealthAdded] = useState(0);
 
   const { checkIfNewMessages } = useNewMessagesContext();
   useEffect(() => {
     checkIfNewMessages();
   });
 
+  // const clearAddedStats = () => {
+  //   setDamageAdded(0);
+  //   setHealthAdded(0);
+  //   setAgilityAdded(0);
+  //   setCritAdded(0);
+  //   setArmorAdded(0);
+  // }
+
+  const postNewStats = async (
+      armorAdded,agilityAdded,healthAdded,damageAdded,critAdded
+  ) => {
+    const API_ENDPOINT = 'http://localhost:8080/api/v1/player/ingame-stats';
+
+      // resultDispatch({
+      //   type: 'ERROR',
+      //   payload: {
+      //     heading: 'Not enough money',
+      //     message: 'Password and password confirm do not match!',
+      //     type: '',
+      //     errors: [],
+      //   },
+      // });
+      // setTimeout(() => {
+      //   resultDispatch({ type: 'CLOSE' });
+      // }, 5000);
+      // return;
+
+    try {
+      const response = await axios.post(API_ENDPOINT, {
+        playerId: user.id,
+        currencySpent: 50,
+        armor: armor + armorAdded,
+        agility: agility + agilityAdded,
+        health: health + healthAdded,
+        damage: damage + damageAdded,
+        criticalHitPercentage: criticalHitPercentage + critAdded,
+        endurance: 0
+      });
+      rerenderStatsAfterDb();
+      resultDispatch({
+        type: 'SUCCESS',
+        payload: { heading: 'Success', message: response.data.message },
+      });
+
+    } catch (e) {
+      if (e.code === 'ERR_BAD_REQUEST') {
+        const error = e.response.data;
+        resultDispatch({
+          type: 'ERROR',
+          payload: {
+            heading: error.name,
+            message: error.message,
+            type: error.type,
+            errors: error.errors,
+          },
+        });
+      } else if (e.code === 'ERR_NETWORK') {
+        resultDispatch({
+          type: 'ERROR',
+          payload: {
+            heading: 'Service is currently unavailable',
+            message:
+                'Registration is currently unavailable! Please,try again later!',
+            type: 'ERR_NETWORK',
+            errors: [],
+          },
+        });
+      }
+    }
+  }
+
+  const rerenderStatsAfterDb = () => {
+    setUserFullInfo();
+  }
+
+
   return (
+      <>
+        <ErrorMessage
+            error={error}
+            success={success}
+            forDisplay={forDisplay}
+            errors={errors}
+            resultDispatch={resultDispatch}
+        />
     <div className={styles.profileGrid}>
       <div className={styles.profileGrid__Image}>
         <img
@@ -106,7 +203,7 @@ function Profile() {
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
             <p className={styles.price}>{health * 5}</p>
           </div>
-          <ion-icon id={styles.addSkill} name="add-circle-outline"></ion-icon>
+          <ion-icon onClick={() => postNewStats(0,0,0,1,0)}  id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
         <div className={styles.skill}>
           <img
@@ -121,8 +218,13 @@ function Profile() {
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
             <p className={styles.price}>{criticalHitPercentage * 5}</p>
           </div>
-          <ion-icon id={styles.addSkill} name="add-circle-outline"></ion-icon>
+          <ion-icon onClick={() => postNewStats(0,0,0,0,1)} id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
+        {/*<div style={{*/}
+        {/*}}>*/}
+        {/*  <button onClick={clearAddedStats}>Clear</button>*/}
+        {/*  <button onClick={postNewStats}>Save</button>*/}
+        {/*</div>*/}
       </div>
       <div className={styles.profileGrid__Statistics}>
         <h2 className={styles.miniHeader}>Profile statistics:</h2>
@@ -148,6 +250,7 @@ function Profile() {
         </div>
       </div>
     </div>
+      </>
   );
 }
 

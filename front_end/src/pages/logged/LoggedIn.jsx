@@ -22,7 +22,7 @@ function LoggedIn() {
       navigate('/');
     }
   }, [user]);
-
+  console.log(user);
   const { hasNewMessages } = useNewMessagesContext();
 
   return user ? (

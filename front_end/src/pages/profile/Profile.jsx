@@ -22,7 +22,7 @@ function Profile() {
   const { checkIfNewMessages } = useNewMessagesContext();
   useEffect(() => {
     checkIfNewMessages();
-  });
+  }, []);
 
   return (
     <div className={styles.profileGrid}>
@@ -41,7 +41,7 @@ function Profile() {
         <h2 className={styles.miniHeader}>Profile description:</h2>
         <p className={styles.profileGrid__Description__Text}>
           {' '}
-          {!user.description
+          {user.description
             ? user.description
             : 'Currently, your user info is empty. Check the settings to add a description..'}
         </p>

@@ -17,7 +17,7 @@ public class Mapper {
       user.getPlayer().getDinoType(),
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
-      user.getPlayer().getLevel(),
+      user.getPlayer().getCurrency(),
       user.getPlayer().getDescription()
     );
 

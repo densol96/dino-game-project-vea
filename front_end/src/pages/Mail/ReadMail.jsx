@@ -7,6 +7,7 @@ import {
   formatDate,
   useResponseResult,
   reduceValidationErrors,
+  handleBadRequest,
 } from '../../helpers/helpers';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 
@@ -41,30 +42,7 @@ async function deleteMail(id, navigate, resultDispatch) {
     }, 2000);
   } catch (e) {
     console.log('💥💥💥' + e);
-    console.log(e);
-    if (e.code === 'ERR_BAD_REQUEST') {
-      const error = e.response.data;
-      resultDispatch({
-        type: 'ERROR',
-        payload: {
-          heading: error.name,
-          message: error.message,
-          type: error.type,
-          errors: error.errors,
-        },
-      });
-    } else if (e.code === 'ERR_NETWORK') {
-      resultDispatch({
-        type: 'ERROR',
-        payload: {
-          heading: 'Service is currently unavailable',
-          message:
-            'Registration is currently unavailable! Please,try again later!',
-          type: 'ERR_NETWORK',
-          errors: [],
-        },
-      });
-    }
+    handleBadRequest(e, resultDispatch);
   }
 }
 

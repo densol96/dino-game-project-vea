@@ -25,6 +25,7 @@ function Profile() {
   const { agility, armor, damage, health, criticalHitPercentage } =
     user.playerStats;
   const max = Math.max(...extractStats(user.playerStats));
+  const PRICE = 5;
 
   // const [agilityAdded, setAgilityAdded] = useState(0);
   // const [armorAdded, setArmorAdded] = useState(0);
@@ -67,7 +68,7 @@ function Profile() {
     try {
       const response = await axios.post(API_ENDPOINT, {
         playerId: user.id,
-        currencySpent: 50,
+        currencySpent: PRICE,
         armor: armor + armorAdded,
         agility: agility + agilityAdded,
         health: health + healthAdded,
@@ -156,9 +157,9 @@ function Profile() {
           <progress max={max} value={damage}></progress>
           <div className={styles.skill__Price}>
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
-            <p className={styles.price}>{damage * 5}</p>
+            <p className={styles.price}>{PRICE}</p>
           </div>
-          <ion-icon id={styles.addSkill} name="add-circle-outline"></ion-icon>
+          <ion-icon onClick={() => postNewStats(1,0,0,0,0)}  id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
         <div className={styles.skill}>
           <img
@@ -171,9 +172,9 @@ function Profile() {
           <progress max={max} value={armor}></progress>
           <div className={styles.skill__Price}>
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
-            <p className={styles.price}>{armor * 5}</p>
+            <p className={styles.price}>{PRICE}</p>
           </div>
-          <ion-icon id={styles.addSkill} name="add-circle-outline"></ion-icon>
+          <ion-icon onClick={() => postNewStats(0,1,0,0,0)}  id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
         <div className={styles.skill}>
           <img
@@ -186,9 +187,9 @@ function Profile() {
           <progress max={max} value={agility}></progress>
           <div className={styles.skill__Price}>
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
-            <p className={styles.price}>{agility * 5}</p>
+            <p className={styles.price}>{PRICE}</p>
           </div>
-          <ion-icon id={styles.addSkill} name="add-circle-outline"></ion-icon>
+          <ion-icon onClick={() => postNewStats(0,0,1,0,0)}  id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
         <div className={styles.skill}>
           <img
@@ -201,7 +202,7 @@ function Profile() {
           <progress max={max} value={health}></progress>
           <div className={styles.skill__Price}>
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
-            <p className={styles.price}>{health * 5}</p>
+            <p className={styles.price}>{PRICE}</p>
           </div>
           <ion-icon onClick={() => postNewStats(0,0,0,1,0)}  id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
@@ -216,15 +217,10 @@ function Profile() {
           <progress max={max} value={criticalHitPercentage}></progress>
           <div className={styles.skill__Price}>
             <ion-icon id={styles.price} name="logo-usd"></ion-icon>
-            <p className={styles.price}>{criticalHitPercentage * 5}</p>
+            <p className={styles.price}>{PRICE}</p>
           </div>
           <ion-icon onClick={() => postNewStats(0,0,0,0,1)} id={styles.addSkill} name="add-circle-outline"></ion-icon>
         </div>
-        {/*<div style={{*/}
-        {/*}}>*/}
-        {/*  <button onClick={clearAddedStats}>Clear</button>*/}
-        {/*  <button onClick={postNewStats}>Save</button>*/}
-        {/*</div>*/}
       </div>
       <div className={styles.profileGrid__Statistics}>
         <h2 className={styles.miniHeader}>Profile statistics:</h2>

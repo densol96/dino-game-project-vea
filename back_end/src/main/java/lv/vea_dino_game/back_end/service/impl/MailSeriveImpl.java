@@ -92,7 +92,7 @@ public class MailSeriveImpl implements IMailService {
     if (page == null || page < 1 || page > 1000)
       throw new InvalidUserInputException("Invalid user input for the page of " + page);
     // With Pageable, pageNumber starts at 0 => 1 page is at 0 index, 2 at 1 etc. 
-    Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE);
+    Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE, Sort.by("mail.sentAt").descending());
     List<UserMailMessage> userMailList = userMailMessageRepo
         .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
     // could check if the list size is 0 here, but I want to send an empty array back, BUT if any other exception to throw an exception(will make it easier to consume such API on React side)

@@ -131,7 +131,7 @@ public class MailSeriveImpl implements IMailService {
   @Override
   public Integer getNumberOfPagesForAllOutgoingMail() {
     Integer resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(), MailType.FROM);
-    return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
+    return resultsTotal == 0 ? 0 : (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
   }
 
   @Override

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import styles from './Mail.module.scss';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { styleNavLink, formatDate } from '../../helpers/helpers';
+import {
+  styleNavLink,
+  formatDate,
+  handleBadRequest,
+  reduceValidationErrors,
+  useResponseResult,
+} from '../../helpers/helpers';
 import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
 
@@ -12,14 +18,43 @@ const type = {
   out: 'outgoing',
 };
 
-async function getIncomingMail(mailType, page, setMailForDisplay) {
+async function deleteMail(id, navigate, resultDispatch) {
+  const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
+
+  try {
+    const response = await axios.delete(API_ENDPOINT, headersWithToken());
+    resultDispatch({
+      type: 'SUCCESS',
+      payload: {
+        heading: 'Letter deleted',
+        message:
+          response.data.message +
+          '. You will be re-addressed to all mail shortly...',
+      },
+    });
+    setTimeout(() => {
+      navigate('/in/mail/all');
+    }, 2000);
+  } catch (e) {
+    console.log('💥💥💥' + e);
+    handleBadRequest(e, resultDispatch);
+  }
+}
+
+async function getIncomingMail(
+  mailType,
+  page,
+  setMailForDisplay,
+  resultDispatch
+) {
   const GET_MAIL_API = `${BASE_URL}/get-all-${mailType}?page=${page || 1}`;
-  console.log(GET_MAIL_API);
+
   try {
     const response = await axios.get(GET_MAIL_API, headersWithToken());
     setMailForDisplay(response.data);
   } catch (e) {
-    console.log(e);
+    console.log('💥💥💥' + e);
+    handleBadRequest(e, resultDispatch);
   }
 }
 
@@ -39,7 +74,9 @@ function Mail() {
   const [page, setPage] = useState(1);
   const [pagesTotal, setPagesTotal] = useState(1);
   const [mailForDisplay, setMailForDisplay] = useState([]);
-  const [error, setError] = useState('');
+  const [{ success, error, forDisplay }, resultDispatch] = useResponseResult();
+  const errors = reduceValidationErrors(error.errors);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNumOfPagesForIncomingMail(mailType, setPagesTotal);
@@ -47,102 +84,139 @@ function Mail() {
   }, [mailType, page]);
 
   return (
-    <div>
-      <header className="header">
-        <button
-          className={`header__Button ${mailType === type.in ? 'active' : ''}`}
+    <>
+      {(error.status || success.status) && forDisplay && (
+        <div
+          className={`message-container ${
+            error.status ? 'error-color' : 'success-color'
+          }`}
         >
-          Incoming mail
-        </button>
-        <button
-          className={`header__Button ${mailType === type.out ? 'active' : ''}`}
-        >
-          Outgoing mail
-        </button>
-      </header>
-      <div className="optionLine">
-        <div className="sortByOption">
-          <label>Sort mail By:</label>
-          <select>
-            <option value="all">All</option>
-            <option value="unread">Read</option>
-            <option value="read">Unread</option>
-          </select>
+          <p
+            className="message-container__close-btn"
+            onClick={() => resultDispatch({ type: 'CLOSE' })}
+          >
+            X
+          </p>
+          <h2 className="message-container__heading">
+            {error.status ? error.heading : success.heading}
+          </h2>
+          <p className="message-container__content">
+            {error.status ? error.message : success.message}
+          </p>
+          <ul>
+            {errors?.map((e, i) => (
+              <li className="message-container__content" key={i}>
+                {e}
+              </li>
+            ))}
+          </ul>
         </div>
-        <NavLink className={styles.writeLink} to="/in/mail/write">
-          <span>Write a message</span>
-        </NavLink>
-      </div>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>{mailType === type.in ? 'From' : 'To'}</th>
-            <th>Title</th>
-            <th>Sent on / at</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mailForDisplay.map((letter, i) => {
-            console.log(letter);
-            return (
-              <tr className={letter.isUnread ? styles.unreadMail : ''} key={i}>
-                <td>{mailType === type.in ? letter.from : letter.to}</td>
-                <td>{letter.title}</td>
-                <td>{formatDate(letter.sentAt)}</td>
-                <td className={styles.actionTd}>
-                  <NavLink
-                    to={`/in/mail/read/${letter.id}`}
-                    className={() => styles.viewIcon}
-                  >
-                    <ion-icon class={styles.icon} name="eye"></ion-icon>
-                  </NavLink>
-                  /
-                  <ion-icon
-                    onClick={() => alert('clicked')}
-                    class={styles.icon}
-                    name="trash"
-                  ></ion-icon>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-        <div className={styles.paginationHolder}>
-          <div className="pagination">
-            {
-              <button
-                className={`${page === 1 ? styles.hide : ''} ${styles.btnNav}`}
-              >
-                <ion-icon
-                  onClick={() => {
-                    setPage((page) => page - 1);
-                  }}
-                  id="icon"
-                  name="chevron-back-outline"
-                ></ion-icon>
-              </button>
-            }
-            {pagesTotal > 1 && <span>{page}</span>}
-            {
-              <button
-                className={`${page === pagesTotal ? styles.hide : ''} ${
-                  styles.btnNav
-                }`}
-              >
-                <ion-icon
-                  onClick={() => {
-                    setPage((page) => page + 1);
-                  }}
-                  id="icon"
-                  name="chevron-forward-outline"
-                ></ion-icon>
-              </button>
-            }
+      )}
+      <div>
+        <header className="header">
+          <button
+            className={`header__Button ${mailType === type.in ? 'active' : ''}`}
+          >
+            Incoming mail
+          </button>
+          <button
+            className={`header__Button ${
+              mailType === type.out ? 'active' : ''
+            }`}
+          >
+            Outgoing mail
+          </button>
+        </header>
+        <div className="optionLine">
+          <div className="sortByOption">
+            <label>Sort mail By:</label>
+            <select>
+              <option value="all">All</option>
+              <option value="unread">Read</option>
+              <option value="read">Unread</option>
+            </select>
           </div>
+          <NavLink className={styles.writeLink} to="/in/mail/write">
+            <span>Write a message</span>
+          </NavLink>
         </div>
-      </table>
-    </div>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>{mailType === type.in ? 'From' : 'To'}</th>
+              <th>Title</th>
+              <th>Sent on / at</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mailForDisplay.map((letter, i) => {
+              return (
+                <tr
+                  className={letter.isUnread ? styles.unreadMail : ''}
+                  key={i}
+                >
+                  <td>{mailType === type.in ? letter.from : letter.to}</td>
+                  <td>{letter.title}</td>
+                  <td>{formatDate(letter.sentAt)}</td>
+                  <td className={styles.actionTd}>
+                    <NavLink
+                      to={`/in/mail/read/${letter.id}`}
+                      className={() => styles.viewIcon}
+                    >
+                      <ion-icon class={styles.icon} name="eye"></ion-icon>
+                    </NavLink>
+                    /
+                    <ion-icon
+                      onClick={() =>
+                        deleteMail(letter.id, navigate, resultDispatch)
+                      }
+                      class={styles.icon}
+                      name="trash"
+                    ></ion-icon>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <div className={styles.paginationHolder}>
+            <div className="pagination">
+              {
+                <button
+                  className={`${page === 1 ? styles.hide : ''} ${
+                    styles.btnNav
+                  }`}
+                >
+                  <ion-icon
+                    onClick={() => {
+                      setPage((page) => page - 1);
+                    }}
+                    id="icon"
+                    name="chevron-back-outline"
+                  ></ion-icon>
+                </button>
+              }
+              {pagesTotal > 1 && <span>{page}</span>}
+              {
+                <button
+                  className={`${
+                    page === pagesTotal || pagesTotal === 0 ? styles.hide : ''
+                  } ${styles.btnNav}`}
+                >
+                  <ion-icon
+                    onClick={() => {
+                      setPage((page) => page + 1);
+                    }}
+                    id="icon"
+                    name="chevron-forward-outline"
+                  ></ion-icon>
+                </button>
+              }
+            </div>
+          </div>
+        </table>
+      </div>
+    </>
   );
 }
 

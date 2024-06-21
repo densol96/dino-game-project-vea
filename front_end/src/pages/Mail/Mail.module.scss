@@ -31,3 +31,12 @@
     text-decoration: none;
   }
 }
+
+.viewIcon {
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: var(--color-primary-light);
+  }
+}

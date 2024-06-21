@@ -55,6 +55,17 @@ public class CombatServiceImpl implements ICombatService {
             loser.setImmuneUntil(LocalDateTime.now().plusHours(IMMUNITY_IN_HOURS_AFTER_DEFEAT));
         }
 
+        // each player +1 combat total
+        winner.getCombatStats().setCombatsTotal(winner.getCombatStats().getCombatsTotal() + 1);
+        loser.getCombatStats().setCombatsTotal(loser.getCombatStats().getCombatsTotal() + 1);
+        // winner +1 won combat
+        winner.getCombatStats().setCombatsWon(winner.getCombatStats().getCombatsWon() + 1);
+
+        // winner += reward
+        winner.getCombatStats().setCurrencyWon(winner.getCombatStats().getCurrencyWon() + combat.getCombatResult().winnerCurrencyChange);
+        // loser -= reward
+        loser.getCombatStats().setCurrencyLost(loser.getCombatStats().getCurrencyLost() + combat.getCombatResult().loserCurrencyChange);
+
         playerRepo.save(winner);
         playerRepo.save(loser);
 

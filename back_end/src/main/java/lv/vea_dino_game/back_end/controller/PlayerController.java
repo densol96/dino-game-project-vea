@@ -1,8 +1,13 @@
 package lv.vea_dino_game.back_end.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.PlayerStats;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.RequestLearnNewPlayerStats;
+import lv.vea_dino_game.back_end.model.dto.SignUpDto;
 import lv.vea_dino_game.back_end.model.dto.AllPlayerInfoDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.PlayerInfoDto;
@@ -45,6 +50,7 @@ public class PlayerController {
     public ResponseEntity<List<AllPlayerInfoDto>> getAllPlayersSortByLevelAsc() {
         return new ResponseEntity<List<AllPlayerInfoDto>>(playerService.getAllPlayersSortByLevelAsc(), HttpStatus.OK);
     }
+
     @GetMapping("/find-by-level/{level}")
     public ResponseEntity<List<AllPlayerInfoDto>> getAllPlayersByLevel(@PathVariable Integer level) {
         return new ResponseEntity<List<AllPlayerInfoDto>>(playerService.getAllPlayersByLevel(level), HttpStatus.OK);
@@ -60,9 +66,13 @@ public class PlayerController {
         return new ResponseEntity<PlayerInfoDto>(playerService.getMyProfile(), HttpStatus.OK);
     }
 
+//    @GetMapping("/ingame-stats/{playerId}")
+//    public ResponseEntity<PlayerStats> getPlayerStats(@PathVariable Integer playerId) {
+//        return new ResponseEntity<PlayerStats>(playerService.getPlayerStatsByPlayerId(playerId), HttpStatus.OK);
+//    }
 
-
-
-
-
+    @PostMapping("/ingame-stats")
+    public ResponseEntity<BasicMessageResponse> updateNewPlayerStats(@Valid @RequestBody RequestLearnNewPlayerStats newPlayerStats) {
+        return new ResponseEntity<BasicMessageResponse>(playerService.updateSkillPoints(newPlayerStats), HttpStatus.OK);
+    }
 }

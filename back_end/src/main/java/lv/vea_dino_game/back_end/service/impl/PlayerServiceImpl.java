@@ -6,6 +6,11 @@ import lv.vea_dino_game.back_end.exceptions.InvalidClanException;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.PlayerStats;
+import lv.vea_dino_game.back_end.model.Job;
+import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.RequestLearnNewPlayerStats;
+import lv.vea_dino_game.back_end.model.dto.RequestStartJob;
 import lv.vea_dino_game.back_end.model.dto.AllPlayerInfoDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.PlayerInfoDto;
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,5 +134,61 @@ public class PlayerServiceImpl implements IPlayerService {
         return mapper.onePlayerToDto(player);
     }
 
+    @Override
+    public PlayerStats getPlayerStatsByPlayerId(Integer id) {
+        if (!playerRepo.existsById(id)) throw new InvalidPlayerException("Player with id " + id + " does not exist");
+        return playerRepo.findById(id).get().getPlayerStats();
+    }
+
+    @Override
+    public BasicMessageResponse updateSkillPoints(RequestLearnNewPlayerStats requestLearnNewPlayerStats) {
+        Integer playerId = requestLearnNewPlayerStats.playerId();
+        if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
+        Player player = playerRepo.findById(playerId).get();
+        if (player.getCurrency() - requestLearnNewPlayerStats.currencySpent() < 0) throw new InvalidPlayerException("You cant spend more currency than you have, when learning new skill points");
+
+        player.setCurrency(player.getCurrency() - requestLearnNewPlayerStats.currencySpent());
+
+        player.getPlayerStats().setCriticalHitPercentage(requestLearnNewPlayerStats.criticalHitPercentage());
+        player.getPlayerStats().setArmor(requestLearnNewPlayerStats.armor());
+        player.getPlayerStats().setAgility(requestLearnNewPlayerStats.agility());
+        player.getPlayerStats().setHealth(requestLearnNewPlayerStats.health());
+        player.getPlayerStats().setDamage(requestLearnNewPlayerStats.damage());
+        player.getPlayerStats().setEndurance(requestLearnNewPlayerStats.endurance());
+
+        playerRepo.save(player);
+
+        return new BasicMessageResponse("New player stats has been successfully learned");
+    }
+
+    @Override
+    public BasicMessageResponse startJob(RequestStartJob requestStartJob) {
+        Integer playerId = requestStartJob.playerId();
+        if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
+        Player player = playerRepo.findById(playerId).get();
+        Job job = new Job();
+        job.setRewardCurrency(requestStartJob.rewardCurrency());
+        job.setHoursDuration(requestStartJob.hoursDuration());
+        player.setCurrentJob(job);
+        player.setWorkingUntil(LocalDateTime.now().plusHours(job.getHoursDuration()));
+
+
+        playerRepo.save(player);
+
+        return new BasicMessageResponse("Job started successfully");
+    }
+
+    @Override
+    public BasicMessageResponse finishJob(Integer id) {
+        if (!playerRepo.existsById(id)) throw new InvalidPlayerException("Player with id " + id + " does not exist");
+        Player player = playerRepo.findById(id).get();
+        Job job = player.getCurrentJob();
+        player.setCurrency(player.getCurrency() + job.getRewardCurrency());
+        player.setCurrentJob(null);
+
+        playerRepo.save(player);
+
+        return new BasicMessageResponse("Job ended successfully");
+    }
 
 }

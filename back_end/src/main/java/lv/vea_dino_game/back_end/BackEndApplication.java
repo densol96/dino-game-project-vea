@@ -1,12 +1,14 @@
 package lv.vea_dino_game.back_end;
 
 import lv.vea_dino_game.back_end.model.Clan;
+import lv.vea_dino_game.back_end.model.Job;
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 import lv.vea_dino_game.back_end.model.enums.Role;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
+import lv.vea_dino_game.back_end.repo.IJobRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.helpers.EmailSenderService;
@@ -18,6 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication

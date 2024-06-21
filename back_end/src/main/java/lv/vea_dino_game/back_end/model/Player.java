@@ -29,6 +29,13 @@ public class Player {
     @JoinColumn(name = "player_stats")
     private PlayerStats playerStats = new PlayerStats();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Job currentJob = null;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_combat_stats")
+    private PlayerCombatsStats combatStats = null;
+
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
@@ -43,7 +50,9 @@ public class Player {
     @Max(value = 10, message = "Level can not be greater than 10")
     private Integer level = 1;
 
-    private LocalDateTime immuneUntil;
+    private LocalDateTime immuneUntil = LocalDateTime.now(); // set immuneUntil to 24 hours from now (now removed for testing purposes)
+
+    private LocalDateTime workingUntil = LocalDateTime.now();
 
     @Size(max = 300, message = "Description cannot be longer than 300 chars")
     private String description;
@@ -62,7 +71,7 @@ public class Player {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
-        setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
+        setCombatStats(new PlayerCombatsStats());
     }
 
     public Player(Clan clan, DinoType dinoType, Integer experience, String description) {

@@ -44,6 +44,7 @@ public class Combat {
     @Max(value = 20, message = "Turns amount value can not greater than 20")
     private Integer maxTurnsAmount;
 
+    @NotNull(message = "dateTime cannot be null")
     private LocalDateTime dateTime;
 
 }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 import { useEffect, useReducer, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 
 import styles from './Home.module.scss';
 
-import ModalLogin from './login/ModalLogin.jsx/ModalLogin';
+import ModalLogin from '../ModalLogin/ModalLogin';
 import { useUserContext } from '../../context/UserProvider';
 
 const DinoType = {
@@ -180,7 +180,7 @@ async function sendSignUpRequest(data, resultDisptach) {
     }, 3000);
   } catch (e) {
     console.log(e);
-    if (e.code === 'ERR_BAD_REQUEST') {
+    if (e.code === 'ERR_BAD_REQUEST' || e.code === 'ERR_BAD_RESPONSE') {
       const error = e.response.data;
       resultDisptach({
         type: 'ERROR',
@@ -265,15 +265,14 @@ function Home() {
 
   useEffect(() => {
     if (user) {
-      navigate('/profile');
+      navigate('/in');
     }
   }, [user, navigate]);
 
   return (
     <>
-      {modalIsOpen && (
-        <ModalLogin closeLogin={closeLogin} resultDispatch={resultDispatch} />
-      )}
+      {/* NESTED ModalLogin for /login */}
+      <Outlet context={{ closeLogin, resultDispatch }} />
       {(error.status || success.status) && forDisplay && (
         <div
           className={`${styles['message-container']} ${
@@ -415,7 +414,7 @@ function Home() {
             </form>
             <button
               className={styles['link']}
-              onClick={() => setModalIsOpen(true)}
+              onClick={() => navigate('/login')}
             >
               Already have an account
             </button>

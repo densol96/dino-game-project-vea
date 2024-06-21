@@ -21,4 +21,5 @@ public interface IPlayerRepo extends JpaRepository<Player, Integer> {
     @Query(value = "SELECT * FROM Players p WHERE p.immune_until < :currentDateTime AND p.id <> :excludeId AND p.level = :level ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<Player> findRandomOpponentByLevelAndWithoutImmunity(@Param("excludeId") int excludeId, @Param("currentDateTime") LocalDateTime currentDateTime, @Param("level") int level);
 
+    Player findByUserId(Integer id);
 }

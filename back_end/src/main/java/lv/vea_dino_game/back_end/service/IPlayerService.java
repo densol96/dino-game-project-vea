@@ -12,22 +12,8 @@ import lv.vea_dino_game.back_end.model.dto.PlayerInfoDto;
 import java.util.List;
 
 public interface IPlayerService {
-    // clans
-    void joinClan(Integer playerId, Integer clanId);
-    void enrollClan(Integer playerId);
-
-    List<Player> getAllPlayersSortByLevelDesc();
-    List<Player> getAllPlayersSortByLevelAsc();
-
-    List<Player> getAllPlayersByLevel(Integer level);
 
     PlayerStats getPlayerStatsByPlayerId(Integer id);
-
-    BasicMessageResponse updateSkillPoints(RequestLearnNewPlayerStats requestLearnNewPlayerStats);
-
-    // job
-    BasicMessageResponse startJob(RequestStartJob requestStartJob);
-    BasicMessageResponse finishJob(Integer id);
 
     BasicMessageResponse joinClan(Integer clanId);
 
@@ -43,4 +29,11 @@ public interface IPlayerService {
     PlayerInfoDto getPlayerById(Integer id);
 
     PlayerInfoDto getMyProfile();
+
+    BasicMessageResponse updateSkillPoints(RequestLearnNewPlayerStats requestLearnNewPlayerStats);
+
+    // job
+    BasicMessageResponse startJob(RequestStartJob requestStartJob);
+    BasicMessageResponse finishJob(Integer id);
+
 }

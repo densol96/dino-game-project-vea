@@ -29,6 +29,13 @@ public class Player {
     @JoinColumn(name = "player_stats")
     private PlayerStats playerStats = new PlayerStats();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_combat_stats")
+    private PlayerCombatsStats combatStats = null;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Job currentJob = null;
+
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
@@ -44,6 +51,8 @@ public class Player {
     private Integer level = 1;
 
     private LocalDateTime immuneUntil;
+
+    private LocalDateTime workingUntil = LocalDateTime.now();
 
     @Size(max = 300, message = "Description cannot be longer than 300 chars")
     private String description;

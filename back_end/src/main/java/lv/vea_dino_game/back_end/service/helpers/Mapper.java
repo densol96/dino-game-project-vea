@@ -18,7 +18,8 @@ public class Mapper {
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
       user.getPlayer().getCurrency(),
-      user.getPlayer().getDescription()
+      user.getPlayer().getDescription(),
+      user.getPlayer().getCombatStats()
     );
 
   }

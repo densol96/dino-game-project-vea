@@ -22,48 +22,21 @@ function Profile() {
   const { user, setUserFullInfo } = useUserContext();
   const [{ success, error, forDisplay }, resultDispatch] = useResponseResult();
   const errors = reduceValidationErrors(error.errors);
-  const { agility, armor, damage, health, criticalHitPercentage } =
-    user.playerStats;
+  const { agility, armor, damage, health, criticalHitPercentage } = user.playerStats;
+  const { combatsTotal, combatsWon, currencyWon, currencyLost } = user.combatStats;
   const max = Math.max(...extractStats(user.playerStats));
   const PRICE = 5;
-
-  // const [agilityAdded, setAgilityAdded] = useState(0);
-  // const [armorAdded, setArmorAdded] = useState(0);
-  // const [critAdded, setCritAdded] = useState(0);
-  // const [damageAdded, setDamageAdded] = useState(0);
-  // const [healthAdded, setHealthAdded] = useState(0);
 
   const { checkIfNewMessages } = useNewMessagesContext();
   useEffect(() => {
     checkIfNewMessages();
   }, []);
 
-  // const clearAddedStats = () => {
-  //   setDamageAdded(0);
-  //   setHealthAdded(0);
-  //   setAgilityAdded(0);
-  //   setCritAdded(0);
-  //   setArmorAdded(0);
-  // }
 
   const postNewStats = async (
-      armorAdded,agilityAdded,healthAdded,damageAdded,critAdded
+      damageAdded, armorAdded, agilityAdded, healthAdded, critAdded
   ) => {
     const API_ENDPOINT = 'http://localhost:8080/api/v1/player/ingame-stats';
-
-      // resultDispatch({
-      //   type: 'ERROR',
-      //   payload: {
-      //     heading: 'Not enough money',
-      //     message: 'Password and password confirm do not match!',
-      //     type: '',
-      //     errors: [],
-      //   },
-      // });
-      // setTimeout(() => {
-      //   resultDispatch({ type: 'CLOSE' });
-      // }, 5000);
-      // return;
 
     try {
       const response = await axios.post(API_ENDPOINT, {
@@ -227,22 +200,22 @@ function Profile() {
         <div className={styles.profileGrid__Statistics__One}>
           <ion-icon name="thumbs-up"></ion-icon>
           <p>Battles won: </p>
-          <p>5</p>
+          <p>{combatsWon}</p>
         </div>
         <div className={styles.profileGrid__Statistics__One}>
           <ion-icon name="thumbs-down"></ion-icon>
           <p>Battles lost: </p>
-          <p>3</p>
+          <p>{combatsTotal - combatsWon}</p>
         </div>
         <div className={styles.profileGrid__Statistics__One}>
           <ion-icon id={styles.wonMoney} name="logo-usd"></ion-icon>
           <p>Currency stolen: </p>
-          <p>300</p>
+          <p>{currencyWon}</p>
         </div>
         <div className={styles.profileGrid__Statistics__One}>
           <ion-icon id={styles.lostMoney} name="logo-usd"></ion-icon>
           <p>Currency lost: </p>
-          <p>155</p>
+          <p>{currencyLost}</p>
         </div>
       </div>
     </div>

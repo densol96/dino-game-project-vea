@@ -44,7 +44,7 @@ public class Player {
     private Integer experience = 0;
 
     @Min(value = 0, message = "currency can not be less than 0")
-    private Integer currency = 0;
+    private Integer currency = 50;
 
     @Min(value = 1, message = "Level can not be less than 1")
     @Max(value = 10, message = "Level can not be greater than 10")

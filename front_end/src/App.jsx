@@ -4,7 +4,7 @@ import { NewMessagesProvider } from './context/NewMessagesProvider';
 import Home from './pages/home/Home';
 import LoggedIn from './pages/logged/LoggedIn';
 import ModalLogin from './pages/ModalLogin/ModalLogin';
-import Profile from './pages/Profile/Profile';
+import Profile from './pages/profile/Profile';
 import NotFound from './pages/NotFound.jsx/NotFound';
 import Settings from './pages/settings/Settings';
 import Ratings from './pages/Ratings/Ratings';

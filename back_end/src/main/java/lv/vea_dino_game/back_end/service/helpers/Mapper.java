@@ -1,8 +1,9 @@
 package lv.vea_dino_game.back_end.service.helpers;
 
-import lv.vea_dino_game.back_end.model.*;
-import lv.vea_dino_game.back_end.model.dto.*;
 import org.springframework.stereotype.Service;
+
+import lv.vea_dino_game.back_end.model.User;
+import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 
 @Service
 public class Mapper {
@@ -15,79 +16,8 @@ public class Mapper {
       user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
       user.getPlayer().getPlayerStats(),
       user.getPlayer().getDinoType(),
-      user.getPlayer().getLevel(),
-      user.getPlayer().getExperience(),
-      user.getPlayer().getLevel(),
-      user.getPlayer().getDescription()
+      user.getPlayer().getLevel()
     );
-
-  }
-
-  public AllAnnouncementDto announcementToDto(Announcement announcement){
-    return new AllAnnouncementDto(
-      announcement.getId(),
-      announcement.getAuthor().getUser().getUsername(),
-      announcement.getTitle(),
-      announcement.getContent(),
-      announcement.getDate()
-    );
-  }
-
-  public AllClanInfoViewDto convertToDto(Clan clan) {
-    return new AllClanInfoViewDto(
-            clan.getId(),
-            clan.getTitle(),
-            clan.getDescription(),
-            clan.getDinoType(),
-            clan.getAdmin().getUser().getUsername(),
-            clan.getMinPlayerLevel(),
-            clan.getMaxCapacity()
-    );
-  }
-
-  public AllPlayerInfoDto playerToDto(Player player) {
-    return new AllPlayerInfoDto(
-            player.getId(),
-            player.getUser().getUsername(),
-            player.getDinoType(),
-            player.getLevel()
-    );
-  }
-
-  public ClanDto clanToDto(Clan clan) {
-    return new ClanDto(
-            clan.getId(),
-            clan.getTitle(),
-            clan.getDescription(),
-            clan.getDinoType(),
-            clan.getMaxCapacity(),
-            clan.getMinPlayerLevel(),
-            clan.getPlayers(),
-            clan.getAdmin().getUser().getUsername()
-    );
-  }
-
-  public PlayerInfoDto onePlayerToDto(Player player) {
-    return new PlayerInfoDto(
-            player.getId(),
-            player.getUser().getUsername(),
-            player.getDinoType(),
-            player.getLevel(),
-            player.getExperience(),
-            player.getDescription()
-    );
-  }
-
-  public FriendDto oneFriendToDto(Friend friend) {
-    return new FriendDto(
-            friend.getId(),
-            friend.getFriend().getUser().getUsername(),
-            friend.getFriend().getDinoType(),
-            friend.getFriend().getLevel(),
-            friend.getPlayer().getUser().getUsername(),
-            friend.getPlayer().getDinoType(),
-            friend.getPlayer().getLevel()
-
-    );
+    
   }
 }

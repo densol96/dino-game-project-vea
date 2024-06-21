@@ -44,9 +44,7 @@ public class PlayerServiceImpl implements IPlayerService {
         if (clan.getPlayers().size() >= clan.getMaxCapacity()) {
             throw new IllegalStateException("Clan is already at maximum capacity");
         }
-        if (player.getDinoType() != clan.getDinoType()){
-            throw new InvalidClanException("Player dino type does not match clan dino type");
-        }
+
         if (player.getLevel() < clan.getMinPlayerLevel()) {
             throw new IllegalStateException("Player does not meet the minimum level requirement for the clan");
         }

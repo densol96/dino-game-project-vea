@@ -1,6 +1,9 @@
 package lv.vea_dino_game.back_end.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -27,7 +30,14 @@ public class Player {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_stats")
-    private PlayerStats playerStats = new PlayerStats();
+    private PlayerStats playerStats;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Job currentJob = null;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_combat_stats")
+    private PlayerCombatsStats combatStats = null;
 
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
@@ -43,33 +53,19 @@ public class Player {
     @Max(value = 10, message = "Level can not be greater than 10")
     private Integer level = 1;
 
-    private LocalDateTime immuneUntil;
+    private LocalDateTime immuneUntil = LocalDateTime.now(); // set immuneUntil to 24 hours from now (now removed for testing purposes)
 
-    @Size(max = 300, message = "Description cannot be longer than 300 chars")
-    private String description;
+    private LocalDateTime workingUntil = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference
     private List<Announcement> announcement;
-
-    @OneToOne(mappedBy = "player")
-    @JsonIgnore
-    private User user;
-
-    @OneToMany(mappedBy = "player")
-    private List<Friend> friends;
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
-        setImmuneUntil(LocalDateTime.now()); // set immuneUntil to 24 hours from now (now removed for testing purposes)
-    }
-
-    public Player(Clan clan, DinoType dinoType, Integer experience, String description) {
-        setDinoType(dinoType);
-        setClan(clan);
-        setDescription(description);
-        setExperience(experience);
+        setCombatStats(new PlayerCombatsStats());
     }
 
 

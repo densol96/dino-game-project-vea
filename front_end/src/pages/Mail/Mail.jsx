@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './Mail.module.scss';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { styleNavLink } from '../../helpers/helpers';
+import { styleNavLink, formatDate } from '../../helpers/helpers';
 import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
 
@@ -23,23 +23,26 @@ async function getIncomingMail(mailType, page, setMailForDisplay) {
   }
 }
 
-function formatDate(date) {
-  const d = new Date(date);
-  const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
-  const month = d.getMonth() < 10 ? `0${d.getMonth()}` : d.getMonth();
-  const hrs = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
-  const mins = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
-  const stringDateTime = `${day}/${month}/${d.getFullYear()} ${hrs}:${mins}`;
-  return stringDateTime;
+async function getNumOfPagesForIncomingMail(mailType, setPagesTotal) {
+  const GET_MAIL_API = `${BASE_URL}/get-number-pages-${mailType}`;
+
+  try {
+    const response = await axios.get(GET_MAIL_API, headersWithToken());
+    setPagesTotal(+response.data);
+  } catch (e) {
+    console.log('💥💥💥💥' + e);
+  }
 }
 
 function Mail() {
   const [mailType, setMailType] = useState(type.in);
   const [page, setPage] = useState(1);
+  const [pagesTotal, setPagesTotal] = useState(1);
   const [mailForDisplay, setMailForDisplay] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    getNumOfPagesForIncomingMail(mailType, setPagesTotal);
     getIncomingMail(mailType, page, setMailForDisplay);
   }, [mailType, page]);
 
@@ -70,7 +73,7 @@ function Mail() {
           <span>Write a message</span>
         </NavLink>
       </div>
-      <table>
+      <table className={styles.table}>
         <thead>
           <tr>
             <th>{mailType === type.in ? 'From' : 'To'}</th>
@@ -83,12 +86,15 @@ function Mail() {
           {mailForDisplay.map((letter, i) => {
             console.log(letter);
             return (
-              <tr className={styles.readMail} key={i}>
+              <tr className={letter.isUnread ? styles.unreadMail : ''} key={i}>
                 <td>{mailType === type.in ? letter.from : letter.to}</td>
                 <td>{letter.title}</td>
                 <td>{formatDate(letter.sentAt)}</td>
                 <td className={styles.actionTd}>
-                  <NavLink className={() => styles.viewIcon}>
+                  <NavLink
+                    to={`/in/mail/read/${letter.id}`}
+                    className={() => styles.viewIcon}
+                  >
                     <ion-icon class={styles.icon} name="eye"></ion-icon>
                   </NavLink>
                   /
@@ -102,12 +108,40 @@ function Mail() {
             );
           })}
         </tbody>
+        <div className={styles.paginationHolder}>
+          <div className="pagination">
+            {
+              <button
+                className={`${page === 1 ? styles.hide : ''} ${styles.btnNav}`}
+              >
+                <ion-icon
+                  onClick={() => {
+                    setPage((page) => page - 1);
+                  }}
+                  id="icon"
+                  name="chevron-back-outline"
+                ></ion-icon>
+              </button>
+            }
+            {pagesTotal > 1 && <span>{page}</span>}
+            {
+              <button
+                className={`${page === pagesTotal ? styles.hide : ''} ${
+                  styles.btnNav
+                }`}
+              >
+                <ion-icon
+                  onClick={() => {
+                    setPage((page) => page + 1);
+                  }}
+                  id="icon"
+                  name="chevron-forward-outline"
+                ></ion-icon>
+              </button>
+            }
+          </div>
+        </div>
       </table>
-      <div className="pagination">
-        <ion-icon id="icon" name="chevron-back-outline"></ion-icon>
-        <span>2</span>
-        <ion-icon id="icon" name="chevron-forward-outline"></ion-icon>
-      </div>
     </div>
   );
 }

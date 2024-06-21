@@ -40,3 +40,30 @@
     color: var(--color-primary-light);
   }
 }
+
+.table {
+  position: relative;
+
+  .paginationHolder {
+    position: absolute;
+    top: 25rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btnNav {
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

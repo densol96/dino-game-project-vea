@@ -126,4 +126,14 @@ function styleNavLink(isActive) {
   return isActive.isActive ? `isActive navLink` : `navLink`;
 }
 
-export { useResponseResult, reduceValidationErrors, styleNavLink };
+function formatDate(date) {
+  const d = new Date(date);
+  const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
+  const month = d.getMonth() < 10 ? `0${d.getMonth()}` : d.getMonth();
+  const hrs = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
+  const mins = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
+  const stringDateTime = `${day}/${month}/${d.getFullYear()} ${hrs}:${mins}`;
+  return stringDateTime;
+}
+
+export { useResponseResult, reduceValidationErrors, styleNavLink, formatDate };

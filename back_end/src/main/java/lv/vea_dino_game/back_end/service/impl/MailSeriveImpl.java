@@ -104,7 +104,9 @@ public class MailSeriveImpl implements IMailService {
           actualMail.getTo().getUsername(),
           actualMail.getTitle(),
           actualMail.getMessageText(),
-          actualMail.getSentAt());
+          actualMail.getSentAt(),
+          userMail.getIsUnread()
+          );
     }).toList();
   }
   
@@ -131,5 +133,33 @@ public class MailSeriveImpl implements IMailService {
     Integer resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(), MailType.FROM);
     return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
   }
-  
+
+  @Override
+  public BasicMailDto getMailById(Integer id) {
+    if(id == null || id < 0 || !userMailMessageRepo.existsById(id))
+      throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+    
+    UserMailMessage userMail = userMailMessageRepo.findById(id).get();
+    // mark as read at this point
+    userMail.setIsUnread(false);
+    MailMessage actualMail = userMail.getMail();
+    userMailMessageRepo.save(userMail);
+    return new BasicMailDto(
+          userMail.getId(),
+          actualMail.getFrom().getUsername(),
+          actualMail.getTo().getUsername(),
+          actualMail.getTitle(),
+          actualMail.getMessageText(),
+          actualMail.getSentAt(),
+          userMail.getIsUnread()
+          );
+  }
+
+  @Override
+  public BasicMessageResponse removeMail(Integer id) {
+    if(id == null || id < 0 || !userMailMessageRepo.existsById(id))
+      throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+    userMailMessageRepo.deleteById(id);
+    return new BasicMessageResponse("Letter has been successfully deleted");
+  }
 }

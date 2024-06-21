@@ -8,6 +8,7 @@ public record BasicMailDto(
   String to,
   String title,
   String text,
-  LocalDateTime sentAt
+  LocalDateTime sentAt,
+  Boolean isUnread
 ) {
 }

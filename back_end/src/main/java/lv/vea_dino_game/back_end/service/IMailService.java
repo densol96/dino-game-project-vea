@@ -21,4 +21,8 @@ public interface IMailService {
   Integer getNumberOfPagesForAllIncomingMail();
 
   Integer getNumberOfPagesForAllOutgoingMail();
+
+  BasicMailDto getMailById(Integer id);
+
+  BasicMessageResponse removeMail(Integer id);
 }

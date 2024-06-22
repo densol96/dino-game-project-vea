@@ -2,12 +2,7 @@ package lv.vea_dino_game.back_end.service.impl;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -204,9 +199,35 @@ public class MailSeriveImpl implements IMailService {
 
   @Override
   public BasicMessageResponse removeMail(Integer id) {
-    if(id == null || id < 0 || !userMailMessageRepo.existsById(id))
+    if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
       throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
     userMailMessageRepo.deleteById(id);
     return new BasicMessageResponse("Letter has been successfully deleted");
+  }
+  
+  public void sendNotificationFromAdmin(String usernameTo, String title, String text) {
+    User admin = userRepo.findByUsername("admin").orElseThrow(() -> new ServiceCurrentlyUnavailableException("The notifications service is currently unavailable"));
+    User to = userRepo.findByUsername(usernameTo)
+        .orElseThrow(() -> new InvalidUserInputException("No such user with username of " + usernameTo));
+    MailMessage mail = new MailMessage();
+    mail.setFrom(admin);
+    mail.setTo(to);
+    mail.setTitle(title);
+    mail.setMessageText(text);
+
+    UserMailMessage fromMessage = new UserMailMessage();
+    fromMessage.setMail(mail);
+    fromMessage.setType(MailType.FROM);
+    fromMessage.setUser(admin);
+
+
+    UserMailMessage toMessage = new UserMailMessage();
+    toMessage.setMail(mail);
+    toMessage.setType(MailType.TO);
+    toMessage.setUser(to);
+    toMessage.setIsUnread(true);
+
+    mailMessageRepo.save(mail);
+    userMailMessageRepo.saveAll(List.of(fromMessage, toMessage));
   }
 }

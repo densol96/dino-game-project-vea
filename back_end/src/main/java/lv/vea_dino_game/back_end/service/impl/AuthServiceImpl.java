@@ -1,6 +1,7 @@
 package lv.vea_dino_game.back_end.service.impl;
 
 import lv.vea_dino_game.back_end.service.IAuthService;
+import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.helpers.EmailSenderService;
 import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
@@ -163,10 +164,6 @@ public class AuthServiceImpl implements IAuthService {
   public UserMainDTO getMe() {
     return mapper.fromUserToDto(getLoggedInUser());
   }
-
-  
-  
-
 
   // HELPER FUNCTIONS BELOW (could be moved to a separate service ormay be not)
   

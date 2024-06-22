@@ -69,6 +69,7 @@ public class BackEndApplication {
       Clan clanTwo = new Clan("Herbivores", "We love peace and green", 20, 1);
       clanRepo.saveAll(List.of(clanOne, clanTwo));
 
+      User admin = new User("admin", "admin@admin.com", encoder.encode("admin"), Role.ADMIN, DinoType.carnivore, null, 20, "I am the admin");
 
       User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, clanOne,
           10, "I am solodeni");
@@ -91,7 +92,7 @@ public class BackEndApplication {
       User u10 = new User("itachi", "itachi@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore,
           null, 14, null);
 
-      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10));
+      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));
       };
   }
 }

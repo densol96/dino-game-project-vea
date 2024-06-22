@@ -205,6 +205,7 @@ public class MailSeriveImpl implements IMailService {
     return new BasicMessageResponse("Letter has been successfully deleted");
   }
   
+  @Override
   public void sendNotificationFromAdmin(String usernameTo, String title, String text) {
     User admin = userRepo.findByUsername("admin").orElseThrow(() -> new ServiceCurrentlyUnavailableException("The notifications service is currently unavailable"));
     User to = userRepo.findByUsername(usernameTo)

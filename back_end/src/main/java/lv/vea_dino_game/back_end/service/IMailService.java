@@ -26,4 +26,6 @@ public interface IMailService {
   BasicMailDto getMailById(Integer id);
 
   BasicMessageResponse removeMail(Integer id);
+
+  void sendNotificationFromAdmin(String usernameTo, String title, String text);
 }

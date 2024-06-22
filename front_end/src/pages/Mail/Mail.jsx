@@ -1,8 +1,8 @@
+import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 import { useEffect, useState } from 'react';
 import styles from './Mail.module.scss';
 import { useNavigate, NavLink } from 'react-router-dom';
 import {
-  styleNavLink,
   formatDate,
   handleBadRequest,
   reduceValidationErrors,
@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
 import NotificationMessage from '../notificationMessage/NotificationMessage';
+import Pagination from '../../components/Pagination';
 
 const BASE_URL = `http://localhost:8080/api/v1/mail`;
 
@@ -88,6 +89,11 @@ function Mail() {
   const [{ success, error, forDisplay }, resultDispatch] = useResponseResult();
   const errors = reduceValidationErrors(error.errors);
   const navigate = useNavigate();
+
+  const { checkIfNewMessages } = useNewMessagesContext();
+  useEffect(() => {
+    checkIfNewMessages();
+  });
 
   useEffect(() => {
     getNumOfPages(mailType, setPagesTotal, sortBy);
@@ -189,38 +195,13 @@ function Mail() {
                 );
               })}
             </tbody>
-            <div className={styles.paginationHolder}>
-              <div className="pagination">
-                {
-                  <button
-                    className={`${page === 1 ? 'hide' : ''} ${styles.btnNav}`}
-                  >
-                    <ion-icon
-                      onClick={() => {
-                        setPage((page) => page - 1);
-                      }}
-                      id="icon"
-                      name="chevron-back-outline"
-                    ></ion-icon>
-                  </button>
-                }
-                {pagesTotal > 1 && <span>{page}</span>}
-                {
-                  <button
-                    className={`${
-                      page === pagesTotal || pagesTotal === 0 ? styles.hide : ''
-                    } ${styles.btnNav}`}
-                  >
-                    <ion-icon
-                      onClick={() => {
-                        setPage((page) => page + 1);
-                      }}
-                      id="icon"
-                      name="chevron-forward-outline"
-                    ></ion-icon>
-                  </button>
-                }
-              </div>
+            <div className="paginationHolder">
+              <Pagination
+                styles={styles}
+                page={page}
+                pagesTotal={pagesTotal}
+                setPage={setPage}
+              />
             </div>
           </table>
         )}

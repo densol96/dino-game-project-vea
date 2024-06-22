@@ -15,7 +15,7 @@ import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
-import lv.vea_dino_game.back_end.model.enums.SortByEnum;
+import lv.vea_dino_game.back_end.model.enums.MailFilterByEnum;
 import lv.vea_dino_game.back_end.service.IMailService;
 
 import org.springframework.web.bind.annotation.PostMapping;

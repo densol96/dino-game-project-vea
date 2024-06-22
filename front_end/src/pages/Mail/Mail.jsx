@@ -7,9 +7,11 @@ import {
   handleBadRequest,
   reduceValidationErrors,
   useResponseResult,
+  BASE_API_URL,
 } from '../../helpers/helpers';
 import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
+import NotificationMessage from '../notificationMessage/NotificationMessage';
 
 const BASE_URL = `http://localhost:8080/api/v1/mail`;
 
@@ -18,8 +20,8 @@ const type = {
   out: 'outgoing',
 };
 
-async function deleteMail(id, navigate, resultDispatch) {
-  const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
+async function deleteMail(id, navigate, resultDispatch, additionalInfo = '') {
+  const API_ENDPOINT = `${BASE_API_URL}/mail/${id}`;
 
   try {
     const response = await axios.delete(API_ENDPOINT, headersWithToken());
@@ -27,13 +29,12 @@ async function deleteMail(id, navigate, resultDispatch) {
       type: 'SUCCESS',
       payload: {
         heading: 'Letter deleted',
-        message:
-          response.data.message +
-          '. You will be re-addressed to all mail shortly...',
+        message: response.data.message + additionalInfo,
       },
     });
     setTimeout(() => {
       navigate('/in/mail/all');
+      // window.location.reload();
     }, 2000);
   } catch (e) {
     console.log('💥💥💥' + e);
@@ -81,37 +82,17 @@ function Mail() {
   useEffect(() => {
     getNumOfPagesForIncomingMail(mailType, setPagesTotal);
     getIncomingMail(mailType, page, setMailForDisplay);
-  }, [mailType, page]);
+  }, [mailType, page, success]);
 
   return (
     <>
-      {(error.status || success.status) && forDisplay && (
-        <div
-          className={`message-container ${
-            error.status ? 'error-color' : 'success-color'
-          }`}
-        >
-          <p
-            className="message-container__close-btn"
-            onClick={() => resultDispatch({ type: 'CLOSE' })}
-          >
-            X
-          </p>
-          <h2 className="message-container__heading">
-            {error.status ? error.heading : success.heading}
-          </h2>
-          <p className="message-container__content">
-            {error.status ? error.message : success.message}
-          </p>
-          <ul>
-            {errors?.map((e, i) => (
-              <li className="message-container__content" key={i}>
-                {e}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <NotificationMessage
+        error={error}
+        success={success}
+        resultDispatch={resultDispatch}
+        forDisplay={forDisplay}
+        errors={errors}
+      />
       <div>
         <header className="header">
           <button
@@ -220,4 +201,4 @@ function Mail() {
   );
 }
 
-export default Mail;
+export { Mail, deleteMail };

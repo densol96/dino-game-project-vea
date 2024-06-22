@@ -70,7 +70,7 @@ public class BackEndApplication {
       clanRepo.saveAll(List.of(clanOne, clanTwo));
 
 
-      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("pasword123"), Role.ADMIN, DinoType.carnivore, clanOne,
+      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, clanOne,
           10, "I am solodeni");
       User u2 = new User("davidka", "solo@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, clanOne,
           10, "I am davidka");

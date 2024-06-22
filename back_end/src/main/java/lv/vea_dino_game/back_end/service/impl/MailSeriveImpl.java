@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -73,8 +73,6 @@ public class MailSeriveImpl implements IMailService {
     toMessage.setType(MailType.TO);
     toMessage.setUser(to);
     toMessage.setIsUnread(true);
-
-    
 
     mailMessageRepo.save(mail);
     userMailMessageRepo.saveAll(List.of(fromMessage, toMessage));

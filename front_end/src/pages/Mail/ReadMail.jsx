@@ -10,6 +10,7 @@ import {
   handleBadRequest,
 } from '../../helpers/helpers';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
+import { deleteMail } from './Mail';
 
 async function getMail(id, setLetter, navigate, checkIfNewMessages) {
   const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
@@ -20,29 +21,6 @@ async function getMail(id, setLetter, navigate, checkIfNewMessages) {
     checkIfNewMessages();
   } catch (e) {
     navigate('/no-letter-with-such-id');
-  }
-}
-
-async function deleteMail(id, navigate, resultDispatch) {
-  const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
-
-  try {
-    const response = await axios.delete(API_ENDPOINT, headersWithToken());
-    resultDispatch({
-      type: 'SUCCESS',
-      payload: {
-        heading: 'Letter deleted',
-        message:
-          response.data.message +
-          '. You will be re-addressed to all mail shortly...',
-      },
-    });
-    setTimeout(() => {
-      navigate('/in/mail/all');
-    }, 2000);
-  } catch (e) {
-    console.log('💥💥💥' + e);
-    handleBadRequest(e, resultDispatch);
   }
 }
 
@@ -110,7 +88,12 @@ function ReadMail() {
           <button
             className="btn brown-btn--reversed"
             onClick={() => {
-              deleteMail(mailId, navigate, resultDispatch);
+              deleteMail(
+                mailId,
+                navigate,
+                resultDispatch,
+                '. You will be re-addressed to all mail shortly...'
+              );
             }}
           >
             Delete

@@ -22,5 +22,6 @@ public record UserMainDTO(
   PlayerCombatsStats combatStats,
   Job currentJob,
   LocalDateTime immuneUntil,
-  LocalDateTime workingUntil
+  LocalDateTime workingUntil,
+  LocalDateTime cannotAttackAgainUntil
 ) {}

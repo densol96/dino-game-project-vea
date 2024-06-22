@@ -72,6 +72,8 @@ public class CombatServiceHelper {
 
         Combat combat = new Combat();
         CombatResult combatResult = new CombatResult();
+        CombatHistoryRecap combatHistoryRecap = new CombatHistoryRecap();
+
         combat.setInitiator(initiator);
         combat.setDefender(defender);
         combat.setDateTime(LocalDateTime.now());
@@ -84,16 +86,11 @@ public class CombatServiceHelper {
         combatResult.setWinnerExpReward(50); // magic numbers (fix later)
         combatResult.setWinnerCurrencyChange(10);
         combatResult.setLoserCurrencyChange(-10);
-        combatResult.setCombat(combat);
-        combat.setCombatResult(combatResult);
 
-        // not implemented so far
-        CombatHistoryRecap combatHistoryRecap = new CombatHistoryRecap();
-        combatHistoryRecap.setCombat(combat);
+        combat.setCombatResult(combatResult);
+        combat.setCombatHistoryRecap(combatHistoryRecap);
 
         combatRepo.save(combat);
-        combatResultRepo.save(combatResult);
-        combatHistoryRecapRepo.save(combatHistoryRecap);
 
         return combat;
 

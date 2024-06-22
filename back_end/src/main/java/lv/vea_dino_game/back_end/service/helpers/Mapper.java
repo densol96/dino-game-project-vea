@@ -22,7 +22,8 @@ public class Mapper {
       user.getPlayer().getCombatStats(),
       user.getPlayer().getCurrentJob(),
       user.getPlayer().getImmuneUntil(),
-      user.getPlayer().getWorkingUntil()
+      user.getPlayer().getWorkingUntil(),
+      user.getPlayer().getCannotAttackAgainUntil()
 
     );
 

@@ -44,9 +44,8 @@ public class CombatController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/attack/one/{attackerId}/{defenderId}")
+    @PostMapping("/attack/one/{attackerId}/{defenderId}")
     public ResponseEntity<Combat> postAttackSelectedPlayerOnArena(@PathVariable("attackerId") Integer attackerId, @PathVariable("defenderId") Integer defenderId) {
-        combatService.attackSelectedPlayerOnArena(attackerId, defenderId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<Combat>(combatService.attackSelectedPlayerOnArena(attackerId, defenderId), HttpStatus.OK);
     }
 }

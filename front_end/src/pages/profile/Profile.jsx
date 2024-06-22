@@ -215,7 +215,7 @@ function Profile() {
         <div className={styles.profileGrid__Statistics__One}>
           <ion-icon id={styles.lostMoney} name="logo-usd"></ion-icon>
           <p>Currency lost: </p>
-          <p>{currencyLost}</p>
+          <p>{-currencyLost}</p>
         </div>
       </div>
     </div>

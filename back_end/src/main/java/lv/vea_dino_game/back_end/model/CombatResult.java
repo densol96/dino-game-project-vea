@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -15,9 +16,8 @@ public class CombatResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne
-    @JoinColumn(name = "combat_id")
-    @NotNull(message = "Combat id cannot be null")
+    @OneToOne(mappedBy = "combatResult")
+    @JsonIgnore
     public Combat combat;
 
     @ManyToOne

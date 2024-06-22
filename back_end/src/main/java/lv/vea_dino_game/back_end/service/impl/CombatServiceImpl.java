@@ -26,6 +26,7 @@ public class CombatServiceImpl implements ICombatService {
     private final int MAX_XP_THRESHOLD = 1000;
     private final int MAX_LVL = 10;
     private final int IMMUNITY_IN_HOURS_AFTER_DEFEAT = 8;
+    private final int COOL_DOWN_IN_MINUTES_AFTER_ATTACK = 15;
 
     @Override
     public Combat attackSelectedPlayerOnArena(Integer attackerId, Integer defenderId) {
@@ -53,6 +54,13 @@ public class CombatServiceImpl implements ICombatService {
 
         if (defender.getId().equals(combat.getCombatResult().getLoser().getId())) { // when attacker lost he gets no immunity
             loser.setImmuneUntil(LocalDateTime.now().plusHours(IMMUNITY_IN_HOURS_AFTER_DEFEAT));
+        }
+
+        // assigning attack cooldown
+        if (attacker.getId().equals(combat.getCombatResult().getWinner().getId())) {// winner attacked
+            winner.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
+        } else { // loser attacked
+            loser.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
         }
 
         // each player +1 combat total

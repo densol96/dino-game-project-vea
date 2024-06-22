@@ -132,13 +132,9 @@ public class ClanServiceImpl implements IClanFilterService {
         Player player = playerRepo.findByUserId(user.id());
         if (player == null)
             throw new InvalidPlayerException("No player");
-        Integer id = player.getId();
-        Player admin = playerRepo.findById(id).get();
-        if (admin == null)
-            throw new InvalidPlayerException("No player");
         if (clanDto == null) throw new EmptyClanException("Clan is empty");
         Clan clan = new Clan(clanDto.title(), clanDto.description(), clanDto.maxCapacity(), clanDto.minPlayerLevel());
-        clan.setDinoType(admin.getDinoType());
+        clan.setDinoType(player.getDinoType());
         clan.setAdmin(player);
         clan.setSinglePlayer(player);
         clanRepo.save(clan);
@@ -152,11 +148,7 @@ public class ClanServiceImpl implements IClanFilterService {
         Player player = playerRepo.findByUserId(user.id());
         if (player == null)
             throw new InvalidPlayerException("No player");
-        Integer id = player.getId();
-        Player admin = playerRepo.findById(id).get();
-        if (admin == null)
-            throw new InvalidPlayerException("No player");
-        Clan clan = clanRepo.findByAdmin(admin);
+        Clan clan = clanRepo.findByAdmin(player);
         if (clan == null)
             throw new InvalidPlayerException("You are not admin to update the clan!");
         if (updatedClanDto == null) throw new EmptyClanException("Clan is empty");
@@ -175,11 +167,7 @@ public class ClanServiceImpl implements IClanFilterService {
         Player player = playerRepo.findByUserId(user.id());
         if (player == null)
             throw new InvalidPlayerException("No player");
-        Integer id = player.getId();
-        Player admin = playerRepo.findById(id).get();
-        if (admin == null)
-            throw new InvalidPlayerException("No player");
-        Clan clan = clanRepo.findByAdmin(admin);
+        Clan clan = clanRepo.findByAdmin(player);
         if (clan == null)
             throw new InvalidPlayerException("You are not admin to update the clan!");
         if (clanRepo.count() == 0)
@@ -188,7 +176,6 @@ public class ClanServiceImpl implements IClanFilterService {
             p.setClan(null);
             playerRepo.save(p);
         }
-
         clan.setAdmin(null);
         clanRepo.save(clan);
         clanRepo.delete(clan);
@@ -201,13 +188,9 @@ public class ClanServiceImpl implements IClanFilterService {
         Player player = playerRepo.findByUserId(user.id());
         if (player == null)
             throw new InvalidPlayerException("No player");
-        Integer id = player.getId();
-        Player admin = playerRepo.findById(id).get();
-        if (admin == null)
-            throw new InvalidPlayerException("No player");
-        Clan clan = clanRepo.findByAdmin(admin);
+        Clan clan = clanRepo.findByAdmin(player);
         if (clan == null)
-            throw new EmptyDataBaseTable("There is no clan with id " + id);
+            throw new EmptyDataBaseTable("There is no clan");
         return mapper.clanToDto(clan);
     }
 

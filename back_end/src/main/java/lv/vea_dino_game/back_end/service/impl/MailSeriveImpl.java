@@ -2,6 +2,7 @@ package lv.vea_dino_game.back_end.service.impl;
 
 import java.util.List;
 
+import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class MailSeriveImpl implements IMailService {
     //   throw new NoSuchUserException("You are not meant to send mail to yourself");
     
     // At this point, we are sure there is such user
-    User to = userRepo.findByUsername(dto.to()).get();
+    User to = userRepo.findByUsername(dto.to()).orElseThrow(() -> new InvalidUserInputException("User does not exist"));
     
     // Create a message
     MailMessage mail = new MailMessage();

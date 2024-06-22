@@ -42,10 +42,11 @@ public class AnnouncementServiceImpl implements IAnnouncementService {
         Player player = playerRepo.findByUserId(user.id());
         if (player == null)
             throw new InvalidPlayerException("No player");
-        Clan clan = clanRepo.findByPlayers(player);
+        Clan clan = player.getClan();
         if (clan == null) {
             throw new InvalidClanException("User does not have a clan");
         }
+
         Announcement newAnnouncement = new Announcement(announcementDto.title(), announcementDto.content(), clan, player);
         newAnnouncement.setDate();
         announcementRepo.save(newAnnouncement);

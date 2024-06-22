@@ -18,10 +18,12 @@ import lv.vea_dino_game.back_end.model.dto.ErrorResponse;
 @RestControllerAdvice
 public class GlobalErrorHandler {
 
+  private final String TYPE = "INVALID_INPUT";
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
 
-    String type = "INVALID_INPUT";
+
     String name = "User input validation error";
     String message = "The user input you have provided is invalid. See the detailed info:";
     HashMap<String, String> validationErrors = new HashMap<>();
@@ -32,13 +34,13 @@ public class GlobalErrorHandler {
       validationErrors.put(fieldName, errorMessage);
     });
 
-    return new ResponseEntity<>(new ErrorResponse(type, name, message, validationErrors),
+    return new ResponseEntity<>(new ErrorResponse(TYPE, name, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
   public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-    return new ResponseEntity<>(new ErrorResponse("INVALID_INPUT", "User input validation error", e.getMessage(), null),
+    return new ResponseEntity<>(new ErrorResponse(TYPE, "User input validation error", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
   
@@ -67,21 +69,21 @@ public class GlobalErrorHandler {
 
   @ExceptionHandler(InvalidClanException.class)
   public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
-    return new ResponseEntity<>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
+    return new ResponseEntity<>(new ErrorResponse(TYPE, "Clan input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(InvalidPlayerException.class)
   public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
     return new ResponseEntity<>(
-        new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
+        new ErrorResponse(TYPE, "Player input validation error", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(NoSuchUserException.class)
   public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e) {
     return new ResponseEntity<>(
-        new ErrorResponse("INVALID_INPUT", "No such user", e.getMessage(), null),
+        new ErrorResponse(TYPE, "No such user", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
 

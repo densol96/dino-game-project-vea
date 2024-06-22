@@ -19,11 +19,13 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    @OneToOne(mappedBy="combat",cascade = CascadeType.ALL, orphanRemoval = true)
-    private CombatResult combatResult;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "combat_results")
+    private CombatResult combatResult = new CombatResult();
 
-    @OneToOne(mappedBy = "combat")
-    private CombatHistoryRecap combatHistoryRecap;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "combat_history_recaps")
+    private CombatHistoryRecap combatHistoryRecap = new CombatHistoryRecap();
 
     @ManyToOne
     @JoinColumn(name = "initiator_id")

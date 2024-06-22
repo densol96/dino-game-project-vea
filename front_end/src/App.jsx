@@ -11,7 +11,8 @@ import Ratings from './pages/Ratings/Ratings';
 import { Mail } from './pages/Mail/Mail';
 import ReadMail from './pages/Mail/ReadMail';
 import WriteMail from './pages/Mail/WriteMail';
-import Combat from './pages/combat/Combat';
+import Combat from "./pages/combat/Combat";
+import Farm from "./pages/farm/Farm";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route index replace element={<Navigate to="profile" />} />
               <Route path="profile" element={<Profile />} />
               <Route path="combat" element={<Combat />} />
+              <Route path="farm" element={<Farm />} />
               <Route path="mail">
                 <Route index replace element={<Navigate to="all" />} />
                 <Route path="all" element={<Mail />} />

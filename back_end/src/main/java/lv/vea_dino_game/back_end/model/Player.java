@@ -54,6 +54,8 @@ public class Player {
 
     private LocalDateTime workingUntil = LocalDateTime.now();
 
+    private LocalDateTime cannotAttackAgainUntil = LocalDateTime.now();
+
     @Size(max = 300, message = "Description cannot be longer than 300 chars")
     private String description;
 

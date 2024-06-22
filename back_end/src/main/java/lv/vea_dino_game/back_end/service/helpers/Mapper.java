@@ -19,7 +19,12 @@ public class Mapper {
       user.getPlayer().getExperience(),
       user.getPlayer().getCurrency(),
       user.getPlayer().getDescription(),
-      user.getPlayer().getCombatStats()
+      user.getPlayer().getCombatStats(),
+      user.getPlayer().getCurrentJob(),
+      user.getPlayer().getImmuneUntil(),
+      user.getPlayer().getWorkingUntil(),
+      user.getPlayer().getCannotAttackAgainUntil()
+
     );
 
   }

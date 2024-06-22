@@ -16,7 +16,7 @@ import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
 import lv.vea_dino_game.back_end.model.enums.MailType;
-import lv.vea_dino_game.back_end.model.enums.SortByEnum;
+import lv.vea_dino_game.back_end.model.enums.MailFilterByEnum;
 import lv.vea_dino_game.back_end.model.MailMessage;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.UserMailMessage;
@@ -85,7 +85,7 @@ public class MailSeriveImpl implements IMailService {
     return new HasNewMessagesDto(userMailMessageRepo.existsByUserIdAndIsUnread(user.getId(), true));
   }
 
-  private List<BasicMailDto> getAllMail(Integer page, MailType type, SortByEnum sortBy) {
+  private List<BasicMailDto> getAllMail(Integer page, MailType type, MailFilterByEnum sortBy) {
     if (page == null || page < 1)
       throw new InvalidUserInputException("Invalid user input for the page of " + page);
 
@@ -100,12 +100,12 @@ public class MailSeriveImpl implements IMailService {
 
     List<UserMailMessage> userMailList = null;
 
-    if(sortBy == SortByEnum.ALL) {
+    if(sortBy == MailFilterByEnum.ALL) {
       userMailList = userMailMessageRepo
           .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
     } else {
       userMailList = userMailMessageRepo
-          .findAllByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(), type, pageable, sortBy == SortByEnum.UNREAD ? true : false);
+          .findAllByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(), type, pageable, sortBy == MailFilterByEnum.UNREAD ? true : false);
     }
     // could check if the list size is 0 here, but I want to send an empty array back, BUT if any other exception to throw an exception(will make it easier to consume such API on React side)
     if (userMailList == null) {
@@ -129,18 +129,18 @@ public class MailSeriveImpl implements IMailService {
   
   @Override
   public List<BasicMailDto> getAllIncomingMail(Integer page, String sortByValue) {
-    SortByEnum sortBy = processSortByValueToEnum(sortByValue);
+    MailFilterByEnum sortBy = processSortByValueToEnum(sortByValue);
     return getAllMail(page, MailType.TO, sortBy);
   }
 
   @Override
   public List<BasicMailDto> getAllOutgoingMail(Integer page) {
-    return getAllMail(page, MailType.FROM, SortByEnum.ALL);
+    return getAllMail(page, MailType.FROM, MailFilterByEnum.ALL);
   }
 
-  private SortByEnum processSortByValueToEnum(String sortByString) {
+  private MailFilterByEnum processSortByValueToEnum(String sortByString) {
     try {
-       return SortByEnum.valueOf(sortByString.toUpperCase());
+       return MailFilterByEnum.valueOf(sortByString.toUpperCase());
      } catch (Exception e) {
        throw new InvalidUserInputException("Invalid sortBy(all, read, unread) value of " + sortByString);
     }
@@ -150,15 +150,15 @@ public class MailSeriveImpl implements IMailService {
   @Override
   public Integer getNumberOfPagesForAllIncomingMail(String sortByValue) {
 
-    SortByEnum sortBy = processSortByValueToEnum(sortByValue);
+    MailFilterByEnum sortBy = processSortByValueToEnum(sortByValue);
 
     Integer resultsTotal;
 
-    if(sortBy == SortByEnum.ALL) {
+    if(sortBy == MailFilterByEnum.ALL) {
       resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(),
           MailType.TO);
     }
-    else if(sortBy == SortByEnum.READ) {
+    else if(sortBy == MailFilterByEnum.READ) {
       resultsTotal = userMailMessageRepo.countByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(),
           MailType.TO, false);
     } else {

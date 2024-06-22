@@ -234,6 +234,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
+  position: relative;
 
   th,
   td {
@@ -316,4 +317,22 @@ table {
 .hide {
   opacity: 0;
   pointer-events: none;
+}
+
+.paginationHolder {
+  position: absolute;
+  top: 25rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.btnNav {
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

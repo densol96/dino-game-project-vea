@@ -110,17 +110,18 @@ table {
   }
 }
 
-.data {
-  padding-bottom: 3rem;
-  margin-bottom: 3rem;
-  border-bottom: 2px solid var(--color-primary);
-}
+// .data {
+//   padding-bottom: 3rem;
+//   margin-bottom: 8rem;
+//   border-bottom: 2px solid var(--color-primary);
+// }
 
 .searchByName {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  padding: 5rem 0;
 
   label {
     text-transform: uppercase;

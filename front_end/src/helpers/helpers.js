@@ -12,7 +12,7 @@ function resultReducer(state, action) {
           heading: '',
           message: '',
           type: '',
-          errors: '',
+          errors: [],
         },
         success: {
           status: true,
@@ -48,7 +48,7 @@ function resultReducer(state, action) {
           heading: '',
           message: '',
           type: '',
-          errors: '',
+          errors: [],
         },
         success: {
           status: false,
@@ -73,7 +73,7 @@ function resultReducer(state, action) {
           heading: '',
           message: '',
           type: '',
-          errors: '',
+          errors: [],
         },
         success: {
           status: false,
@@ -162,10 +162,13 @@ function handleBadRequest(e, resultDispatch) {
   }
 }
 
+const BASE_API_URL = 'http://localhost:8080/api/v1';
+
 export {
   useResponseResult,
   reduceValidationErrors,
   styleNavLink,
   formatDate,
   handleBadRequest,
+  BASE_API_URL,
 };

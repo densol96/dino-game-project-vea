@@ -15,6 +15,7 @@ import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
+import lv.vea_dino_game.back_end.model.enums.SortByEnum;
 import lv.vea_dino_game.back_end.service.IMailService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +45,8 @@ public class MailController {
   }
 
   @GetMapping("/get-all-incoming")
-  public ResponseEntity<List<BasicMailDto>> getAllIncoming(@RequestParam("page") Integer page) {
-    return new ResponseEntity<>(mailSerive.getAllIncomingMail(page), HttpStatus.OK);
+  public ResponseEntity<List<BasicMailDto>> getAllIncoming(@RequestParam("page") Integer page, @RequestParam("sortBy") String sortBy) {
+    return new ResponseEntity<>(mailSerive.getAllIncomingMail(page, sortBy), HttpStatus.OK);
   }
 
   @GetMapping("/get-all-outgoing")
@@ -54,8 +55,8 @@ public class MailController {
   }
 
   @GetMapping("/get-number-pages-incoming")
-  public ResponseEntity<Integer> getIncomingPagesNum() {
-    return new ResponseEntity<>(mailSerive.getNumberOfPagesForAllIncomingMail(), HttpStatus.OK);
+  public ResponseEntity<Integer> getIncomingPagesNum(@RequestParam("sortBy") String sortBy) {
+    return new ResponseEntity<>(mailSerive.getNumberOfPagesForAllIncomingMail(sortBy), HttpStatus.OK);
   }
 
   @GetMapping("/get-number-pages-outgoing")

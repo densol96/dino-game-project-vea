@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.validation.ConstraintViolationException;
 import lv.vea_dino_game.back_end.model.dto.ErrorResponse;
 
 
@@ -35,6 +36,26 @@ public class GlobalErrorHandler {
     });
 
     return new ResponseEntity<>(new ErrorResponse(TYPE, name, message, validationErrors),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+
+    String type = "INVALID_INPUT";
+    String name = "User input validation error";
+    String message = "The user input you have provided is invalid. See the detailed info:";
+    HashMap<String, String> validationErrors = new HashMap<>();
+
+    e.getConstraintViolations().forEach(error -> {
+
+      String violatedColumnName = error.getPropertyPath().toString();
+      String formattedFieldName = Character.toString(Character.toUpperCase(violatedColumnName.charAt(0)))
+          + violatedColumnName.substring(1);
+      validationErrors.put(formattedFieldName, error.getMessage());
+    });
+
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse(type, name, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
 

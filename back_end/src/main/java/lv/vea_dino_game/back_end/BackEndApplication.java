@@ -69,29 +69,30 @@ public class BackEndApplication {
       Clan clanTwo = new Clan("Herbivores", "We love peace and green", 20, 1);
       clanRepo.saveAll(List.of(clanOne, clanTwo));
 
+      User admin = new User("admin", "admin@admin.com", encoder.encode("admin"), Role.ADMIN, DinoType.carnivore, null, 20, "I am the admin");
 
-      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("Den3k_123B"), Role.ADMIN, DinoType.carnivore, clanOne,
+      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, clanOne,
           10, "I am solodeni");
-      User u2 = new User("davidka", "solo@deni.com", encoder.encode("David4k_123"), Role.USER, DinoType.carnivore, clanOne,
+      User u2 = new User("davidka", "solo@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, clanOne,
           10, "I am davidka");
-      User u3 = new User("mihails", "mihails@mihails.com", encoder.encode("Super_Mix1"), Role.USER, DinoType.carnivore, clanOne,
+      User u3 = new User("mihails", "mihails@mihails.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, clanOne,
           5, "I am mihails");
-      User u4 = new User("daniels", "daniels@daniels.com", encoder.encode("DanielsB1"), Role.USER, DinoType.carnivore, null,
+      User u4 = new User("daniels", "daniels@daniels.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           1, "I am daniels");
-      User u5 = new User("janis", "janis@deni.com", encoder.encode("jan4kB2"), Role.USER, DinoType.carnivore, null,
+      User u5 = new User("janis", "janis@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           3, null);
-      User u6 = new User("peteris", "peteris@deni.com", encoder.encode("TriBut2"), Role.USER, DinoType.carnivore, null,
+      User u6 = new User("peteris", "peteris@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           20, null);
-      User u7 = new User("rihards", "rihards@deni.com", encoder.encode("SuperMax33"), Role.USER, DinoType.herbivore, clanTwo,
+      User u7 = new User("rihards", "rihards@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, clanTwo,
           20, null);
-      User u8 = new User("naruto", "solo@naruto.com", encoder.encode("123SoloNar"), Role.USER, DinoType.herbivore, null,
+      User u8 = new User("naruto", "solo@naruto.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, null,
           17, null);
-      User u9 = new User("sasuke", "sasuke@deni.com", encoder.encode("B7ty673io"), Role.USER, DinoType.herbivore, null,
+      User u9 = new User("sasuke", "sasuke@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, null,
           18, null);
-      User u10 = new User("itachi", "itachi@deni.com", encoder.encode("AmI56But3"), Role.USER, DinoType.herbivore,
+      User u10 = new User("itachi", "itachi@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore,
           null, 14, null);
 
-      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10));
+      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));
       };
   }
 }

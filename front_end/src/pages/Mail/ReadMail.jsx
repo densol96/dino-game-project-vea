@@ -10,6 +10,7 @@ import {
   handleBadRequest,
 } from '../../helpers/helpers';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
+import { deleteMail } from './Mail';
 
 async function getMail(id, setLetter, navigate, checkIfNewMessages) {
   const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
@@ -20,29 +21,6 @@ async function getMail(id, setLetter, navigate, checkIfNewMessages) {
     checkIfNewMessages();
   } catch (e) {
     navigate('/no-letter-with-such-id');
-  }
-}
-
-async function deleteMail(id, navigate, resultDispatch) {
-  const API_ENDPOINT = `http://localhost:8080/api/v1/mail/${id}`;
-
-  try {
-    const response = await axios.delete(API_ENDPOINT, headersWithToken());
-    resultDispatch({
-      type: 'SUCCESS',
-      payload: {
-        heading: 'Letter deleted',
-        message:
-          response.data.message +
-          '. You will be re-addressed to all mail shortly...',
-      },
-    });
-    setTimeout(() => {
-      navigate('/in/mail/all');
-    }, 2000);
-  } catch (e) {
-    console.log('💥💥💥' + e);
-    handleBadRequest(e, resultDispatch);
   }
 }
 
@@ -58,6 +36,8 @@ function ReadMail() {
   useEffect(() => {
     getMail(mailId, setLetter, navigate, checkIfNewMessages);
   }, [mailId]);
+
+  console.log(letter);
 
   return (
     <>
@@ -99,6 +79,10 @@ function ReadMail() {
           <p className={styles.message__title_content}>{letter?.from}</p>
         </div>
         <div className={styles.message__title}>
+          <h3 className={styles.message__title_heading}>To: </h3>
+          <p className={styles.message__title_content}>{letter?.to}</p>
+        </div>
+        <div className={styles.message__title}>
           <h3 className={styles.message__title_heading}>Received on: </h3>
           <p className={styles.message__title_content}>
             {formatDate(letter?.sentAt)}
@@ -106,11 +90,18 @@ function ReadMail() {
         </div>
         <p className={styles.message__text}>{letter?.text}</p>
         <div className={styles.btns}>
-          <button className="btn brown-btn">Reply</button>
+          {letter.type === 'TO' && (
+            <button className="btn brown-btn">Reply</button>
+          )}
           <button
             className="btn brown-btn--reversed"
             onClick={() => {
-              deleteMail(mailId, navigate, resultDispatch);
+              deleteMail(
+                mailId,
+                navigate,
+                resultDispatch,
+                '. You will be re-addressed to all mail shortly...'
+              );
             }}
           >
             Delete

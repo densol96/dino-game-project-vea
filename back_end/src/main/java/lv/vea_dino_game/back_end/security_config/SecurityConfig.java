@@ -27,7 +27,7 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(request -> request
-            .requestMatchers("/api/v1/auth/**", "/h2-console/**", "/api/v1/clans/**", "/api/v1/player/**","/api/v1/announcements/**", "/api/v1/combat/**", "/api/v1/job/**").permitAll()
+            .requestMatchers("/api/v1/auth/**", "/h2-console/**", "/api/v1/clans/**", "/api/v1/player/**","/api/v1/announcements/**", "/api/v1/combat/**", "/api/v1/job/**","/api/v1/user/**").permitAll()
             .anyRequest().authenticated())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // authProvider set up to authenticate users using repo attached to a DB

@@ -14,6 +14,8 @@ import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.IUserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements IUserService {
@@ -51,7 +53,7 @@ public class UserServiceImpl implements IUserService {
         if (!user.getAccountDisabled()){
             return new BasicMessageResponse("User "+ user.getUsername()+ "is not banned");
         }
-        user.setAccountDisabled(true);
+        user.setAccountDisabled(false);
         userRepo.save(user);
         try {
             MailDto mail = new MailDto(user.getUsername(),"Unban", "You ban is removed");
@@ -73,7 +75,13 @@ public class UserServiceImpl implements IUserService {
             return new BasicMessageResponse("User "+ user.getUsername()+ " is already banned");
         }
         user.setAccountDisabled(true);
-        user.setTempBanDateTime(info.date());
+        if (info.date() == null || info.date().isBefore(LocalDateTime.now())){
+            user.setTempBanDateTime(LocalDateTime.now().plusDays(2));
+        }
+        else {
+            user.setTempBanDateTime(info.date());
+        }
+
         userRepo.save(user);
         try {
             MailDto mail = new MailDto(user.getUsername(), info.title(), info.message());

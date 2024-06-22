@@ -2,7 +2,7 @@ package lv.vea_dino_game.back_end.service;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
+
 
 import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;

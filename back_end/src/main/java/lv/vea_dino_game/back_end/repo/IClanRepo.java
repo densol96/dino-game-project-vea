@@ -25,7 +25,7 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
 
     List<Clan> findAllByOrderByTitleAsc();
 
-    Clan findByTitle(String title);
+
 
 
 

@@ -31,14 +31,14 @@ public class CombatServiceHelper {
         final int turnsAmount = 20; // level * 5 ? or const?
 
         double health_initiator = initiator.getPlayerStats().getHealth();
-        Integer endurance_initiator = initiator.getPlayerStats().getEndurance(); // not sure about that prop
+        //Integer endurance_initiator = initiator.getPlayerStats().getEndurance(); // not sure about that prop
         Integer agility_initiator = initiator.getPlayerStats().getAgility();
         Integer damage_initiator = initiator.getPlayerStats().getDamage();
         Integer armor_initiator = initiator.getPlayerStats().getArmor();
         Integer critical_hit_percentage_initiator = initiator.getPlayerStats().getCriticalHitPercentage();
 
         double health_defender = defender.getPlayerStats().getHealth();
-        Integer endurance_defender = defender.getPlayerStats().getEndurance();
+        //Integer endurance_defender = defender.getPlayerStats().getEndurance();
         Integer agility_defender = defender.getPlayerStats().getAgility();
         Integer damage_defender = defender.getPlayerStats().getDamage();
         Integer armor_defender = defender.getPlayerStats().getArmor();

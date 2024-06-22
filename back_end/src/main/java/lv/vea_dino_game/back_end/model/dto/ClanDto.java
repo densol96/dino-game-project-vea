@@ -1,6 +1,6 @@
 package lv.vea_dino_game.back_end.model.dto;
 
-import lv.vea_dino_game.back_end.model.Announcement;
+
 import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 

@@ -2,6 +2,7 @@ package lv.vea_dino_game.back_end.security_config;
 
 import java.io.IOException;
 
+import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.core.context.SecurityContextHolder;

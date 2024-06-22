@@ -24,7 +24,7 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
-import lombok.RequiredArgsConstructor;
+
 
 import lv.vea_dino_game.back_end.model.User;
 

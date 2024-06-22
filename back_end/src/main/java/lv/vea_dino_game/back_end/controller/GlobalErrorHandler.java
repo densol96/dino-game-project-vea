@@ -32,20 +32,20 @@ public class GlobalErrorHandler {
       validationErrors.put(fieldName, errorMessage);
     });
 
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse(type, name, message, validationErrors),
+    return new ResponseEntity<>(new ErrorResponse(type, name, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
   public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "User input validation error", e.getMessage(), null),
+    return new ResponseEntity<>(new ErrorResponse("INVALID_INPUT", "User input validation error", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
   
   
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorResponse> handleInvalidRequestBody(HttpMessageNotReadableException e) {
-    return new ResponseEntity<ErrorResponse>(
+    return new ResponseEntity<>(
         new ErrorResponse("REQ_BODY_ERR", "Expected request body missing",
             "Expected request body required for this action is missing", null),
         HttpStatus.BAD_REQUEST);
@@ -53,34 +53,34 @@ public class GlobalErrorHandler {
   
   @ExceptionHandler(InvalidAuthenticationDataException.class)
   public ResponseEntity<ErrorResponse> handleInvalidAuthInput(InvalidAuthenticationDataException e) {
-    return new ResponseEntity<ErrorResponse>(
+    return new ResponseEntity<>(
         new ErrorResponse("AUTH_ERR", "Unable to authenticate", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(ServiceCurrentlyUnavailableException.class)
   public ResponseEntity<ErrorResponse> handleCurrentlyUnavailable(ServiceCurrentlyUnavailableException e) {
-    return new ResponseEntity<ErrorResponse>(
+    return new ResponseEntity<>(
         new ErrorResponse("INT_SERV_ERR", "Currently unable to perform this action.", e.getMessage(), null),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(InvalidClanException.class)
   public ResponseEntity<ErrorResponse> handleInvalidClanException(InvalidClanException e) {
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
+    return new ResponseEntity<>(new ErrorResponse("INVALID_INPUT", "Clan input validation error", e.getMessage(), null),
             HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(InvalidPlayerException.class)
   public ResponseEntity<ErrorResponse> handleUserInvalidPlayerException(InvalidPlayerException e) {
-    return new ResponseEntity<ErrorResponse>(
+    return new ResponseEntity<>(
         new ErrorResponse("INVALID_INPUT", "Player input validation error", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(NoSuchUserException.class)
   public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException e) {
-    return new ResponseEntity<ErrorResponse>(
+    return new ResponseEntity<>(
         new ErrorResponse("INVALID_INPUT", "No such user", e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
@@ -91,6 +91,6 @@ public class GlobalErrorHandler {
   public ResponseEntity<String> handleAnyOtherException(Exception e) {
     System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
     System.out.println(e.getMessage());
-    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

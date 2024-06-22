@@ -1,7 +1,7 @@
 package lv.vea_dino_game.back_end.model.dto;
 
 import lv.vea_dino_game.back_end.model.enums.DinoType;
-import lv.vea_dino_game.back_end.model.enums.FriendStatus;
+
 
 public record FriendDto(
         Integer id,

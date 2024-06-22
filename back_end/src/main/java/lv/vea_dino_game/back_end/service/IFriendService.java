@@ -1,6 +1,6 @@
 package lv.vea_dino_game.back_end.service;
 
-import lv.vea_dino_game.back_end.model.dto.AllAnnouncementDto;
+
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.FriendDto;
 

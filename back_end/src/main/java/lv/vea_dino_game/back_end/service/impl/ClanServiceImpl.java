@@ -4,10 +4,10 @@ import jakarta.transaction.Transactional;
 import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
-import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
+
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
-import lv.vea_dino_game.back_end.model.User;
+
 import lv.vea_dino_game.back_end.model.dto.*;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
@@ -17,9 +17,9 @@ import lv.vea_dino_game.back_end.service.IClanFilterService;
 
 import lv.vea_dino_game.back_end.service.IPlayerService;
 import lv.vea_dino_game.back_end.service.helpers.Mapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
+
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,6 @@ public class ClanServiceImpl implements IClanFilterService {
     private final IClanRepo clanRepo;
 
     private final IPlayerRepo playerRepo;
-
-    private final IUserRepo userRepo;
-
-    private final IPlayerService playerService;
 
     private final AuthServiceImpl authService;
     private final Mapper mapper;

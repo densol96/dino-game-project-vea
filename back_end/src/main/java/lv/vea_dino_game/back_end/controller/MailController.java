@@ -35,7 +35,7 @@ public class MailController {
 
   @PostMapping("/send")
   public ResponseEntity<BasicMessageResponse> sendMessage(@Valid @RequestBody MailDto dto) {
-    return new ResponseEntity<BasicMessageResponse>(mailSerive.sendMail(dto), HttpStatus.OK);
+    return new ResponseEntity<>(mailSerive.sendMail(dto), HttpStatus.OK);
   }
 
   @GetMapping("/has-new-messages")

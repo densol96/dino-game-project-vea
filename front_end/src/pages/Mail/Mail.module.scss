@@ -67,3 +67,16 @@
   align-items: center;
   justify-content: center;
 }
+
+.noMailMessage {
+  width: 100%;
+  border: 2px solid var(--color-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 2rem;
+  padding: 3rem;
+  text-align: center;
+}

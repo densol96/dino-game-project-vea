@@ -37,6 +37,8 @@ function ReadMail() {
     getMail(mailId, setLetter, navigate, checkIfNewMessages);
   }, [mailId]);
 
+  console.log(letter);
+
   return (
     <>
       {(error.status || success.status) && forDisplay && (
@@ -77,6 +79,10 @@ function ReadMail() {
           <p className={styles.message__title_content}>{letter?.from}</p>
         </div>
         <div className={styles.message__title}>
+          <h3 className={styles.message__title_heading}>To: </h3>
+          <p className={styles.message__title_content}>{letter?.to}</p>
+        </div>
+        <div className={styles.message__title}>
           <h3 className={styles.message__title_heading}>Received on: </h3>
           <p className={styles.message__title_content}>
             {formatDate(letter?.sentAt)}
@@ -84,7 +90,9 @@ function ReadMail() {
         </div>
         <p className={styles.message__text}>{letter?.text}</p>
         <div className={styles.btns}>
-          <button className="btn brown-btn">Reply</button>
+          {letter.type === 'TO' && (
+            <button className="btn brown-btn">Reply</button>
+          )}
           <button
             className="btn brown-btn--reversed"
             onClick={() => {

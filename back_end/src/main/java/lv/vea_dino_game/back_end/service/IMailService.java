@@ -8,17 +8,18 @@ import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
+import lv.vea_dino_game.back_end.model.enums.SortByEnum;
 
 public interface IMailService {
   BasicMessageResponse sendMail(MailDto dto);
 
   HasNewMessagesDto hasUnreadMessages();
 
-  List<BasicMailDto> getAllIncomingMail(Integer page);
+  List<BasicMailDto> getAllIncomingMail(Integer page, String sortBy);
 
   List<BasicMailDto> getAllOutgoingMail(Integer page);
 
-  Integer getNumberOfPagesForAllIncomingMail();
+  Integer getNumberOfPagesForAllIncomingMail(String sortBy);
 
   Integer getNumberOfPagesForAllOutgoingMail();
 

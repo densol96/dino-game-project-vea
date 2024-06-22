@@ -14,5 +14,9 @@ public interface IUserMailMessageRepo extends JpaRepository<UserMailMessage, Int
 
   List<UserMailMessage> findAllByUserUsernameAndType(String username, MailType type, Pageable pageable);
 
+  List<UserMailMessage> findAllByUserUsernameAndTypeAndIsUnread(String username, MailType type, Pageable pageable, Boolean isUnreadValue);
+
   Integer countByUserUsernameAndType(String username, MailType type);
+
+  Integer countByUserUsernameAndTypeAndIsUnread(String username, MailType type, Boolean value);
 }

@@ -24,7 +24,6 @@ async function sendMail(body, resultDispatch) {
       },
     });
   } catch (e) {
-    console.log(e);
     handleBadRequest(e, resultDispatch);
   }
 }

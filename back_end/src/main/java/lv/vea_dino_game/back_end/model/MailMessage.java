@@ -31,11 +31,11 @@ public class MailMessage {
   private User to;
 
   @NotBlank(message = "Mail message title cannot be blank or empty")
-  @Size(min = 2, max=40, message = "Message title cannot be longer than 40 characters")
+  @Size(min = 2, max=40, message = "Message title should be 2-40 characters long")
   private String title;
 
   @NotBlank(message = "Mail message cannot be blank/null")
-  @Size(max = 400, message = "Mail message cannot be longer than 400 characters")
+  @Size(min = 5, max = 400, message = "Mail message should be 5-400 characters long")
   private String messageText;
 
   // from / to but then users can delete those

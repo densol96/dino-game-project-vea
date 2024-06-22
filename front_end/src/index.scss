@@ -312,3 +312,8 @@ table {
   text-transform: uppercase;
   margin-bottom: 3rem;
 }
+
+.hide {
+  opacity: 0;
+  pointer-events: none;
+}

@@ -3,8 +3,10 @@ package lv.vea_dino_game.back_end.service.impl;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,11 +15,13 @@ import org.springframework.data.domain.Sort;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.exceptions.NoSuchUserException;
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.dto.BasicMailDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.HasNewMessagesDto;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
 import lv.vea_dino_game.back_end.model.enums.MailType;
+import lv.vea_dino_game.back_end.model.enums.SortByEnum;
 import lv.vea_dino_game.back_end.model.MailMessage;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.UserMailMessage;
@@ -86,14 +90,33 @@ public class MailSeriveImpl implements IMailService {
     return new HasNewMessagesDto(userMailMessageRepo.existsByUserIdAndIsUnread(user.getId(), true));
   }
 
-  private List<BasicMailDto> getAllMail(Integer page, MailType type) {
-    if (page == null || page < 1 || page > 1000)
+  private List<BasicMailDto> getAllMail(Integer page, MailType type, SortByEnum sortBy) {
+    if (page == null || page < 1)
       throw new InvalidUserInputException("Invalid user input for the page of " + page);
+
+    /*
+     * At first, thought to throw an exception, but actually, in order for front-end to work properly, need to return [] here.
+     */
+    // Integer upperLimitForPage = type == MailType.FROM ? getNumberOfPagesForAllOutgoingMail()
+    //     : getNumberOfPagesForAllIncomingMail(sortBy.toString());
+      
     // With Pageable, pageNumber starts at 0 => 1 page is at 0 index, 2 at 1 etc. 
     Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE, Sort.by("mail.sentAt").descending());
-    List<UserMailMessage> userMailList = userMailMessageRepo
-        .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
+
+    List<UserMailMessage> userMailList = null;
+
+    if(sortBy == SortByEnum.ALL) {
+      userMailList = userMailMessageRepo
+          .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
+    } else {
+      userMailList = userMailMessageRepo
+          .findAllByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(), type, pageable, sortBy == SortByEnum.UNREAD ? true : false);
+    }
     // could check if the list size is 0 here, but I want to send an empty array back, BUT if any other exception to throw an exception(will make it easier to consume such API on React side)
+    if (userMailList == null) {
+      System.out.println("SERVER EEROR LOG ----> check MailSeriveImpl.getAllMail");
+      throw new ServiceCurrentlyUnavailableException("Soory, but displaying your mail is cirrently unavailable");
+    }
     return userMailList.stream().map((userMail) -> {
       var actualMail = userMail.getMail();
       return new BasicMailDto(
@@ -103,26 +126,51 @@ public class MailSeriveImpl implements IMailService {
           actualMail.getTitle(),
           actualMail.getMessageText(),
           actualMail.getSentAt(),
-          userMail.getIsUnread()
+          userMail.getIsUnread(),
+          userMail.getType()
           );
     }).toList();
   }
   
   @Override
-  public List<BasicMailDto> getAllIncomingMail(Integer page) {
-    return getAllMail(page, MailType.TO);
+  public List<BasicMailDto> getAllIncomingMail(Integer page, String sortByValue) {
+    SortByEnum sortBy = processSortByValueToEnum(sortByValue);
+    return getAllMail(page, MailType.TO, sortBy);
   }
 
   @Override
   public List<BasicMailDto> getAllOutgoingMail(Integer page) {
-    return getAllMail(page, MailType.FROM);
+    return getAllMail(page, MailType.FROM, SortByEnum.ALL);
+  }
+
+  private SortByEnum processSortByValueToEnum(String sortByString) {
+    try {
+       return SortByEnum.valueOf(sortByString.toUpperCase());
+     } catch (Exception e) {
+       throw new InvalidUserInputException("Invalid sortBy(all, read, unread) value of " + sortByString);
+    }
   }
   
 
   @Override
-  public Integer getNumberOfPagesForAllIncomingMail() {
-    Integer resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(),
-        MailType.TO);
+  public Integer getNumberOfPagesForAllIncomingMail(String sortByValue) {
+
+    SortByEnum sortBy = processSortByValueToEnum(sortByValue);
+
+    Integer resultsTotal;
+
+    if(sortBy == SortByEnum.ALL) {
+      resultsTotal = userMailMessageRepo.countByUserUsernameAndType(authService.getLoggedInUser().getUsername(),
+          MailType.TO);
+    }
+    else if(sortBy == SortByEnum.READ) {
+      resultsTotal = userMailMessageRepo.countByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(),
+          MailType.TO, false);
+    } else {
+      resultsTotal = userMailMessageRepo.countByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(),
+          MailType.TO, true);
+    }
+  
     return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
   }
 
@@ -149,8 +197,9 @@ public class MailSeriveImpl implements IMailService {
           actualMail.getTitle(),
           actualMail.getMessageText(),
           actualMail.getSentAt(),
-          userMail.getIsUnread()
-          );
+          userMail.getIsUnread(),
+          userMail.getType()
+        );
   }
 
   @Override

@@ -1,8 +1,12 @@
 package lv.vea_dino_game.back_end.model.dto;
 
+import lv.vea_dino_game.back_end.model.Job;
 import lv.vea_dino_game.back_end.model.PlayerCombatsStats;
 import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 public record UserMainDTO(
   Integer id,
@@ -15,5 +19,8 @@ public record UserMainDTO(
   Integer experience,
   Integer currency,
   String description,
-  PlayerCombatsStats combatStats) {
-}
+  PlayerCombatsStats combatStats,
+  Job currentJob,
+  LocalDateTime immuneUntil,
+  LocalDateTime workingUntil
+) {}

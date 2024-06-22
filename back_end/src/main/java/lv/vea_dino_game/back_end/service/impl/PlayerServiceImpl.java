@@ -167,6 +167,8 @@ public class PlayerServiceImpl implements IPlayerService {
         if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
         Player player = playerRepo.findById(playerId).get();
         Job job = new Job();
+        if (requestStartJob.hoursDuration() == 1 && requestStartJob.rewardCurrency() != 10) throw new InvalidPlayerException("Hack attempt");
+        if (requestStartJob.hoursDuration() == 12 && requestStartJob.rewardCurrency() != 40) throw new InvalidPlayerException("Hack attempt");
         job.setRewardCurrency(requestStartJob.rewardCurrency());
         job.setHoursDuration(requestStartJob.hoursDuration());
         player.setCurrentJob(job);

@@ -16,6 +16,7 @@ import lv.vea_dino_game.back_end.service.helpers.Mapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,10 +38,12 @@ public class FriendServiceImpl implements IFriendService {
         Player me = playerRepo.findByUserId(user.id());
         if (me == null)
             throw new InvalidPlayerException("Invalid you");
-        Player friend = playerRepo.findById(friendId).get();
-        if (friend == null) {
+        Optional<Player> friendOptional = playerRepo.findById(friendId);
+        if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
+        Player friend = friendOptional.get();
+
         Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
         if (friendship != null) {
             if (friendship.getStatus() == FriendStatus.REJECTED){
@@ -61,10 +64,11 @@ public class FriendServiceImpl implements IFriendService {
         Player me = playerRepo.findByUserId(user.id());
         if (me == null)
             throw new InvalidPlayerException("Invalid you");
-        Player friend = playerRepo.findById(friendId).get();
-        if (friend == null) {
+        Optional<Player> friendOptional = playerRepo.findById(friendId);
+        if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
+        Player friend = friendOptional.get();
         Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");
@@ -86,10 +90,11 @@ public class FriendServiceImpl implements IFriendService {
         Player me = playerRepo.findByUserId(user.id());
         if (me == null)
             throw new InvalidPlayerException("Invalid you");
-        Player friend = playerRepo.findById(friendId).get();
-        if (friend == null) {
+        Optional<Player> friendOptional = playerRepo.findById(friendId);
+        if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
+        Player friend = friendOptional.get();
         Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");

@@ -31,8 +31,8 @@ public class CombatServiceImpl implements ICombatService {
     public Combat attackSelectedPlayerOnArena(Integer attackerId, Integer defenderId) {
         if (attackerId == null || !playerRepo.existsById(attackerId)) throw new InvalidPlayerException("attackerId " + attackerId + " does not exist");
         if (defenderId == null || !playerRepo.existsById(defenderId)) throw new InvalidPlayerException("defenderId " + defenderId + " does not exist");
-        Player attacker = playerRepo.findById(attackerId).get();
-        Player defender = playerRepo.findById(defenderId).get();
+        Player attacker = playerRepo.findById(attackerId).orElseThrow(() -> new InvalidPlayerException("attackerId " + attackerId + " does not exist"));
+        Player defender = playerRepo.findById(defenderId).orElseThrow(() -> new InvalidPlayerException("defenderId " + defenderId + " does not exist"));
 
         Combat combat = combatServiceHelper.simulateCombat(attacker, defender);
         Player winner = combat.getCombatResult().getWinner();

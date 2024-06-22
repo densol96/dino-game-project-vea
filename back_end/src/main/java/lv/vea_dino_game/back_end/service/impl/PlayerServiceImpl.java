@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,9 +120,11 @@ public class PlayerServiceImpl implements IPlayerService {
     public PlayerInfoDto getPlayerById(Integer id) {
         if (playerRepo.count() == 0){throw new EmptyDataBaseTable("There are no players");}
 
-        Player player = playerRepo.findById(id).get();
-        if (player == null)
-            throw new EmptyDataBaseTable("There are no players");
+        Optional<Player> playerOptional = playerRepo.findById(id);
+        if (playerOptional.isEmpty()) {
+            throw new InvalidPlayerException("Invalid friend");
+        }
+        Player player = playerOptional.get();
         return mapper.onePlayerToDto(player);
     }
 
@@ -136,15 +139,17 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public PlayerStats getPlayerStatsByPlayerId(Integer id) {
-        if (!playerRepo.existsById(id)) throw new InvalidPlayerException("Player with id " + id + " does not exist");
-        return playerRepo.findById(id).get().getPlayerStats();
+        return playerRepo.findById(id)
+                .map(Player::getPlayerStats)
+                .orElseThrow(() -> new InvalidPlayerException("Player with id " + id + " does not exist"));
     }
 
     @Override
     public BasicMessageResponse updateSkillPoints(RequestLearnNewPlayerStats requestLearnNewPlayerStats) {
         Integer playerId = requestLearnNewPlayerStats.playerId();
         if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
-        Player player = playerRepo.findById(playerId).get();
+        Player player = playerRepo.findById(playerId)
+                .orElseThrow(() -> new InvalidPlayerException("Player with id " + playerId + " does not exist"));
         if (player.getCurrency() - requestLearnNewPlayerStats.currencySpent() < 0) throw new InvalidPlayerException("You cant spend more currency than you have, when learning new skill points");
 
         player.setCurrency(player.getCurrency() - requestLearnNewPlayerStats.currencySpent());
@@ -165,7 +170,9 @@ public class PlayerServiceImpl implements IPlayerService {
     public BasicMessageResponse startJob(RequestStartJob requestStartJob) {
         Integer playerId = requestStartJob.playerId();
         if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
-        Player player = playerRepo.findById(playerId).get();
+        Player player = playerRepo.findById(playerId)
+                .orElseThrow(() -> new InvalidPlayerException("Player with id " + playerId + " does not exist"));
+
         Job job = new Job();
         job.setRewardCurrency(requestStartJob.rewardCurrency());
         job.setHoursDuration(requestStartJob.hoursDuration());
@@ -181,7 +188,8 @@ public class PlayerServiceImpl implements IPlayerService {
     @Override
     public BasicMessageResponse finishJob(Integer id) {
         if (!playerRepo.existsById(id)) throw new InvalidPlayerException("Player with id " + id + " does not exist");
-        Player player = playerRepo.findById(id).get();
+        Player player = playerRepo.findById(id)
+                .orElseThrow(() -> new InvalidPlayerException("Player with id " + id + " does not exist"));
         Job job = player.getCurrentJob();
         player.setCurrency(player.getCurrency() + job.getRewardCurrency());
         player.setCurrentJob(null);

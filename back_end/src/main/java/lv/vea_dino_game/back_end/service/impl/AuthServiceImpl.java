@@ -39,6 +39,7 @@ import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.security_config.JwtService;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -104,23 +105,33 @@ public class AuthServiceImpl implements IAuthService {
       throw new InvalidAuthenticationDataException(
           "You have not confirmed your identity yet. Pleas check your email for confirmation letter.");
     } catch (LockedException e) {
-      User user = userRepo.findByUsername(signInCredentials.username()).get();
-      String message = "Your account has been locked ";
-      if (user.getAccountDisabled() == true) {
-        message += "permanently. ";
-      } else {
-        LocalDateTime ban = user.getTempBanDateTime();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
-        String formattedDate = ban.format(formatter);
-        message += "untill " + formattedDate + ". ";
+        Optional<User> userOptional = userRepo.findByUsername(signInCredentials.username());
+        if (userOptional.isPresent()) {
+          User user = userOptional.get();
+          String message = "Your account has been locked ";
+          if (user.getAccountDisabled()) {
+            message += "permanently. ";
+          } else {
+            LocalDateTime ban = user.getTempBanDateTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+            String formattedDate = ban.format(formatter);
+            message += "until " + formattedDate + ". ";
+          }
+          throw new InvalidAuthenticationDataException(message + "If you think this is a mistake, get in touch with the admin.");
+        } else {
+          throw new InvalidAuthenticationDataException("User not found");
+        }
       }
 
-      throw new InvalidAuthenticationDataException(message + "If you think this is a mistake, get in touch with the admin.");
-    }
-    User user = userRepo.findByUsername(signInCredentials.username()).get();
-    user.setLastLoggedIn(LocalDateTime.now());
-    userRepo.save(user);
-    return new AuthResponse(jwtService.generateToken(user));
+      Optional<User> userOptional = userRepo.findByUsername(signInCredentials.username());
+      if (userOptional.isPresent()) {
+        User user = userOptional.get();
+        user.setLastLoggedIn(LocalDateTime.now());
+        userRepo.save(user);
+        return new AuthResponse(jwtService.generateToken(user));
+      } else {
+        throw new InvalidAuthenticationDataException("User not found");
+      }
   }
 
   @Override

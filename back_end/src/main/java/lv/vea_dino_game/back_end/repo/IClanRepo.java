@@ -27,7 +27,7 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
 
     Clan findByTitle(String title);
 
-    Clan findByPlayers(Player player);
+
 
     Clan findByAdmin(Player admin);
 }

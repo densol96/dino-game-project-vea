@@ -58,7 +58,7 @@ public class EmailSenderService {
         + "\n\nIf you never created an account with us, ignore this email.\nWith regards, DinoConflict";
 
     // {{%%TOKEN%%}} {{%%CURRENT_YEAR%%}}
-    String htmlContent = null;
+    String htmlContent;
     try {
       htmlContent = readHtmlFile("ConfirmEmail.html")
                             .replace("{%%USERNAME%%}", user.getUsername())

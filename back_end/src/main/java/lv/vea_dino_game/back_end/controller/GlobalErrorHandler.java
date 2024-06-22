@@ -48,7 +48,7 @@ public class GlobalErrorHandler {
     HashMap<String, String> validationErrors = new HashMap<>();
 
     e.getConstraintViolations().forEach(error -> {
-      
+
       String violatedColumnName = error.getPropertyPath().toString();
       String formattedFieldName = Character.toString(Character.toUpperCase(violatedColumnName.charAt(0)))
           + violatedColumnName.substring(1);

@@ -73,7 +73,7 @@ function LoggedIn() {
                 ></ion-icon>
               </li>
             </NavLink>
-            <NavLink className={styleNavLink} to="arena">
+            <NavLink className={styleNavLink} to="combat">
               <li className={styles.listItem}>
                 <ion-icon name="ribbon-outline"></ion-icon>
                 <span className={styles.listItem__text}>Arena</span>

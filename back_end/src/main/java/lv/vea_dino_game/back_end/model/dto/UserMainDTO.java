@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.model.dto;
 
+import lv.vea_dino_game.back_end.model.PlayerCombatsStats;
 import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
@@ -13,6 +14,6 @@ public record UserMainDTO(
   Integer level,
   Integer experience,
   Integer currency,
-  String description
-) {
+  String description,
+  PlayerCombatsStats combatStats) {
 }

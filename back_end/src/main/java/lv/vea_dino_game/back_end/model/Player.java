@@ -34,7 +34,7 @@ public class Player {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_combat_stats")
-    private PlayerCombatsStats combatStats = null;
+    private PlayerCombatsStats combatStats = new PlayerCombatsStats();
 
     @NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
@@ -71,7 +71,6 @@ public class Player {
         setDinoType(dinoType);
         setClan(clan);
         setPlayerStats(playerStats);
-        setCombatStats(new PlayerCombatsStats());
     }
 
     public Player(Clan clan, DinoType dinoType, Integer experience, String description) {

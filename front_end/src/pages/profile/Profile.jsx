@@ -8,7 +8,7 @@ import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 import styles from './Profile.module.scss';
 import axios from "axios";
 import {reduceValidationErrors, useResponseResult} from "../../helpers/helpers";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import NotificationMessage from "../notificationMessage/NotificationMessage";
 
 function extractStats(obj) {
   const arr = [];
@@ -89,7 +89,7 @@ function Profile() {
 
   return (
       <>
-        <ErrorMessage
+        <NotificationMessage
             error={error}
             success={success}
             forDisplay={forDisplay}

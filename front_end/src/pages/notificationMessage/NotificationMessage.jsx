@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ErrorMessage = ({ error, success, forDisplay, errors, resultDispatch }) => {
+const NotificationMessage = ({ error, success, forDisplay, errors, resultDispatch }) => {
     if (!forDisplay || !(error.status || success.status)) {
         return null;
     }
@@ -34,4 +34,4 @@ const ErrorMessage = ({ error, success, forDisplay, errors, resultDispatch }) =>
     );
 };
 
-export default ErrorMessage;
+export default NotificationMessage;

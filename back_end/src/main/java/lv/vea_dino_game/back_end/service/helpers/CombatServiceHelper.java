@@ -24,6 +24,8 @@ public class CombatServiceHelper {
     private final ICombatResultRepo combatResultRepo;
     private final ICombatHistoryRecapRepo combatHistoryRecapRepo;
 
+    private final Random random = new Random(); // Reusable Random instance
+
     public Combat simulateCombat(Player initiator, Player defender) {
         final Integer level = initiator.getLevel();
         final int turnsAmount = 20; // level * 5 ? or const?
@@ -100,10 +102,10 @@ public class CombatServiceHelper {
     }
 
     private double calculateDamage (
-        int damage,
-        int armor,
-        int agility,
-        int criticalHitPercentage
+            int damage,
+            int armor,
+            int agility,
+            int criticalHitPercentage
     ) {
         if (isCritical((double) agility /100)) {
             if (allowLogsForDebug) System.out.println("Miss! " + agility);
@@ -117,8 +119,6 @@ public class CombatServiceHelper {
     }
 
     private double getRandomDamage (int damage) {
-        Random random = new Random();
-
         double randomPercentage = 0.05; // 5%
         double offset = damage * randomPercentage;
         double min = damage - offset;
@@ -130,8 +130,6 @@ public class CombatServiceHelper {
     }
 
     private double getRandomArmor (int armor) {
-        Random random = new Random();
-
         double randomPercentage = 0.03; // 3%
         double offset = armor * randomPercentage;
         double min = armor - offset;
@@ -143,7 +141,6 @@ public class CombatServiceHelper {
     }
 
     private boolean isCritical (double probability) {
-        Random random = new Random();
         double randomValue = random.nextDouble();
         boolean result = randomValue < probability;
         if (allowLogsForDebug) System.out.println("isCritical: " + probability + " " + result);

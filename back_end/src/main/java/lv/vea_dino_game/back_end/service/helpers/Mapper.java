@@ -19,7 +19,12 @@ public class Mapper {
         user.getPlayer().getExperience(),
         user.getPlayer().getCurrency(),
         user.getPlayer().getDescription(),
-        user.getPlayer().getCombatStats());
+        user.getPlayer().getCombatStats(),
+        user.getPlayer().getCurrentJob(),
+        user.getPlayer().getImmuneUntil(),
+        user.getPlayer().getWorkingUntil(),
+        user.getPlayer().getCannotAttackAgainUntil()
+      );
   }
 
   public PlayerForRatingsDto fromPlayerToForRatingsDto(Player player) {
@@ -43,12 +48,7 @@ public class Mapper {
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
       user.getPlayer().getDescription(),
-      user.getPlayer().getCombatStats(),
-      user.getPlayer().getCurrentJob(),
-      user.getPlayer().getImmuneUntil(),
-      user.getPlayer().getWorkingUntil(),
-      user.getPlayer().getCannotAttackAgainUntil()
-
+        user.getPlayer().getCombatStats()
     );
   }
 

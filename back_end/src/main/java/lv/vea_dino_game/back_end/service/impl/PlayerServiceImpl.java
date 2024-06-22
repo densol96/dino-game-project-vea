@@ -18,6 +18,7 @@ import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
+import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.IPlayerService;
 import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
@@ -38,6 +39,7 @@ public class PlayerServiceImpl implements IPlayerService {
     private final IClanRepo clanRepo;
 
     private final IAuthService authService;
+    private final IMailService mailService;
 
     private final Mapper mapper;
 
@@ -198,7 +200,13 @@ public class PlayerServiceImpl implements IPlayerService {
 
         playerRepo.save(player);
 
-        return new BasicMessageResponse("Job ended successfully");
+        mailService.sendNotificationFromAdmin(
+                player.getUser().getUsername(),
+                "Farm",
+                "Your farm has been finished successfully. You earned " + job.getRewardCurrency() + " gold."
+        );
+
+        return new BasicMessageResponse("Job finished successfully");
     }
 
 }

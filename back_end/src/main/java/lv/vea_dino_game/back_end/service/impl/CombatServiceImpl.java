@@ -9,6 +9,7 @@ import lv.vea_dino_game.back_end.model.Player;
 
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.ICombatService;
+import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.helpers.CombatServiceHelper;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,8 @@ public class CombatServiceImpl implements ICombatService {
 
     private final IPlayerRepo playerRepo;
     private final CombatServiceHelper combatServiceHelper;
+    private final IMailService mailService;
+
 
     private final int MAX_XP_THRESHOLD = 1000;
     private final int MAX_LVL = 10;
@@ -49,7 +52,7 @@ public class CombatServiceImpl implements ICombatService {
         if (loser.getCurrency() + combat.getCombatResult().loserCurrencyChange < 0) { // if loser had less gold than need to be subtracted -> setting to 0
             loser.setCurrency(0);
         } else {
-            loser.setCurrency(winner.getCurrency() + combat.getCombatResult().loserCurrencyChange);
+            loser.setCurrency(loser.getCurrency() + combat.getCombatResult().loserCurrencyChange);
         }
 
         if (defender.getId().equals(combat.getCombatResult().getLoser().getId())) { // when attacker lost he gets no immunity
@@ -76,6 +79,16 @@ public class CombatServiceImpl implements ICombatService {
 
         playerRepo.save(winner);
         playerRepo.save(loser);
+
+        final String winMessage = attacker.getUser().getUsername() + " attacked you. You won the combat and received " + combat.getCombatResult().winnerCurrencyChange + " gold and " + combat.getCombatResult().winnerExpReward + " experience.";
+        final String loseMessage = attacker.getUser().getUsername() + " attacked you. You have been defeated and you lost " + (-combat.getCombatResult().loserCurrencyChange) + " gold.";
+        final String message = defender.getId().equals(combat.getCombatResult().getWinner().getId()) ? winMessage : loseMessage;
+
+        mailService.sendNotificationFromAdmin(
+            defender.getUser().getUsername(),
+            "You have been attacked!",
+            message
+        );
 
         return combat;
     }

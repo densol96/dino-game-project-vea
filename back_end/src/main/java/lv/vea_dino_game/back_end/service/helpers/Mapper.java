@@ -9,19 +9,42 @@ public class Mapper {
 
   public UserMainDTO fromUserToDto(User user) {
     return new UserMainDTO(
+        user.getId(),
+        user.getUsername(),
+        user.getEmail(),
+        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
+        user.getPlayer().getPlayerStats(),
+        user.getPlayer().getDinoType(),
+        user.getPlayer().getLevel(),
+        user.getPlayer().getExperience(),
+        user.getPlayer().getCurrency(),
+        user.getPlayer().getDescription(),
+        user.getPlayer().getCombatStats());
+  }
+
+  public PlayerForRatingsDto fromPlayerToForRatingsDto(Player player) {
+    return new PlayerForRatingsDto(
+          player.getUser().getId(),
+          player.getUser().getUsername(),
+          player.getDinoType(),
+          player.getExperience(),
+          player.getCombatStats().getCombatsTotal(),
+          player.getCombatStats().getCombatsWon(),
+          player.getCombatStats().getCurrencyWon());
+  }
+  
+   public PublicUserDto fromUserToPublicDto(User user) {
+    return new PublicUserDto(
       user.getId(),
       user.getUsername(),
-      user.getEmail(),
       user.getPlayer().getClan() != null ? user.getPlayer().getClan().getTitle() : null,
       user.getPlayer().getPlayerStats(),
       user.getPlayer().getDinoType(),
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
-      user.getPlayer().getCurrency(),
       user.getPlayer().getDescription(),
       user.getPlayer().getCombatStats()
     );
-
   }
 
   public AllAnnouncementDto announcementToDto(Announcement announcement){
@@ -88,7 +111,6 @@ public class Mapper {
             friend.getPlayer().getUser().getUsername(),
             friend.getPlayer().getDinoType(),
             friend.getPlayer().getLevel()
-
     );
   }
 }

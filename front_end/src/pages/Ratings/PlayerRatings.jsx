@@ -11,6 +11,7 @@ import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
 import Pagination from '../../components/Pagination';
 import NotificationMessage from '../notificationMessage/NotificationMessage';
+import { NavLink } from 'react-router-dom';
 
 const dioTypeFilterOptions = {
   ALL: 'all',
@@ -124,7 +125,14 @@ function PlayerRatings({ resultDispatch }) {
           {playersForDisplay?.map((player) => {
             return (
               <tr>
-                <td>{player.username}</td>
+                <td>
+                  <NavLink
+                    className={`navLink ${styles.ratingLink}`}
+                    to={`/in/users/${player.id}`}
+                  >
+                    {player.username}
+                  </NavLink>
+                </td>
                 <td>{capitalize(player.type)}</td>
                 <td>{player.experience}</td>
                 <td>{player.totalFights}</td>

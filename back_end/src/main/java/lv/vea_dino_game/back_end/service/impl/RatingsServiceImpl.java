@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.model.Player;
+import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.dto.PlayerForRatingsDto;
+import lv.vea_dino_game.back_end.model.dto.PublicUserDto;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 import lv.vea_dino_game.back_end.model.enums.DinoTypeFilterEnum;
 import lv.vea_dino_game.back_end.model.enums.PlayersSortByEnum;
 import lv.vea_dino_game.back_end.model.enums.SortDirectionEnum;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
+import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IRatingsService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
 @Service
 @RequiredArgsConstructor
@@ -25,32 +29,9 @@ public class RatingsServiceImpl implements IRatingsService {
   private static final Integer RESULTS_PER_PAGE = 5;
 
   private final IPlayerRepo playerRepo;
+  private final IUserRepo userRepo;
+  private final Mapper mapper;
   
-  
-  private PlayersSortByEnum extractSortByEnum(String sortBy) {
-    try {
-      return PlayersSortByEnum.valueOf(sortBy.toUpperCase());
-    } catch (Exception e) {
-      throw new InvalidUserInputException("Invalid sortBy input of " + sortBy);
-    }
-  }
-  
-  private SortDirectionEnum extractSortDirectionEnum(String sortDirection) {
-    // ASC / DESC
-    try {
-      return SortDirectionEnum.valueOf(sortDirection.toUpperCase());
-    } catch (Exception e) {
-      throw new InvalidUserInputException("Invalid sortDirection input of " + sortDirection);
-    }
-  }
-  
-  private DinoTypeFilterEnum extractDinoTypeFilterEnum(String dinoTypeFilter) {
-    try {
-      return DinoTypeFilterEnum.valueOf(dinoTypeFilter.toUpperCase());
-    } catch (Exception e) {
-      throw new InvalidUserInputException("Invalid dinoTypeFilter input of " + dinoTypeFilter);
-    }
-  }
 
   @Override
   public List<PlayerForRatingsDto> getPlayers(Integer page, String sortBy, String dinoTypeFilter, String sortDirection) {
@@ -76,16 +57,8 @@ public class RatingsServiceImpl implements IRatingsService {
           typeFilter == DinoTypeFilterEnum.CARNIVORE ? DinoType.carnivore : DinoType.herbivore, pageable);
     }
 
-    return results.stream().map(player -> {
-      return new PlayerForRatingsDto(
-          player.getUser().getId(),
-          player.getUser().getUsername(),
-          player.getDinoType(),
-          player.getExperience(),
-          player.getCombatStats().getCombatsTotal(),
-          player.getCombatStats().getCombatsWon(),
-          player.getCombatStats().getCurrencyWon());
-    }).toList();
+    return results.stream().map(player -> mapper.fromPlayerToForRatingsDto(player)).toList();
+
   }
 
   @Override
@@ -100,5 +73,40 @@ public class RatingsServiceImpl implements IRatingsService {
     }
     
     return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
+  }
+
+  @Override
+  public PublicUserDto getPublicUserProfile(Integer id) {
+    if (id == null || id < 0)
+      throw new InvalidUserInputException("Invalid user id of " + id);
+    User user = userRepo.findById(id)
+        .orElseThrow(() -> new InvalidUserInputException("There is no user with the id of " + id));
+    return mapper.fromUserToPublicDto(user);
+  }
+
+
+  private PlayersSortByEnum extractSortByEnum(String sortBy) {
+    try {
+      return PlayersSortByEnum.valueOf(sortBy.toUpperCase());
+    } catch (Exception e) {
+      throw new InvalidUserInputException("Invalid sortBy input of " + sortBy);
+    }
+  }
+  
+  private SortDirectionEnum extractSortDirectionEnum(String sortDirection) {
+    // ASC / DESC
+    try {
+      return SortDirectionEnum.valueOf(sortDirection.toUpperCase());
+    } catch (Exception e) {
+      throw new InvalidUserInputException("Invalid sortDirection input of " + sortDirection);
+    }
+  }
+  
+  private DinoTypeFilterEnum extractDinoTypeFilterEnum(String dinoTypeFilter) {
+    try {
+      return DinoTypeFilterEnum.valueOf(dinoTypeFilter.toUpperCase());
+    } catch (Exception e) {
+      throw new InvalidUserInputException("Invalid dinoTypeFilter input of " + dinoTypeFilter);
+    }
   }
 }

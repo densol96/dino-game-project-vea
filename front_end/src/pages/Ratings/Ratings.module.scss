@@ -128,3 +128,11 @@ table {
     font-weight: 700;
   }
 }
+
+.ratingLink {
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

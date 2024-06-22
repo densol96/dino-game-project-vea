@@ -168,6 +168,14 @@ function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function extractStats(obj) {
+  const arr = [];
+  for (let key in obj) {
+    arr.push(obj[key]);
+  }
+  return arr;
+}
+
 export {
   useResponseResult,
   reduceValidationErrors,
@@ -176,4 +184,5 @@ export {
   handleBadRequest,
   BASE_API_URL,
   capitalize,
+  extractStats,
 };

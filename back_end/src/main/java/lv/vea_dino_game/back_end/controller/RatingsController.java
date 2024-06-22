@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.dto.PlayerForRatingsDto;
+import lv.vea_dino_game.back_end.model.dto.PublicUserDto;
 import lv.vea_dino_game.back_end.service.IRatingsService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -22,7 +24,7 @@ public class RatingsController {
   
   private final IRatingsService service;
 
-  @GetMapping("players")
+  @GetMapping("/players")
   public List<PlayerForRatingsDto> getPlayersRatings(
       @RequestParam("page") Integer page,
       @RequestParam("sortBy") String sortBy,
@@ -32,11 +34,17 @@ public class RatingsController {
     return service.getPlayers(page, sortBy, dinoType, sortDirection);
   }
   
-  @GetMapping("pages-total")
+  @GetMapping("/pages-total")
   public Integer getPagesTotal(
       @RequestParam("dinoType") String dinoType
-    ) {
-      return service.getNumberOfPages(dinoType);
+  ) {
+    return service.getNumberOfPages(dinoType);
   }
+  
+  @GetMapping("/users/{id}")
+  public PublicUserDto getPlayers(@PathVariable Integer id) {
+    return service.getPublicUserProfile(id);
+  }
+  
   
 }

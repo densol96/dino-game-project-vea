@@ -118,4 +118,13 @@ public class Mapper {
             friend.getPlayer().getLevel()
     );
   }
+
+    public NewsDto fromNewsToNewsDto(News news) {
+    return new NewsDto(
+            news.getId(),
+            news.getTitle(),
+            news.getContent(),
+            news.getDate()
+    );
+    }
 }

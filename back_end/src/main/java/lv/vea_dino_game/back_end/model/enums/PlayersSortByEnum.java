@@ -3,7 +3,8 @@ package lv.vea_dino_game.back_end.model.enums;
 public enum PlayersSortByEnum {
   EXPERIENCE("experience"),
   STOLEN("combatStats.currencyWon"),
-  WINRATE("placeholder");
+  TOTAL("combatStats.combatsTotal"),
+  WON("combatStats.combatsWon");
 
   private String fieldName;
 

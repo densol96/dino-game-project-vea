@@ -1,6 +1,7 @@
 package lv.vea_dino_game.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.exceptions.NoSuchUserException;
 import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.User;
@@ -93,6 +94,15 @@ public class UserServiceImpl implements IUserService {
                     "Mail is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
         }
         return new BasicMessageResponse("User "+ user.getUsername()+ " has been successfully banned");
+    }
+
+    @Override
+    public Integer getUserIdByUsername(String username) {
+      if(username == null)
+        throw new InvalidUserInputException("Invalid username: it cannot be null");
+      User user = userRepo.findByUsername(username)
+          .orElseThrow(() -> new InvalidUserInputException("No user with the username of " + username));
+      return user.getId();
     }
 
 

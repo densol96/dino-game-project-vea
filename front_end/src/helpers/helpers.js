@@ -148,13 +148,12 @@ function handleBadRequest(e, resultDispatch) {
         errors: error.errors,
       },
     });
-  } else if (e.code === 'ERR_NETWORK') {
+  } else {
     resultDispatch({
       type: 'ERROR',
       payload: {
         heading: 'Service is currently unavailable',
-        message:
-          'Registration is currently unavailable! Please,try again later!',
+        message: 'Service is currently unavailable! Please,try again later!',
         type: 'ERR_NETWORK',
         errors: [],
       },

@@ -10,6 +10,7 @@ import {
   reduceValidationErrors,
   useResponseResult,
   extractStats,
+  handleBadRequest,
 } from '../../helpers/helpers';
 import NotificationMessage from '../notificationMessage/NotificationMessage';
 
@@ -36,6 +37,7 @@ function Profile() {
     healthAdded,
     critAdded
   ) => {
+    resultDispatch({ type: 'IS_LOADING' });
     const API_ENDPOINT = 'http://localhost:8080/api/v1/player/ingame-stats';
 
     try {
@@ -55,29 +57,7 @@ function Profile() {
         payload: { heading: 'Success', message: response.data.message },
       });
     } catch (e) {
-      if (e.code === 'ERR_BAD_REQUEST') {
-        const error = e.response.data;
-        resultDispatch({
-          type: 'ERROR',
-          payload: {
-            heading: error.name,
-            message: error.message,
-            type: error.type,
-            errors: error.errors,
-          },
-        });
-      } else if (e.code === 'ERR_NETWORK') {
-        resultDispatch({
-          type: 'ERROR',
-          payload: {
-            heading: 'Service is currently unavailable',
-            message:
-              'Registration is currently unavailable! Please,try again later!',
-            type: 'ERR_NETWORK',
-            errors: [],
-          },
-        });
-      }
+      handleBadRequest(e, resultDispatch);
     }
   };
 

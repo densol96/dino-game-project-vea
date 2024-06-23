@@ -10,4 +10,6 @@ public interface IUserService {
     BasicMessageResponse unbanUser(Integer id);
 
     BasicMessageResponse banUserWithTime(Integer id, BanWithTimeDto info);
+
+    Integer getUserIdByUsername(String username);
 }

@@ -21,7 +21,6 @@ function UserProvider({ children }) {
 
     try {
       const response = await axios.get(API_ENDPOINT, headersWithToken());
-      console.log(response.data);
       setUser(response.data);
       localStorage.setItem('last_user_data', JSON.stringify(response.data));
     } catch (e) {

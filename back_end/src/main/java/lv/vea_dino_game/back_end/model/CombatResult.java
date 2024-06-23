@@ -30,7 +30,7 @@ public class CombatResult {
 
     @NotNull(message = "Combat result type id cannot be null")
     @Enumerated(EnumType.STRING)
-    public EnumCombatResultType combatResultType;
+    private EnumCombatResultType combatResultType;
 
     @Min(value = 0, message = "Initiator currency change can not be negative number")
     public Integer winnerCurrencyChange = 0;

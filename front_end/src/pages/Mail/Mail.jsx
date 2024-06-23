@@ -56,10 +56,11 @@ async function getMail(
   resultDispatch,
   sortBy
 ) {
+  //
   const GET_MAIL_API = `${BASE_URL}/get-all-${mailType}?page=${
     page || 1
   }&sortBy=${sortBy}`;
-  console.log(GET_MAIL_API);
+
   try {
     const response = await axios.get(GET_MAIL_API, headersWithToken());
     setMailForDisplay(response.data);

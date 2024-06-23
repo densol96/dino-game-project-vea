@@ -5,11 +5,14 @@ import lv.vea_dino_game.back_end.exceptions.EmptyClanException;
 import lv.vea_dino_game.back_end.exceptions.EmptyDataBaseTable;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 
+import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 
 import lv.vea_dino_game.back_end.model.dto.*;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
+import lv.vea_dino_game.back_end.model.enums.ClanSortByEnum;
+import lv.vea_dino_game.back_end.model.enums.SortDirectionEnum;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
@@ -19,7 +22,9 @@ import lv.vea_dino_game.back_end.service.IPlayerService;
 import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
 
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -37,18 +42,29 @@ public class ClanServiceImpl implements IClanFilterService {
 
     private final AuthServiceImpl authService;
     private final Mapper mapper;
+    private static final Integer RESULTS_PER_PAGE = 5;
 
 
     @Override
-    public List<AllClanInfoViewDto> retrieveAll() {
-      if(clanRepo.count() == 0)
-        throw new EmptyDataBaseTable("There are no any clans to display");
+    public List<AllClanInfoViewDto> retrieveAll(Integer page, String sortBy, String sortDirection) {
+        if (page == null || page < 1)
+            throw new InvalidUserInputException("Invalid user input for the page of " + page);
 
-      List<Clan> allClans = clanRepo.findAll();
-      if (allClans.isEmpty()){
-          throw new EmptyDataBaseTable("There are no any clans to display");
-      }
-      return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
+        ClanSortByEnum sortByEnum = extractSortByEnum(sortBy);
+        SortDirectionEnum sortDirectionEnum = extractSortDirectionEnum(sortDirection);
+
+        Sort sort = Sort.by(sortByEnum.toString().toLowerCase());
+        Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE,
+                sortDirectionEnum == SortDirectionEnum.DESC ? sort.descending() : sort.ascending());
+
+        List<Clan> results = clanRepo.findAll(pageable).getContent();
+        return results.stream().map(mapper::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer getNumberOfPages() {
+        int resultsTotal = (int) clanRepo.count();
+        return (int) Math.ceil((double) resultsTotal / RESULTS_PER_PAGE);
     }
 
     @Override
@@ -189,6 +205,22 @@ public class ClanServiceImpl implements IClanFilterService {
         if (clan == null)
             throw new EmptyDataBaseTable("There is no clan");
         return mapper.clanToDto(clan);
+    }
+
+    private ClanSortByEnum extractSortByEnum(String sortBy) {
+        try {
+            return ClanSortByEnum.valueOf(sortBy.toUpperCase());
+        } catch (Exception e) {
+            throw new InvalidUserInputException("Invalid sortBy input of " + sortBy);
+        }
+    }
+
+    private SortDirectionEnum extractSortDirectionEnum(String sortDirection) {
+        try {
+            return SortDirectionEnum.valueOf(sortDirection.toUpperCase());
+        } catch (Exception e) {
+            throw new InvalidUserInputException("Invalid sortDirection input of " + sortDirection);
+        }
     }
 
 

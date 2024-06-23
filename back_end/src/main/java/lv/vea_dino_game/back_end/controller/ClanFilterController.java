@@ -24,8 +24,16 @@ public class ClanFilterController {
     private final IClanFilterService clanService;
 
     @GetMapping
-    public ResponseEntity<List<AllClanInfoViewDto>> getAllClans(){
-      return new ResponseEntity<>(clanService.retrieveAll(), HttpStatus.OK);
+    public ResponseEntity<List<AllClanInfoViewDto>> getAllClans(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "sortBy", defaultValue = "title") String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection) {
+        return new ResponseEntity<>(clanService.retrieveAll(page, sortBy, sortDirection), HttpStatus.OK);
+    }
+
+    @GetMapping("/pages")
+    public Integer getPagesTotal() {
+        return clanService.getNumberOfPages();
     }
 
     @GetMapping("/minlevel/{level}")

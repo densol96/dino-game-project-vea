@@ -9,7 +9,7 @@ import lv.vea_dino_game.back_end.model.dto.CreateClanDto;
 import java.util.List;
 
 public interface IClanFilterService {
-    List<AllClanInfoViewDto> retrieveAll();
+    List<AllClanInfoViewDto> retrieveAll(Integer page, String sortBy, String sortDirection);
 
     List<AllClanInfoViewDto> retrieveAllByMinEntryLevel(Integer level);
 
@@ -30,4 +30,6 @@ public interface IClanFilterService {
     BasicMessageResponse deleteClan();
 
     ClanDto getClanWithMe();
+
+    Integer getNumberOfPages();
 }

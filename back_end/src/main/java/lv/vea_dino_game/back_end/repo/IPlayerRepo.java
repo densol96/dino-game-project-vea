@@ -41,4 +41,6 @@ public interface IPlayerRepo extends JpaRepository<Player, Integer> {
     List<Player> findAllByDinoType(DinoType dinoType, Pageable pageable);
 
     Integer countAllByDinoType(DinoType dinoType);
+
+   
 }

@@ -81,6 +81,4 @@ public class Player {
         setDescription(description);
         setExperience(experience);
     }
-
-
 }

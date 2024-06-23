@@ -108,12 +108,19 @@ public class GlobalErrorHandler {
         HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InvalidUserInputException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidUserInputException(InvalidUserInputException e) {
+    return new ResponseEntity<>(
+        new ErrorResponse(TYPE, "User input invalid", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+
   // Keep this at the end for all the uncaught errors
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<String> handleAnyOtherException(Exception e) {
+  public ResponseEntity<ErrorResponse> handleAnyOtherException(Exception e) {
     System.out.println("💥💥💥💥 -----> " + e.getClass().getSimpleName());
     System.out.println(e.getMessage());
-    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(new ErrorResponse("INT_SERV_ERR", "Service unuvailable", e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

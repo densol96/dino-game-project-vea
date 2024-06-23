@@ -148,7 +148,7 @@ function handleBadRequest(e, resultDispatch) {
         errors: error.errors,
       },
     });
-  } else if (e.code === 'ERR_NETWORK') {
+  } else {
     resultDispatch({
       type: 'ERROR',
       payload: {

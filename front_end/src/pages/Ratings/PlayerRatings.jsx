@@ -97,6 +97,8 @@ function PlayerRatings({ resultDispatch }) {
           <select onChange={(e) => setSortBy(e.target.value)}>
             <option value="experience">Experience</option>
             <option value="stolen">Currency stolen</option>
+            <option value="total">Fights total</option>
+            <option value="won">Fights won</option>
           </select>
           <select onChange={(e) => setSortDirection(e.target.value)}>
             <option value="desc">Best</option>
@@ -119,7 +121,8 @@ function PlayerRatings({ resultDispatch }) {
             <th>Type</th>
             <th>Experience</th>
             <th>Stolen</th>
-            <th>Win-rate</th>
+            <th>Fights total</th>
+            <th>Fights won</th>
           </tr>
         </thead>
         <tbody>
@@ -137,9 +140,8 @@ function PlayerRatings({ resultDispatch }) {
                 <td>{capitalize(player.type)}</td>
                 <td>{player.experience}</td>
                 <td>{player.currencyWon}</td>
-                <td>
-                  {calculateWinrate(player.totalFights, player.fightsWon)}
-                </td>
+                <td>{player.totalFights}</td>
+                <td>{player.fightsWon}</td>
               </tr>
             );
           })}

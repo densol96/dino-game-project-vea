@@ -3,17 +3,26 @@ package lv.vea_dino_game.back_end.service.impl;
 import lombok.RequiredArgsConstructor;
 
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
-
+import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.model.Combat;
+import lv.vea_dino_game.back_end.model.CombatResult;
 import lv.vea_dino_game.back_end.model.Player;
-
+import lv.vea_dino_game.back_end.model.User;
+import lv.vea_dino_game.back_end.model.dto.ArenaSearchPlayerDto;
+import lv.vea_dino_game.back_end.model.dto.CombatResultDto;
+import lv.vea_dino_game.back_end.model.enums.DinoType;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
+import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.ICombatService;
 import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.helpers.CombatServiceHelper;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 
@@ -24,6 +33,7 @@ public class CombatServiceImpl implements ICombatService {
     private final IPlayerRepo playerRepo;
     private final CombatServiceHelper combatServiceHelper;
     private final IMailService mailService;
+    private final IAuthService authService;
 
 
     private final int MAX_XP_THRESHOLD = 1000;
@@ -32,64 +42,101 @@ public class CombatServiceImpl implements ICombatService {
     private final int COOL_DOWN_IN_MINUTES_AFTER_ATTACK = 15;
 
     @Override
-    public Combat attackSelectedPlayerOnArena(Integer attackerId, Integer defenderId) {
-        if (attackerId == null || !playerRepo.existsById(attackerId)) throw new InvalidPlayerException("attackerId " + attackerId + " does not exist");
-        if (defenderId == null || !playerRepo.existsById(defenderId)) throw new InvalidPlayerException("defenderId " + defenderId + " does not exist");
-        Player attacker = playerRepo.findById(attackerId).orElseThrow(() -> new InvalidPlayerException("attackerId " + attackerId + " does not exist"));
-        Player defender = playerRepo.findById(defenderId).orElseThrow(() -> new InvalidPlayerException("defenderId " + defenderId + " does not exist"));
+    public CombatResultDto attackSelectedPlayerOnArena(Integer defenderId) {
+      if (defenderId == null || !playerRepo.existsById(defenderId))
+        throw new InvalidPlayerException("defenderId " + defenderId + " does not exist");
+      
+      Player attacker = authService.getLoggedInUser().getPlayer();
+      Player defender = playerRepo.findById(defenderId)
+          .orElseThrow(() -> new InvalidPlayerException("defenderId " + defenderId + " does not exist"));
 
-        Combat combat = combatServiceHelper.simulateCombat(attacker, defender);
-        Player winner = combat.getCombatResult().getWinner();
-        Player loser = combat.getCombatResult().getLoser();
-        winner.setCurrency(winner.getCurrency() + combat.getCombatResult().winnerCurrencyChange);
-        winner.setExperience(winner.getExperience() + combat.getCombatResult().winnerExpReward);
+      Combat combat = combatServiceHelper.simulateCombat(attacker, defender);
+      Player winner = combat.getCombatResult().getWinner();
+      Player loser = combat.getCombatResult().getLoser();
+      winner.setCurrency(winner.getCurrency() + combat.getCombatResult().winnerCurrencyChange);
+      winner.setExperience(winner.getExperience() + combat.getCombatResult().winnerExpReward);
 
-        if (winner.getExperience() >= MAX_XP_THRESHOLD && winner.getLevel() < MAX_LVL) { // only increasing lvl for less than max lvl
-            winner.setExperience(winner.getExperience() - MAX_XP_THRESHOLD);
-            winner.setLevel(winner.getLevel()+1);
-        }
+      if (winner.getExperience() >= MAX_XP_THRESHOLD && winner.getLevel() < MAX_LVL) { // only increasing lvl for less than max lvl
+        winner.setExperience(winner.getExperience() - MAX_XP_THRESHOLD);
+        winner.setLevel(winner.getLevel() + 1);
+      }
 
-        if (loser.getCurrency() + combat.getCombatResult().loserCurrencyChange < 0) { // if loser had less gold than need to be subtracted -> setting to 0
-            loser.setCurrency(0);
-        } else {
-            loser.setCurrency(loser.getCurrency() + combat.getCombatResult().loserCurrencyChange);
-        }
+      if (loser.getCurrency() + combat.getCombatResult().loserCurrencyChange < 0) { // if loser had less gold than need to be subtracted -> setting to 0
+        loser.setCurrency(0);
+      } else {
+        loser.setCurrency(loser.getCurrency() + combat.getCombatResult().loserCurrencyChange);
+      }
 
-        if (defender.getId().equals(combat.getCombatResult().getLoser().getId())) { // when attacker lost he gets no immunity
-            loser.setImmuneUntil(LocalDateTime.now().plusHours(IMMUNITY_IN_HOURS_AFTER_DEFEAT));
-        }
+      if (defender.getId().equals(combat.getCombatResult().getLoser().getId())) { // when attacker lost he gets no immunity
+        loser.setImmuneUntil(LocalDateTime.now().plusHours(IMMUNITY_IN_HOURS_AFTER_DEFEAT));
+      }
 
-        // assigning attack cooldown
-        if (attacker.getId().equals(combat.getCombatResult().getWinner().getId())) {// winner attacked
-            winner.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
-        } else { // loser attacked
-            loser.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
-        }
+      // assigning attack cooldown
+      if (attacker.getId().equals(combat.getCombatResult().getWinner().getId())) {// winner attacked
+        winner.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
+      } else { // loser attacked
+        loser.setCannotAttackAgainUntil(LocalDateTime.now().plusMinutes(COOL_DOWN_IN_MINUTES_AFTER_ATTACK));
+      }
 
-        // each player +1 combat total
-        winner.getCombatStats().setCombatsTotal(winner.getCombatStats().getCombatsTotal() + 1);
-        loser.getCombatStats().setCombatsTotal(loser.getCombatStats().getCombatsTotal() + 1);
-        // winner +1 won combat
-        winner.getCombatStats().setCombatsWon(winner.getCombatStats().getCombatsWon() + 1);
+      // each player +1 combat total
+      winner.getCombatStats().setCombatsTotal(winner.getCombatStats().getCombatsTotal() + 1);
+      loser.getCombatStats().setCombatsTotal(loser.getCombatStats().getCombatsTotal() + 1);
+      // winner +1 won combat
+      winner.getCombatStats().setCombatsWon(winner.getCombatStats().getCombatsWon() + 1);
 
-        // winner += reward
-        winner.getCombatStats().setCurrencyWon(winner.getCombatStats().getCurrencyWon() + combat.getCombatResult().winnerCurrencyChange);
-        // loser -= reward
-        loser.getCombatStats().setCurrencyLost(loser.getCombatStats().getCurrencyLost() + combat.getCombatResult().loserCurrencyChange);
+      // winner += reward
+      winner.getCombatStats()
+          .setCurrencyWon(winner.getCombatStats().getCurrencyWon() + combat.getCombatResult().winnerCurrencyChange);
+      // loser -= reward
+      loser.getCombatStats()
+          .setCurrencyLost(loser.getCombatStats().getCurrencyLost() + combat.getCombatResult().loserCurrencyChange);
 
-        playerRepo.save(winner);
-        playerRepo.save(loser);
+      playerRepo.save(winner);
+      playerRepo.save(loser);
 
-        final String winMessage = attacker.getUser().getUsername() + " attacked you. You won the combat and received " + combat.getCombatResult().winnerCurrencyChange + " gold and " + combat.getCombatResult().winnerExpReward + " experience.";
-        final String loseMessage = attacker.getUser().getUsername() + " attacked you. You have been defeated and you lost " + (-combat.getCombatResult().loserCurrencyChange) + " gold.";
-        final String message = defender.getId().equals(combat.getCombatResult().getWinner().getId()) ? winMessage : loseMessage;
+      final String winMessage = attacker.getUser().getUsername() + " attacked you. You won the combat and received "
+          + combat.getCombatResult().winnerCurrencyChange + " gold and " + combat.getCombatResult().winnerExpReward
+          + " experience.";
+      final String loseMessage = attacker.getUser().getUsername()
+          + " attacked you. You have been defeated and you lost " + (-combat.getCombatResult().loserCurrencyChange)
+          + " gold.";
+      final String message = defender.getId().equals(combat.getCombatResult().getWinner().getId()) ? winMessage
+          : loseMessage;
 
-        mailService.sendNotificationFromAdmin(
-            defender.getUser().getUsername(),
-            "You have been attacked!",
-            message
-        );
+      mailService.sendNotificationFromAdmin(
+          defender.getUser().getUsername(),
+          "You have been attacked!",
+          message);
+      
+      CombatResultDto result = new CombatResultDto(
+        combat.getCombatResult().getWinner().getUser().getUsername(),
+        combat.getCombatResult().getLoser().getUser().getUsername(),
+        combat.getCombatResult().getCombatResultType(),
+        combat.getCombatResult().getWinnerCurrencyChange(),
+        combat.getCombatResult().getLoserCurrencyChange(),
+        combat.getCombatResult().getWinnerExpReward(),
+        combat.getCombatResult().getLoserExpReward()
+      );
 
-        return combat;
+      return result;
+    }
+    
+    @Override
+    public ArenaSearchPlayerDto getRandomPlayerThatCanBeAttackedRn() {
+      User loggedIn = authService.getLoggedInUser();
+      String oppositeDinoType = (loggedIn.getPlayer().getDinoType() == DinoType.herbivore) ? "carnivore" : "herbivore";
+      Optional<Player> result = playerRepo.findRandomOpponentByLevelAndWithoutImmunity(
+              loggedIn.getPlayer().getId(),
+              LocalDateTime.now(),
+              loggedIn.getPlayer().getLevel(),
+              oppositeDinoType
+
+      );
+      if (result.isPresent()) {
+        Player player = result.get();
+        return new ArenaSearchPlayerDto(player.getId(), player.getUser().getUsername(), player.getPlayerStats(), player.getLevel());
+      }
+      else
+        throw new ServiceCurrentlyUnavailableException("No any players are matching your request");
     }
 }

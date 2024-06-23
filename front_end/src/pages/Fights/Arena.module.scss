@@ -1,0 +1,17 @@
+.message {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  text-transform: uppercase;
+  align-items: center;
+
+  #icon {
+    font-size: 3rem;
+  }
+}
+
+.actionContainer {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+}

@@ -33,7 +33,6 @@ async function getNumOfPages(dinoType, setPagesTotal, resultDispatch) {
   const API_ENDPOINT = `${BASE_API_URL}/ratings/pages-total?dinoType=${dinoType}`;
   try {
     const response = await axios.get(API_ENDPOINT, headersWithToken());
-    console.log(response.data);
     setPagesTotal(+response.data);
   } catch (e) {
     handleBadRequest(e, resultDispatch);
@@ -53,7 +52,6 @@ async function getRatings(
   try {
     const response = await axios.get(API_ENDPOINT, headersWithToken());
     setPlayersForDisplay(response.data);
-    console.log(response.data);
   } catch (e) {
     handleBadRequest(e, resultDispatch);
   }
@@ -87,6 +85,10 @@ function PlayerRatings({ resultDispatch }) {
     );
   }, [page, sortBy, dinoType, sortDirection]);
 
+  useEffect(() => {
+    console.log(playersForDisplay);
+  }, [playersForDisplay]);
+
   return (
     <>
       <div className={styles.optionLine}>
@@ -116,15 +118,14 @@ function PlayerRatings({ resultDispatch }) {
             <th>Username</th>
             <th>Type</th>
             <th>Experience</th>
-            <th>Total fights</th>
-            <th>Total won</th>
+            <th>Stolen</th>
             <th>Win-rate</th>
           </tr>
         </thead>
         <tbody>
-          {playersForDisplay?.map((player) => {
+          {playersForDisplay?.map((player, i) => {
             return (
-              <tr>
+              <tr key={i}>
                 <td>
                   <NavLink
                     className={`navLink ${styles.ratingLink}`}
@@ -135,8 +136,7 @@ function PlayerRatings({ resultDispatch }) {
                 </td>
                 <td>{capitalize(player.type)}</td>
                 <td>{player.experience}</td>
-                <td>{player.totalFights}</td>
-                <td>{player.fightsWon}</td>
+                <td>{player.currencyWon}</td>
                 <td>
                   {calculateWinrate(player.totalFights, player.fightsWon)}
                 </td>

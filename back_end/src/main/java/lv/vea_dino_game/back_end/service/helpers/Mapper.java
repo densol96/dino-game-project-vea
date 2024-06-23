@@ -4,6 +4,10 @@ import lv.vea_dino_game.back_end.model.*;
 import lv.vea_dino_game.back_end.model.dto.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class Mapper {
 
@@ -71,7 +75,8 @@ public class Mapper {
             clan.getDinoType(),
             clan.getAdmin().getUser().getUsername(),
             clan.getMinPlayerLevel(),
-            clan.getMaxCapacity()
+            clan.getMaxCapacity(),
+            clan.getPlayers().size()
     );
   }
 
@@ -85,6 +90,9 @@ public class Mapper {
   }
 
   public ClanDto clanToDto(Clan clan) {
+    List<String> usernames = clan.getPlayers().stream()
+            .map(player -> player.getUser().getUsername())
+            .collect(Collectors.toList());
     return new ClanDto(
             clan.getId(),
             clan.getTitle(),
@@ -93,7 +101,9 @@ public class Mapper {
             clan.getMaxCapacity(),
             clan.getMinPlayerLevel(),
             clan.getPlayers(),
-            clan.getAdmin().getUser().getUsername()
+            usernames,
+            clan.getAdmin().getUser().getUsername(),
+            clan.getAdmin().getId()
     );
   }
 

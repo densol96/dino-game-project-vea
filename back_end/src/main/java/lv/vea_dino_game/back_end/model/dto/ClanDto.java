@@ -5,6 +5,7 @@ import lv.vea_dino_game.back_end.model.Player;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.enums.DinoType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record ClanDto(
@@ -15,7 +16,9 @@ public record ClanDto(
         Integer maxCapacity,
         Integer minPlayerLevel,
         List<Player> players,
-        String admin
+        List<String> usernames,
+        String adminUsername,
+        Integer adminId
 ) {
 
 }

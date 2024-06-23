@@ -80,6 +80,13 @@ public class PlayerServiceImpl implements IPlayerService {
         Clan clan = player.getClan();
         if (player.getClan()==null)
             throw new InvalidPlayerException("Player already is not in a clan");
+        if (player == clan.getAdmin()){
+            clan.setPlayers(null);
+            clan.setAdmin(null);
+            playerRepo.save(player);
+            clanRepo.save(clan);
+            clanRepo.delete(clan);
+        }
         player.setClan(null);
         playerRepo.save(player);
         clanRepo.save(clan);

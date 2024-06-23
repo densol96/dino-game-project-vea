@@ -2,21 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserProvider';
 import {useEffect, useState} from 'react';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
-// import { IonIcon } from '@ionic/react';
 
-
-// import styles from './Combat.module.scss';
 import axios from "axios";
 import {reduceValidationErrors, useResponseResult} from "../../helpers/helpers";
 import NotificationMessage from "../notificationMessage/NotificationMessage";
 
-// function extractStats(obj) {
-//     const arr = [];
-//     for (let key in obj) {
-//         arr.push(obj[key]);
-//     }
-//     return arr;
-// }
 
 function Combat() {
     const { user, setUserFullInfo } = useUserContext();
@@ -46,10 +36,10 @@ function Combat() {
             const response = await axios.get(API_ENDPOINT);
             console.log(response.data);
             setFoundOpponent(response.data);
-            // resultDispatch({
-            //     type: 'SUCCESS',
-            //     payload: { heading: 'Success', message: response.data.message },
-            // });
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
 
         } catch (e) {
             if (e.code === 'ERR_BAD_REQUEST') {

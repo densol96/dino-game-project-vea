@@ -8,7 +8,8 @@ public record CreateClanDto (
     String title,
 
     @NotBlank(message = "Description cannot be blank/null")
-    @Size(min = 4, max = 50, message = "The title must be minimum 4 characters and maximum 50 characters") String description,
+    @Size(min = 4, max = 50, message = "The title must be minimum 4 characters and maximum 50 characters")
+    String description,
 
     @Min(value = 0, message = "Maximum capacity can not be negative number")
     @Max(value = 100, message = "Maximum capacity can not be greater than 100")

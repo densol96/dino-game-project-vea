@@ -65,17 +65,15 @@ public class BackEndApplication {
   @Bean
   public CommandLineRunner createDefaultPlayers(IClanRepo clanRepo, IUserRepo userRepo, PasswordEncoder encoder) {
     return (String... args) -> {
-      Clan clanOne = new Clan("Carnivores", "We like meat and blood", 7, 1);
-      Clan clanTwo = new Clan("Herbivores", "We love peace and green", 20, 1);
-      clanRepo.saveAll(List.of(clanOne, clanTwo));
+
 
       User admin = new User("admin", "admin@admin.com", encoder.encode("admin"), Role.ADMIN, DinoType.carnivore, null, 20, "I am the admin");
 
-      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, clanOne,
+      User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, null,
           10, "I am solodeni");
-      User u2 = new User("davidka", "solo@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, clanOne,
+      User u2 = new User("davidka", "solo@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           10, "I am davidka");
-      User u3 = new User("mihails", "mihails@mihails.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, clanOne,
+      User u3 = new User("mihails", "mihails@mihails.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           5, "I am mihails");
       User u4 = new User("daniels", "daniels@daniels.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           1, "I am daniels");
@@ -83,7 +81,7 @@ public class BackEndApplication {
           3, null);
       User u6 = new User("peteris", "peteris@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           20, null);
-      User u7 = new User("rihards", "rihards@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, clanTwo,
+      User u7 = new User("rihards", "rihards@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, null,
           20, null);
       User u8 = new User("naruto", "solo@naruto.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore, null,
           17, null);
@@ -93,6 +91,7 @@ public class BackEndApplication {
           null, 14, null);
 
       userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));
-      };
+
+    };
   }
 }

@@ -1,5 +1,6 @@
 package lv.vea_dino_game.back_end.model.dto;
 
+import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Job;
 import lv.vea_dino_game.back_end.model.PlayerCombatsStats;
 import lv.vea_dino_game.back_end.model.PlayerStats;
@@ -23,5 +24,6 @@ public record UserMainDTO(
   Job currentJob,
   LocalDateTime immuneUntil,
   LocalDateTime workingUntil,
-  LocalDateTime cannotAttackAgainUntil
+  LocalDateTime cannotAttackAgainUntil,
+  Integer clanId
 ) {}

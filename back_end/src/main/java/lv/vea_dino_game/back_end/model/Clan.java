@@ -55,7 +55,6 @@ public class Clan {
     @JoinColumn(name="admin")
     private Player admin;
 
-    //@NotNull(message = "Dino type cannot be null")
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
 

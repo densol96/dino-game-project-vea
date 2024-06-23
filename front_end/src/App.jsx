@@ -14,6 +14,7 @@ import WriteMail from './pages/Mail/WriteMail';
 import Combat from './pages/combat/Combat';
 import PublicProfile from './pages/PublicProfile/PublicProfile';
 import Farm from "./pages/farm/Farm";
+import Clan from "./pages/Clans/Clan";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path="users/:id" element={<PublicProfile />} />
               <Route path="combat" element={<Combat />} />
               <Route path="farm" element={<Farm />} />
+              <Route path="clan" element={<Clan />} />
               <Route path="mail">
                 <Route index replace element={<Navigate to="all" />} />
                 <Route path="all" element={<Mail />} />

@@ -23,7 +23,8 @@ public class Mapper {
         user.getPlayer().getCurrentJob(),
         user.getPlayer().getImmuneUntil(),
         user.getPlayer().getWorkingUntil(),
-        user.getPlayer().getCannotAttackAgainUntil()
+        user.getPlayer().getCannotAttackAgainUntil(),
+        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getId() : null
       );
   }
 

@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/clans")
 @RequiredArgsConstructor
 public class ClanFilterController {
 
     private final IClanFilterService clanService;
-
-
 
     @GetMapping
     public ResponseEntity<List<AllClanInfoViewDto>> getAllClans(){
@@ -59,18 +58,18 @@ public class ClanFilterController {
         return new ResponseEntity<>(clanService.retrieveAllSortedByTitleAsc(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<BasicMessageResponse> createClan(@Valid @RequestBody CreateClanDto clanDto) {
         return new ResponseEntity<>(clanService.createClan(clanDto), HttpStatus.CREATED);
 
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<BasicMessageResponse> updateClan(@Valid @RequestBody CreateClanDto updatedClanDto){
         return new ResponseEntity<>(clanService.updateClan(updatedClanDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/delete")
     public ResponseEntity<BasicMessageResponse> deleteClan() {
         return new ResponseEntity<>(clanService.deleteClan(), HttpStatus.CREATED);
     }

@@ -96,6 +96,7 @@ public class Mapper {
     );
   }
 
+
   public PlayerInfoDto onePlayerToDto(Player player) {
     return new PlayerInfoDto(
             player.getId(),

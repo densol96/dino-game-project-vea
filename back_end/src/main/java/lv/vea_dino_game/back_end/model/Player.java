@@ -63,11 +63,14 @@ public class Player {
     private List<Announcement> announcement;
 
     @OneToOne(mappedBy = "player")
-    @JsonIgnore
+    //@JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "player")
     private List<Friend> friends;
+
+
+
 
     public Player(Clan clan, PlayerStats playerStats, DinoType dinoType) {
         setDinoType(dinoType);

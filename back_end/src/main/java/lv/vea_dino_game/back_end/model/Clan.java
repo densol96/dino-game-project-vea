@@ -59,6 +59,8 @@ public class Clan {
     @Enumerated(EnumType.STRING)
     private DinoType dinoType;
 
+
+
     public void setSinglePlayer(Player player) {
         this.players.clear();
         this.players.add(player);

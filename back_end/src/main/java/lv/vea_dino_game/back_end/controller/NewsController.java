@@ -29,7 +29,7 @@ public class NewsController {
 
     }
 
-    @GetMapping("sl")
+    @GetMapping("/pages")
     public Integer getPagesTotal(
     ) {
         return newsService.getNumberOfPages();

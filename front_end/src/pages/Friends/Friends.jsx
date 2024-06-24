@@ -44,7 +44,7 @@ function Friends() {
         const API_ENDPOINT_2 = `http://localhost:8080/api/v1/friends/pending`;
 
         try {
-            const response = await axios.get(API_ENDPOINT_1, headersWithToken());
+            const response = await axios.get(API_ENDPOINT_2, headersWithToken());
 
             const friends = response.data;
             const sentToMe = friends.filter((friend) => friend.friendId === user.id);
@@ -113,8 +113,8 @@ function Friends() {
                         <div>{friendsRequest.username1}</div>
                         <div>{friendsRequest.level1}</div>
                         <div>{friendsRequest.dinoType1}</div>
-                        <button onClick={() => onAcceptFriendship(friendsRequest.friendId)}>Accept friendship</button>
-                        <button onClick={() => onRejectFriendship(friendsRequest.friendId)}>Reject friendship</button>
+                        <button onClick={() => onAcceptFriendship(friendsRequest.playerId)}>Accept friendship</button>
+                        <button onClick={() => onRejectFriendship(friendsRequest.playerId)}>Reject friendship</button>
                     </div>
                 })}
                 {friends.map((friend, idx) => {

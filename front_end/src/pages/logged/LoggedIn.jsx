@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { useUserContext } from '../../context/UserProvider';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
+import LoadingSpinner from '../../components/Spinner/LoadingSpinner';
 
 import styles from './LoggedIn.module.scss';
 
@@ -17,11 +18,12 @@ function LoggedIn() {
   const { user, setUserFullInfo, logoutUser } = useUserContext();
   const navigate = useNavigate();
 
-  setTimeout(() => {
+  useEffect(() => {
     if (!user) {
       navigate('/');
     }
   }, [user]);
+
   const { hasNewMessages } = useNewMessagesContext();
 
   return user ? (
@@ -129,7 +131,10 @@ function LoggedIn() {
       </section>
     </div>
   ) : (
-    <p>isLoading............</p>
+    <p className={styles.isLoading}>
+      <LoadingSpinner width={40} height={40} />
+      Wait a second please.. We are proccessing your request.......
+    </p>
   );
 }
 

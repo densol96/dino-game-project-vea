@@ -340,3 +340,10 @@ table {
 .bold {
   font-weight: 600;
 }
+
+.isLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}

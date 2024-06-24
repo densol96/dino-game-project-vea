@@ -7,6 +7,7 @@ import styles from './Home.module.scss';
 
 import ModalLogin from '../ModalLogin/ModalLogin';
 import { useUserContext } from '../../context/UserProvider';
+import LoadingSpinner from '../../components/Spinner/LoadingSpinner';
 
 const DinoType = {
   CARNIVORE: 'carnivore',
@@ -269,6 +270,14 @@ function Home() {
     }
   }, [user, navigate]);
 
+  if (user) {
+    return (
+      <p className="isLoading">
+        <LoadingSpinner width={40} height={40} />
+        Wait a second please.. We are proccessing your request.......
+      </p>
+    );
+  }
   return (
     <>
       {/* NESTED ModalLogin for /login */}

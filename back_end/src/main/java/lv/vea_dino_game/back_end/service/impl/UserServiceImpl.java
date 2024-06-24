@@ -9,10 +9,13 @@ import lv.vea_dino_game.back_end.model.dto.BanDto;
 import lv.vea_dino_game.back_end.model.dto.BanWithTimeDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
 import lv.vea_dino_game.back_end.model.dto.MailDto;
+import lv.vea_dino_game.back_end.model.dto.ManageUserDto;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.IUserService;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -98,12 +101,26 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Integer getUserIdByUsername(String username) {
-      if(username == null)
+      if (username == null)
         throw new InvalidUserInputException("Invalid username: it cannot be null");
       User user = userRepo.findByUsername(username)
           .orElseThrow(() -> new InvalidUserInputException("No user with the username of " + username));
       return user.getId();
     }
+
+    @Override
+    public ManageUserDto getDetailedUserInfo(Integer id) {
+      System.out.println("I am here");
+      try {
+        User loggedInUser = authService.getLoggedInUser();
+        System.out.println(loggedInUser);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
+      return new ManageUserDto(id, null, null, null, null, null, null, null, null);
+    }
+    
+    
 
 
 }

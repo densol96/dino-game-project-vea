@@ -24,7 +24,8 @@ public class Mapper {
         user.getPlayer().getImmuneUntil(),
         user.getPlayer().getWorkingUntil(),
         user.getPlayer().getCannotAttackAgainUntil(),
-        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getId() : null
+        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getId() : null,
+        user.getRole()
       );
   }
 
@@ -49,7 +50,8 @@ public class Mapper {
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
       user.getPlayer().getDescription(),
-      user.getPlayer().getCombatStats()
+      user.getPlayer().getCombatStats(),
+      user.getRole()
     );
   }
 

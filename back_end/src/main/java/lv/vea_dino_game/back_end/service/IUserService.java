@@ -3,6 +3,7 @@ package lv.vea_dino_game.back_end.service;
 import lv.vea_dino_game.back_end.model.dto.BanDto;
 import lv.vea_dino_game.back_end.model.dto.BanWithTimeDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.ManageUserDto;
 
 public interface IUserService {
     BasicMessageResponse banUser(Integer id, BanDto info);
@@ -12,4 +13,6 @@ public interface IUserService {
     BasicMessageResponse banUserWithTime(Integer id, BanWithTimeDto info);
 
     Integer getUserIdByUsername(String username);
+
+    ManageUserDto getDetailedUserInfo(Integer id);
 }

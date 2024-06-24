@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.dto.BanDto;
 import lv.vea_dino_game.back_end.model.dto.BanWithTimeDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.ManageUserDto;
 import lv.vea_dino_game.back_end.service.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +17,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     private final IUserService userService;
@@ -42,9 +47,15 @@ public class UserController {
     }
     
     @GetMapping("/id-by/{username}")
-    public ResponseEntity<Integer> getUserIdByUsername(@PathVariable String username){
-        return new ResponseEntity<>(userService.getUserIdByUsername(username), HttpStatus.OK);
+    public ResponseEntity<Integer> getUserIdByUsername(@PathVariable String username) {
+      return new ResponseEntity<>(userService.getUserIdByUsername(username), HttpStatus.OK);
     }
+    
+    @GetMapping("/detailed-user-info/{id}")
+    public ResponseEntity<ManageUserDto> getMethodName(@PathVariable Integer id) {
+      return new ResponseEntity<>(userService.getDetailedUserInfo(id), HttpStatus.OK);
+    }
+    
 
 
 

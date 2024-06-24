@@ -22,6 +22,7 @@ function UserProvider({ children }) {
     try {
       const response = await axios.get(API_ENDPOINT, headersWithToken());
       setUser(response.data);
+      console.log(response.data);
       localStorage.setItem('last_user_data', JSON.stringify(response.data));
     } catch (e) {
       // Did not pass the auth on the server => keep user undefined in the context of the React App

@@ -4,7 +4,9 @@ import lv.vea_dino_game.back_end.model.enums.DinoType;
 
 
 public record FriendDto(
-        Integer id,
+        Integer friendShipId,
+        Integer playerId,
+        Integer friendId,
         String username,
         DinoType dinoType,
         Integer level,

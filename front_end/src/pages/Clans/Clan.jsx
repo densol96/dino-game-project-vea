@@ -11,6 +11,14 @@ const type = {
     my: 'my',
 };
 
+const typeSortClanBy = {
+    DATE: 'DATE',
+    LEVEL_ASC: 'LEVEL_ASC',
+    LEVEL_DESC: 'LEVEL_DESC',
+    TITLE_ASC: 'TITLE_ASC',
+    TITLE_DESC: 'TITLE_DESC',
+};
+
 function Clan() {
     const { user, setUserFullInfo } = useUserContext();
     const [{ success, error, forDisplay }, resultDispatch] = useResponseResult();
@@ -29,23 +37,41 @@ function Clan() {
     const [newClanMaxCapacity, setNewClanMaxCapacity] = useState(50);
     const [newClanMinLevel, setNewClanMinlevel] = useState(1);
 
+    const [sortBy, setSortBy] = useState(typeSortClanBy.DATE);
+
+
     useEffect(() => {
         getAllClans();
-        getMyClan();
     }, [user]);
 
-    const getAllClans = async () => {
-        const API_ENDPOINT = `http://localhost:8080/api/v1/clans`;
+    useEffect(() => {
+        let endPoint = "";
+        switch (sortBy) {
+            case typeSortClanBy.LEVEL_ASC:
+                endPoint = "/sort-level-asc";
+                break;
+            case typeSortClanBy.LEVEL_DESC:
+                endPoint = "/sort-level-desc";
+                break;
+            case typeSortClanBy.TITLE_ASC:
+                endPoint = "/sort-title-asc";
+                break;
+            case typeSortClanBy.TITLE_DESC:
+                endPoint = "/sort-title-desc";
+                break;
+            default:
+                endPoint = ""; // for safety
+                break;
+        }
+
+        getAllClans(endPoint);
+    }, [sortBy])
+
+    const getAllClans = async (endpoint = "") => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/clans${endpoint}`;
 
         try {
             const response = await axios.get(API_ENDPOINT, headersWithToken());
-            // const allClans = response.data;
-            // console.log("id: ",  user.clanId);
-            // if (user.clanId != null) {
-            //     const myClan = allClans.find(clan => clan.id === user.clanId);
-            //     console.log(myClan);
-            //     setMyClan(myClan);
-            // }
             setAllClans(response.data);
 
         } catch (e) {
@@ -73,10 +99,16 @@ function Clan() {
                 });
             }
         }
+        await getMyClan();
     }
 
     const getMyClan = async () => {
         const API_ENDPOINT = `http://localhost:8080/api/v1/clans/show/${user.clanId}`;
+
+        if (user.clanId == null) {
+            setMyClan(null);
+            return;
+        }
 
         try {
             const response = await axios.get(API_ENDPOINT, headersWithToken());
@@ -123,6 +155,7 @@ function Clan() {
                 headersWithToken()
             );
             setIsCreatingClan(false);
+            nullifyClanInputs();
             rerenderStatsAfterDb();
             resultDispatch({
                 type: 'SUCCESS',
@@ -196,6 +229,7 @@ function Clan() {
                 headersWithToken()
             );
             setIsUpdatingClan(false);
+            nullifyClanInputs();
             rerenderStatsAfterDb();
             resultDispatch({
                 type: 'SUCCESS',
@@ -233,6 +267,52 @@ function Clan() {
         setIsUpdatingClan(false);
     }
 
+    const onDeleteClan = async () => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/clans/delete`;
+
+        try {
+            const response = await axios.delete(API_ENDPOINT, headersWithToken() );
+            rerenderStatsAfterDb();
+            nullifyClanInputs();
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
+
+        } catch (e) {
+            if (e.code === 'ERR_BAD_REQUEST') {
+                const error = e.response.data;
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: error.name,
+                        message: error.message,
+                        type: error.type,
+                        errors: error.errors,
+                    },
+                });
+            } else if (e.code === 'ERR_NETWORK') {
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: 'Service is currently unavailable',
+                        message:
+                            'Registration is currently unavailable! Please,try again later!',
+                        type: 'ERR_NETWORK',
+                        errors: [],
+                    },
+                });
+            }
+        }
+    }
+
+    const nullifyClanInputs = () => {
+        setNewClanMinlevel(1);
+        setNewClanMaxCapacity(50);
+        setNewClanTitle("");
+        setNewClanDescription("");
+    }
+
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -259,6 +339,15 @@ function Clan() {
                 </div>
 
                 {tabType === type.all && <div>
+                    <label>Sort mail By:</label>
+                    <select onChange={(e) => setSortBy(e.target.value)}>
+                        <option value="DATE">Oldest</option>
+                        <option value="LEVEL_ASC">Smaller level</option>
+                        <option value="LEVEL_DESC">Greater level</option>
+                        <option value="TITLE_ASC">By title</option>
+                        <option value="TITLE_DESC">By title descending</option>
+                    </select>
+                    {allClans.length === 0 && <div>No clans yet</div>}
                     {allClans.map((clan, id) => {
                         console.log(clan);
                         return <div key={id} style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
@@ -327,6 +416,7 @@ function Clan() {
                             </div>
                         })}
                         {user.id === myClan.adminId && <div>
+                            <button onClick={onDeleteClan}>Delete</button>
                             {!isUpdatingClan ? <button onClick={onStartUpdateClan}>Edit clan</button>
                                 : <div>
                                     <button onClick={onFinishUpdateClan}>Save changes</button>

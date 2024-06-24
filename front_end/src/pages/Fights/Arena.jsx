@@ -12,8 +12,6 @@ import {
 } from '../../helpers/helpers';
 import NotificationMessage from '../notificationMessage/NotificationMessage';
 
-import styles from './Combat.module.scss';
-
 function Arena() {
   const { user, setUserFullInfo } = useUserContext();
   const [{ success, error, forDisplay, idLoading }, resultDispatch] =

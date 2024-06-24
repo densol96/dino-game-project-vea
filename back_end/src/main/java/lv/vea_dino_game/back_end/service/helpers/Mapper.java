@@ -128,6 +128,8 @@ public class Mapper {
   public FriendDto oneFriendToDto(Friend friend) {
     return new FriendDto(
             friend.getId(),
+            friend.getPlayer().getId(),
+            friend.getFriend().getId(),
             friend.getFriend().getUser().getUsername(),
             friend.getFriend().getDinoType(),
             friend.getFriend().getLevel(),

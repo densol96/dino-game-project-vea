@@ -19,6 +19,7 @@ import ArenaSearch from './pages/Fights/ArenaSearch';
 import ArenaFightResult from './pages/Fights/ArenaFightResult';
 import AdminManage from './pages/AdminManage.jsx/AdminManage';
 import Clan from "./pages/Clans/Clan";
+import Friends from "./pages/Friends/Friends";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               </Route>
               <Route path="farm" element={<Farm />} />
               <Route path="clan" element={<Clan />} />
+              <Route path="friends" element={<Friends />} />
               <Route path="settings" element={<Settings />} />
               <Route path="ratings" element={<Ratings />} />
               <Route path="admin/manage/:id" element={<AdminManage />} />

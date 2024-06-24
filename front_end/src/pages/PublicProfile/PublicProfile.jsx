@@ -12,6 +12,13 @@ import axios from 'axios';
 import { headersWithToken, useUserContext } from '../../context/UserProvider';
 import { useParams, NavLink } from 'react-router-dom';
 
+const typeFriend = {
+  NONE: 'NONE',
+  REJECTED: 'REJECTED',
+  FRIEND: 'FRIEND',
+  PENDING: 'PENDING',
+};
+
 async function getUser(id, resultDispatch, setUser) {
   resultDispatch({ type: 'IS_LOADING' });
   const API_ENDPOINT = `${BASE_API_URL}/ratings/users/${id}`;
@@ -38,11 +45,100 @@ function PublicProfile() {
   );
   const { user: loggedInUser } = useUserContext();
 
+  const [friendStatus, setFriendStatus] = useState(typeFriend.NONE);
+
   console.log(user);
+  console.log(user.id);
+
+  useEffect(() => {
+    updateFriendStatus();
+  }, [user])
+
+  const updateFriendStatus = async () => {
+
+
+    const API_ENDPOINT_1 = `http://localhost:8080/api/v1/friends/friends`;
+
+    try {
+      const response = await axios.get(API_ENDPOINT_1, headersWithToken());
+
+      const friends = response.data;
+
+      for (let friend of friends) {
+        if (friend.friendId === user.id) {
+          setFriendStatus(typeFriend.FRIEND);
+          return;
+        } // bad code
+      }
+      resultDispatch({
+        type: 'SUCCESS',
+        payload: { heading: 'Success', message: response.data.message },
+      });
+    } catch (e) {
+      handleBadRequest(e, resultDispatch);
+    }
+
+    const API_ENDPOINT_2 = `http://localhost:8080/api/v1/friends/rejected`;
+
+    try {
+      const response = await axios.get(API_ENDPOINT_2, headersWithToken());
+
+      const friends = response.data;
+      for (let friend of friends) {
+        if (friend.friendId === user.id) {
+          setFriendStatus(typeFriend.REJECTED);
+          return;
+        } // bad code
+      }
+      resultDispatch({
+        type: 'SUCCESS',
+        payload: { heading: 'Success', message: response.data.message },
+      });
+    } catch (e) {
+      handleBadRequest(e, resultDispatch);
+    }
+
+    const API_ENDPOINT_3 = `http://localhost:8080/api/v1/friends/pending`;
+
+    try {
+      const response = await axios.get(API_ENDPOINT_3, headersWithToken());
+
+      const friends = response.data;
+      for (let friend of friends) {
+        if (friend.friendId === user.id) {
+          setFriendStatus(typeFriend.PENDING);
+          return;
+        } // bad code
+      }
+      resultDispatch({
+        type: 'SUCCESS',
+        payload: { heading: 'Success', message: response.data.message },
+      });
+    } catch (e) {
+      handleBadRequest(e, resultDispatch);
+    }
+
+
+  }
 
   useEffect(() => {
     getUser(id, resultDispatch, setUser);
   }, [id, resultDispatch]);
+
+  const onAddUserToFriends = async () => {
+    const API_ENDPOINT = `http://localhost:8080/api/v1/friends/request/${user.id}`;
+
+    try {
+      const response = await axios.post(API_ENDPOINT, null, headersWithToken());
+      resultDispatch({
+        type: 'SUCCESS',
+        payload: { heading: 'Success', message: response.data.message },
+      });
+      updateFriendStatus();
+    } catch (e) {
+      handleBadRequest(e, resultDispatch);
+    }
+  }
 
   return (
     <>
@@ -180,6 +276,9 @@ function PublicProfile() {
                 <button className="btn brown-btn">Manage this user</button>
               </NavLink>
             )}
+            <button className="btn brown-btn" onClick={onAddUserToFriends}>{
+              friendStatus === typeFriend.FRIEND ? "Already in friends" : friendStatus === typeFriend.PENDING ? "Waiting for approval" : friendStatus === typeFriend.REJECTED ? "Rejected" : "Add to friends"
+            }</button>
           </div>
         </>
       )}

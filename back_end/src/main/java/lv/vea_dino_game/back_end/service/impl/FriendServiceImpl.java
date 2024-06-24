@@ -24,139 +24,133 @@ import java.util.stream.Collectors;
 public class FriendServiceImpl implements IFriendService {
 
     private final IFriendRepo friendRepo;
-
     private final IAuthService authService;
-
     private final IPlayerRepo playerRepo;
-
     private final Mapper mapper;
-
 
     @Override
     public BasicMessageResponse sendInvitationToBeFriend(Integer friendId) {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
         Optional<Player> friendOptional = playerRepo.findById(friendId);
         if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
-        if (friend == me) return new BasicMessageResponse("You can not join friend yourself");
+        if (friend.equals(me)) {
+            return new BasicMessageResponse("You cannot befriend yourself");
+        }
 
-        Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
-        if (friendship != null) {
-            if (friendship.getStatus() == FriendStatus.REJECTED){
-                friendship.setStatus(FriendStatus.PENDING);
-                friendRepo.save(friendship);
-                return new BasicMessageResponse("Friend request to user "+friend.getUser().getUsername()+" has been sent again!");
+        Friend existingFriendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me, friend);
+        if (existingFriendship != null) {
+            if (existingFriendship.getStatus() == FriendStatus.REJECTED) {
+                existingFriendship.setStatus(FriendStatus.PENDING);
+                friendRepo.save(existingFriendship);
+                return new BasicMessageResponse("Friend request to user " + friend.getUser().getUsername() + " has been sent again!");
+            } else {
+                throw new FriendshipException("Friendship with user " + friend.getUser().getUsername() + " already exists");
             }
-            throw new InvalidPlayerException("Friendship with user "+friend.getUser().getUsername()+"  already exists"); // make new Exception that is connected with friend
         }
-        Friend friendship1 = friendRepo.findByPlayerAndFriend(me,friend);
-        if (friendship1 != null) {
-            if (friendship1.getStatus() == FriendStatus.REJECTED){
-                friendship1.setStatus(FriendStatus.PENDING);
-                friendRepo.save(friendship1);
-                return new BasicMessageResponse("Friend request to user "+friend.getUser().getUsername()+" has been sent again!");
-            }
-            throw new InvalidPlayerException("Friendship with user "+friend.getUser().getUsername()+"  already exists"); // make new Exception that is connected with friend
-        }
+
         Friend request = new Friend(me, friend, FriendStatus.PENDING);
         friendRepo.save(request);
-        return new BasicMessageResponse("Friend request to user "+friend.getUser().getUsername()+" has been sent!");
+        return new BasicMessageResponse("Friend request to user " + friend.getUser().getUsername() + " has been sent!");
     }
 
     @Override
     public BasicMessageResponse acceptFriendRequest(Integer friendId) {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
         Optional<Player> friendOptional = playerRepo.findById(friendId);
         if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
-        Friend friendship = friendRepo.findByFriendAndPlayer(me,friend);
+
+        Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(friend, me);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");
         }
+
         if (friendship.getStatus() == FriendStatus.PENDING) {
             friendship.setStatus(FriendStatus.ACCEPTED);
             friendRepo.save(friendship);
-            return new BasicMessageResponse("Friendship with user "+ friend.getUser().getUsername()+" has been accepted!");
+            return new BasicMessageResponse("Friendship with user " + friend.getUser().getUsername() + " has been accepted!");
         }
-        if (friendship.getStatus() == FriendStatus.ACCEPTED){
-            throw new InvalidPlayerException("Friendship request with user "+friend.getUser().getUsername()+" already exists");
-        }
-        throw new InvalidPlayerException("Friendship request does not exist"); // Exception about friends
+
+        throw new FriendshipException("Friendship with user " + friend.getUser().getUsername() + " already exists");
     }
 
     @Override
     public BasicMessageResponse rejectFriendRequest(Integer friendId) {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
         Optional<Player> friendOptional = playerRepo.findById(friendId);
         if (friendOptional.isEmpty()) {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
-        Friend friendship = friendRepo.findByFriendAndPlayer(friend,me);
+
+        Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(friend, me);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");
         }
+
         if (friendship.getStatus() == FriendStatus.PENDING) {
             friendship.setStatus(FriendStatus.REJECTED);
             friendRepo.save(friendship);
-            return new BasicMessageResponse("Friendship with user "+ friend.getUser().getUsername()+" has been rejected!");
+            return new BasicMessageResponse("Friendship with user " + friend.getUser().getUsername() + " has been rejected!");
         }
-        if (friendship.getStatus() == FriendStatus.ACCEPTED){
-            throw new InvalidPlayerException("Friendship request with user "+friend.getUser().getUsername()+" already exists");
-        }
-        throw new InvalidPlayerException("Friendship request does not exist");
+
+        throw new FriendshipException("Friendship with user " + friend.getUser().getUsername() + " already exists");
     }
 
     @Override
     public List<FriendDto> getFriends() {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
-        List<Friend> friendship = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.ACCEPTED,me,me);
-        if (friendship == null) {
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
+        List<Friend> friendships = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.ACCEPTED, me);
+        if (friendships.isEmpty()) {
             throw new InvalidPlayerException("No accepted friends");
         }
-        return friendship.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
+
+        return friendships.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<FriendDto> getRejected() {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
-        List<Friend> friendship = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.REJECTED,me,me);
-        if (friendship == null) {
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
+        List<Friend> friendships = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.REJECTED, me);
+        if (friendships.isEmpty()) {
             throw new InvalidPlayerException("No rejected friends");
         }
-        return friendship.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
+
+        return friendships.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<FriendDto> getPending() {
         UserMainDTO user = authService.getMe();
         Player me = playerRepo.findByUserId(user.id());
-        if (me == null)
-            throw new InvalidPlayerException("Invalid you");
-        List<Friend> friendship = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.PENDING,me,me);
-        if (friendship == null) {
+        if (me == null) throw new InvalidPlayerException("Invalid you");
+
+        List<Friend> friendships = friendRepo.findAllByStatusAndPlayerOrFriend(FriendStatus.PENDING, me);
+        if (friendships.isEmpty()) {
             throw new InvalidPlayerException("No pending friendships");
         }
-        return friendship.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
+
+        return friendships.stream().map(mapper::oneFriendToDto).collect(Collectors.toList());
     }
 
 

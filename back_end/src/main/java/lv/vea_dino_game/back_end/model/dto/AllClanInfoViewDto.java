@@ -9,6 +9,7 @@ public record AllClanInfoViewDto (
     DinoType dinoType,
     String admin,
     Integer minPlayerLevel,
-    Integer maxCapacity
+    Integer maxCapacity,
+    Integer amountOfPlayers
 ) {
 }

@@ -21,6 +21,7 @@ function Clan() {
     const [allClans, setAllClans] = useState([]);
 
     const [isCreatingClan, setIsCreatingClan] = useState(false);
+    const [isUpdatingClan, setIsUpdatingClan] = useState(false);
     const [myClan, setMyClan] = useState(null);
 
     const [newClanTitle, setNewClanTitle] = useState("");
@@ -121,7 +122,7 @@ function Clan() {
             },
                 headersWithToken()
             );
-            console.log(response);
+            setIsCreatingClan(false);
             rerenderStatsAfterDb();
             resultDispatch({
                 type: 'SUCCESS',
@@ -176,6 +177,62 @@ function Clan() {
         setNewClanMinlevel(event.target.value);
     };
 
+    const onStartUpdateClan = () => {
+        setIsUpdatingClan(true);
+        setNewClanDescription(myClan.description);
+        setNewClanMinlevel(myClan.minPlayerLevel);
+    }
+
+    const onFinishUpdateClan = async () => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/clans/update`;
+
+        try {
+            const response = await axios.put(API_ENDPOINT, {
+                    title: myClan.title,
+                    description: newClanDescription,
+                    maxCapacity: myClan.maxCapacity,
+                    minPlayerLevel: newClanMinLevel,
+                },
+                headersWithToken()
+            );
+            setIsUpdatingClan(false);
+            rerenderStatsAfterDb();
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
+
+        } catch (e) {
+            if (e.code === 'ERR_BAD_REQUEST') {
+                const error = e.response.data;
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: error.name,
+                        message: error.message,
+                        type: error.type,
+                        errors: error.errors,
+                    },
+                });
+            } else if (e.code === 'ERR_NETWORK') {
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: 'Service is currently unavailable',
+                        message:
+                            'Registration is currently unavailable! Please,try again later!',
+                        type: 'ERR_NETWORK',
+                        errors: [],
+                    },
+                });
+            }
+        }
+    }
+
+    const onCancelUpdateClan = () => {
+        setIsUpdatingClan(false);
+    }
+
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -204,29 +261,29 @@ function Clan() {
                 {tabType === type.all && <div>
                     {allClans.map((clan, id) => {
                         console.log(clan);
-                        return <div key={id} style={{ display: 'flex', flexDirection: 'row' }}>
+                        return <div key={id} style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                             <div>{clan.title}</div>
                             <div>{clan.description}</div>
                             <div>{clan.dinoType}</div>
+                            <div>{clan.minPlayerLevel}</div>
                             <div>{clan.admin}</div>
-                            <div>{clan.amountOfPlayer}/{clan.maxCapacity}</div>
-
+                            <div>{clan.amountOfPlayers}/{clan.maxCapacity}</div>
                         </div>
                     })}
                 </div>}
 
                 {tabType === type.my && <div>
-                    {!myClan && <div>
-                        {isCreatingClan ? <div>
+                    <div>
+                        {(isCreatingClan || isUpdatingClan) && <div>
                             <form>
-                                <div>
+                                {isCreatingClan && <div>
                                     <label>Clan Title:</label>
                                     <input
                                         type="text"
                                         value={newClanTitle}
                                         onChange={handleTitleChange}
                                     />
-                                </div>
+                                </div>}
                                 <div>
                                     <label>Clan Description:</label>
                                     <input
@@ -235,14 +292,14 @@ function Clan() {
                                         onChange={handleDescriptionChange}
                                     />
                                 </div>
-                                <div>
+                                {isCreatingClan && <div>
                                     <label>Max Capacity:</label>
                                     <input
                                         type="number"
                                         value={newClanMaxCapacity}
                                         onChange={handleMaxCapacityChange}
                                     />
-                                </div>
+                                </div>}
                                 <div>
                                     <label>Min Level:</label>
                                     <input
@@ -252,22 +309,31 @@ function Clan() {
                                     />
                                 </div>
                             </form>
-                            <button onClick={createNewClan}>Create</button>
-                        </div>
-                        :
-                        <div>
+                            {isCreatingClan && <button onClick={createNewClan}>Create</button>}
+                        </div>}
+                        {!(isCreatingClan || isUpdatingClan) && !myClan && <div>
                             <div>You have joined no clan yet. You can create your own clan or join existing one in "All clans" section</div>
                             <button onClick={() => setIsCreatingClan(true)}>Create my own clan</button>
                         </div>}
-                    </div> }
+                    </div>
                     {myClan && <div>
                         {myClan.title}
                         {myClan.players.map((player, id) => {
-                            console.log(player);
-                            return <div key={id}>
-
+                            const username = myClan.usernames[id];
+                            return <div key={id} style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+                                <div>{username}</div>
+                                <div>{player.level}</div>
+                                {myClan.adminId === player.id && <div>LEADER</div>}
                             </div>
                         })}
+                        {user.id === myClan.adminId && <div>
+                            {!isUpdatingClan ? <button onClick={onStartUpdateClan}>Edit clan</button>
+                                : <div>
+                                    <button onClick={onFinishUpdateClan}>Save changes</button>
+                                    <button onClick={onCancelUpdateClan}>Cancel</button>
+                                </div>
+                            }
+                        </div>}
                     </div>}
                 </div>}
 

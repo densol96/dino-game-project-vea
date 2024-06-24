@@ -9,9 +9,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
   security:
     jwtSecret: 08cdfce317612391fefcd8e5560204f9ffead220fdc479eadc1d59222cb28e19

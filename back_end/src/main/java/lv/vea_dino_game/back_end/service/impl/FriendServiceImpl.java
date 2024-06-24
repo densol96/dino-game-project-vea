@@ -43,6 +43,7 @@ public class FriendServiceImpl implements IFriendService {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
+        if (friend == me) return new BasicMessageResponse("You can not join friend yourself");
 
         Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
         if (friendship != null) {

@@ -75,11 +75,14 @@ function Clan() {
     const getAllClans = async (endpoint = "") => {
         const API_ENDPOINT = `http://localhost:8080/api/v1/clans${endpoint}`;
 
+        console.log(API_ENDPOINT);
+
         try {
             const response = await axios.get(API_ENDPOINT, headersWithToken());
             setAllClans(response.data);
 
         } catch (e) {
+            setAllClans([]);
             if (e.code === 'ERR_BAD_REQUEST') {
                 const error = e.response.data;
                 resultDispatch({
@@ -392,6 +395,45 @@ function Clan() {
         }
     }
 
+    const onKickPlayerFromClan = async (playerId) => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/clans/kick_player/${playerId}`;
+
+        try {
+            const response = await axios.post(API_ENDPOINT, null, headersWithToken() );
+            rerenderStatsAfterDb();
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
+
+        } catch (e) {
+            console.log(e);
+            if (e.code === 'ERR_BAD_REQUEST') {
+                const error = e.response.data;
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: error.name,
+                        message: error.message,
+                        type: error.type,
+                        errors: error.errors,
+                    },
+                });
+            } else if (e.code === 'ERR_NETWORK') {
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: 'Service is currently unavailable',
+                        message:
+                            'Registration is currently unavailable! Please,try again later!',
+                        type: 'ERR_NETWORK',
+                        errors: [],
+                    },
+                });
+            }
+        }
+    }
+
     const nullifyClanInputs = () => {
         setNewClanMinlevel(1);
         setNewClanMaxCapacity(50);
@@ -499,13 +541,14 @@ function Clan() {
                         <div>description: {myClan.description}</div>
                         <div>dinoType: {myClan.dinoType}</div>
 
-                        {myClan.players_v2.map((player, id) => { // players list
+                        {myClan.players.map((player, id) => { // players list
                             const username = myClan.usernames[id];
                             console.log(username, player);
                             return <div key={id} style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                                 <div>{username}</div>
                                 <div>{player.level}</div>
                                 {myClan.adminId === player.id && <div>LEADER</div>}
+                                {user.id === myClan.adminId && <button onClick={() => onKickPlayerFromClan(player.id)}>Kick from clan</button>}
                             </div>
                         })}
 

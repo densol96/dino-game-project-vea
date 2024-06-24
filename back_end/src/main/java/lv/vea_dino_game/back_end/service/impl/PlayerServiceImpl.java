@@ -56,7 +56,7 @@ public class PlayerServiceImpl implements IPlayerService {
             throw new InvalidClanException("Clan does not exist");
         }
         if (player.getClan()!=null)
-            throw new InvalidClanException("Player is already in a clan, you must enroll from your current clan");
+            throw new InvalidClanException("Player is already in a clan, you must exit your current clan");
         if (clan.getPlayers().size() >= clan.getMaxCapacity()) {
             throw new IllegalStateException("Clan is already at maximum capacity");
         }

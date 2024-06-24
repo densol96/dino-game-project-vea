@@ -29,6 +29,8 @@ public interface IClanFilterService {
 
     BasicMessageResponse deleteClan();
 
+    BasicMessageResponse kickPlayerFromClan(Integer playerId);
+
     ClanDto getClanWithMe();
 
     Integer getNumberOfPages();

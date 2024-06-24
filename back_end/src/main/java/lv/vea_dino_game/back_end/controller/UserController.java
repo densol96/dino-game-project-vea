@@ -5,7 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lv.vea_dino_game.back_end.model.dto.BanDto;
 import lv.vea_dino_game.back_end.model.dto.BanWithTimeDto;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.BooleanDto;
+import lv.vea_dino_game.back_end.model.dto.DescriptionDto;
+import lv.vea_dino_game.back_end.model.dto.EmailDto;
 import lv.vea_dino_game.back_end.model.dto.ManageUserDto;
+import lv.vea_dino_game.back_end.model.dto.ReducedPasswordDto;
+import lv.vea_dino_game.back_end.model.dto.UsernameDto;
 import lv.vea_dino_game.back_end.service.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,9 +56,45 @@ public class UserController {
         return new ResponseEntity<>(userService.unbanUser(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/ban-with-time/{id}")
+    @PatchMapping("/tempBanDateTime/{id}")
     public ResponseEntity<BasicMessageResponse> banUserByIdWithTime(@PathVariable("id") Integer id,
         @Valid @RequestBody BanWithTimeDto info) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/description/{id}")
+    public ResponseEntity<BasicMessageResponse> changeDescription(@PathVariable("id") Integer id,
+        @Valid @RequestBody DescriptionDto data) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/email/{id}")
+    public ResponseEntity<BasicMessageResponse> changeEmail(@PathVariable("id") Integer id,
+        @Valid @RequestBody EmailDto data) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/username/{id}")
+    public ResponseEntity<BasicMessageResponse> changeUsername(@PathVariable("id") Integer id,
+        @Valid @RequestBody UsernameDto data) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/password/{id}")
+    public ResponseEntity<BasicMessageResponse> changePassword(@PathVariable("id") Integer id,
+        @Valid @RequestBody ReducedPasswordDto data) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/accountDisabled/{id}")
+    public ResponseEntity<BasicMessageResponse> changeAccountDisabled(@PathVariable("id") Integer id,
+        @Valid @RequestBody BooleanDto data) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/isEmailConfirmed/{id}")
+    public ResponseEntity<BasicMessageResponse> changeIsEmailConfirmed(@PathVariable("id") Integer id,
+        @Valid @RequestBody BooleanDto data) {
       return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
     }
     

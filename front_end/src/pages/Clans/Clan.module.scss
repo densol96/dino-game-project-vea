@@ -1,0 +1,98 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+
+.all {
+  // border: 1px solid red;
+  padding: 1rem;
+}
+
+.sorterPanel {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  gap: 1rem;
+
+  select {
+    padding: 0.5rem;
+    text-transform: uppercase;
+  }
+}
+
+.message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem;
+  text-transform: uppercase;
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.bg {
+  background-color: var(--color-secondary-background);
+  border-radius: 1.2rem;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  font-size: 2rem;
+  padding: 5rem;
+  margin-bottom: 3rem;
+
+  div {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-size: 1.7rem;
+  font-weight: 600;
+  padding: 2rem 2rem;
+  align-items: center;
+}
+
+.clanMain {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 2rem;
+}
+
+.miniHeader {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.members {
+  margin: 3rem 0;
+}
+
+.admin {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+}
+
+.openMenu {
+  display: flex;
+}

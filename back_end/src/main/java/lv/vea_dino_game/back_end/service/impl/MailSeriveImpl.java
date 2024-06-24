@@ -204,7 +204,6 @@ public class MailSeriveImpl implements IMailService {
     } else {
       mailMessageRepo.delete(original);
     }
-    
     return new BasicMessageResponse("Letter has been successfully deleted");
   }
   

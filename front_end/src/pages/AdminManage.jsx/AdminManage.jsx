@@ -7,7 +7,7 @@ import {
   handleBadRequest,
 } from '../../helpers/helpers';
 import { useEffect, useState, useRef, useReducer } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { headersWithToken } from '../../context/UserProvider';
 
@@ -25,7 +25,30 @@ async function getUserDetailedInfo(id, resultDispatch, userDispatch, navigate) {
   }
 }
 
-async function change() {}
+async function change(fieldName, id, body, resultDispatch) {
+  resultDispatch({ type: 'IS_LOADING' });
+  if (fieldName === 'password') {
+    if (body.password !== body.confirmPassword)
+      return resultDispatch({
+        type: 'ERROR',
+        payload: { heading: 'Password and confirm-password must match' },
+      });
+    body = { password: body.password };
+  }
+  console.log(body);
+  const API_ENDPOINT = `${BASE_API_URL}/users/change/${fieldName}/${id}`;
+  console.log(API_ENDPOINT);
+  try {
+    const response = await axios.patch(API_ENDPOINT, body, headersWithToken());
+    console.log(response.data);
+    resultDispatch({
+      type: 'SUCCESS',
+      payload: { heading: 'User data changed', message: response.data.message },
+    });
+  } catch (e) {
+    handleBadRequest(e, resultDispatch);
+  }
+}
 
 function userReducer(state, action) {
   switch (action.type) {
@@ -110,19 +133,28 @@ function AdminManage() {
         resultDispatch={resultDispatch}
       />
       <div className={styles.container}>
-        <h2 className={styles.mainHeading}>Manage the user: {username}</h2>
+        <h2 className={styles.mainHeading}>
+          Manage the user:{' '}
+          <NavLink className={'navLink'} to={`/in/users/${id}`}>
+            {username}
+          </NavLink>
+        </h2>
         <div className={styles.general}>
           <p>
             <span className={styles.general__Title}>Registration date:</span>
             <span>{new Date(registrationDate).toLocaleDateString()}</span>
           </p>
           <p>
-            <span>Last logged in:</span>
+            <span className={styles.general__Title}>Last logged in:</span>
             <span>
               {`${new Date(lastLoggedIn).toLocaleTimeString()} ${new Date(
                 lastLoggedIn
               ).toLocaleDateString()}` || 'Has not logged in yet'}
             </span>
+          </p>
+          <p>
+            <span className={styles.general__Title}>Is email confirmed:</span>
+            <span>{isEmailConfirmed ? 'Yes' : 'No'}</span>
           </p>
         </div>
         <div className={styles.descriptionSettings}>
@@ -130,7 +162,7 @@ function AdminManage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              change('description', { description }, resultDispatch, false);
+              change('description', id, { description }, resultDispatch);
             }}
           >
             <textarea
@@ -155,7 +187,7 @@ function AdminManage() {
           <form
             onSubmit={async (e) => {
               e.preventDefault();
-              await change('email', { email }, resultDispatch, false);
+              await change('email', id, { email }, resultDispatch);
             }}
           >
             <input
@@ -175,7 +207,7 @@ function AdminManage() {
           <form
             onSubmit={async (e) => {
               e.preventDefault();
-              await change('username', { username }, resultDispatch);
+              await change('username', id, { username }, resultDispatch);
             }}
           >
             <input
@@ -197,6 +229,7 @@ function AdminManage() {
               e.preventDefault();
               await change(
                 'password',
+                id,
                 { password, confirmPassword },
                 resultDispatch
               );
@@ -233,6 +266,7 @@ function AdminManage() {
               e.preventDefault();
               await change(
                 'accountDisabled',
+                id,
                 { accountDisabled },
                 resultDispatch
               );
@@ -253,38 +287,13 @@ function AdminManage() {
           </form>
         </div>
         <div className={styles.setting}>
-          <h2 className={styles.heading}>Is email confirmed?</h2>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await change(
-                'isEmailConfirmed',
-                { isEmailConfirmed },
-                resultDispatch
-              );
-            }}
-          >
-            <input
-              className={styles.checkbox}
-              type="checkbox"
-              checked={isEmailConfirmed}
-              onChange={(e) =>
-                userDispatch({
-                  type: 'isEmailConfirmed',
-                  payload: e.target.checked,
-                })
-              }
-            />
-            <button className="btn brown-btn">Change status</button>
-          </form>
-        </div>
-        <div className={styles.setting}>
           <h2 className={styles.heading}>Temporary ban:</h2>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
               await change(
                 'tempBanDateTime',
+                id,
                 { tempBanDateTime },
                 resultDispatch
               );

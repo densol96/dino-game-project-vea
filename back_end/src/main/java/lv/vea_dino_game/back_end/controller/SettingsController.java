@@ -29,17 +29,17 @@ public class SettingsController {
 
   @PostMapping("/description")
   public ResponseEntity<BasicMessageResponse> changeDescription(@Valid @RequestBody DescriptionDto data) {
-    return new ResponseEntity<>(settingsService.changeDescription(data), HttpStatus.OK);
+    return new ResponseEntity<>(settingsService.changeDescription(data, null), HttpStatus.OK);
   }
   
   @PostMapping("/email")
   public ResponseEntity<BasicMessageResponse> changeEmail(@Valid @RequestBody EmailDto data) {
-    return new ResponseEntity<>(settingsService.changeEmail(data), HttpStatus.OK);
+    return new ResponseEntity<>(settingsService.changeEmail(data, null), HttpStatus.OK);
   }
   
   @PostMapping("/username")
   public ResponseEntity<BasicMessageResponse> changeUsername(@Valid @RequestBody UsernameDto data ) {
-    return new ResponseEntity<>(settingsService.changeUsername(data), HttpStatus.OK);
+    return new ResponseEntity<>(settingsService.changeUsername(data, null), HttpStatus.OK);
   }
   
   @PostMapping("/password")

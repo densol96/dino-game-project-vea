@@ -61,9 +61,9 @@ public class EmailSenderService {
     String htmlContent;
     try {
       htmlContent = readHtmlFile("ConfirmEmail.html")
-                            .replace("{%%USERNAME%%}", user.getUsername())
-                            .replace("{{%%TOKEN%%}}", confirmationToken)
-                            .replace("{{%%CURRENT_YEAR%%}}", LocalDate.now().getYear() + "");
+                      .replace("{%%USERNAME%%}", user.getUsername())
+                      .replace("{{%%TOKEN%%}}", confirmationToken)
+                      .replace("{{%%CURRENT_YEAR%%}}", LocalDate.now().getYear() + "");
     } catch (Exception e) {
       System.out.println("ERROR LOG: " + e.getMessage());
       throw new Exception("Unable to parse the email html Temlate");

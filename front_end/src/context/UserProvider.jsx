@@ -26,12 +26,12 @@ function UserProvider({ children }) {
     } catch (e) {
       // Did not pass the auth on the server => keep user undefined in the context of the React App
       setUser(undefined);
-      localStorage.setItem('last_user_data', undefined);
+      localStorage.removeItem('last_user_data');
     }
   }
 
   function logoutUser() {
-    localStorage.setItem('dino_jwt', undefined);
+    localStorage.removeItem('dino_jwt');
     setUser(undefined);
   }
 

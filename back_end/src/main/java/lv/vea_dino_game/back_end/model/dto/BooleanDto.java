@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record BooleanDto(
   @NotNull(message = "Vallue cannot be null")
-  Boolean value
+  Boolean accountDisabled
 ) {
   
 }

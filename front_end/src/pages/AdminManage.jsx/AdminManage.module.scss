@@ -35,6 +35,8 @@
 
 .checkbox {
   width: 3rem;
+  height: 3rem;
+  accent-color: var(--color-primary-light);
 }
 
 .general {
@@ -46,5 +48,10 @@
   p {
     display: flex;
     gap: 1rem;
+  }
+
+  &__Title {
+    text-transform: uppercase;
+    font-weight: 600;
   }
 }

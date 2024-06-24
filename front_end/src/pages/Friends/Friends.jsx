@@ -113,8 +113,6 @@ function Friends() {
                         <div>{friendsRequest.username1}</div>
                         <div>{friendsRequest.level1}</div>
                         <div>{friendsRequest.dinoType1}</div>
-                        <button onClick={() => onAcceptFriendship(friendsRequest.playerId)}>Accept friendship</button>
-                        <button onClick={() => onRejectFriendship(friendsRequest.playerId)}>Reject friendship</button>
                     </div>
                 })}
                 {friends.map((friend, idx) => {

@@ -44,12 +44,21 @@ public class FriendServiceImpl implements IFriendService {
         }
         Player friend = friendOptional.get();
         if (friend == me) return new BasicMessageResponse("You can not join friend yourself");
-        
+
         Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
         if (friendship != null) {
             if (friendship.getStatus() == FriendStatus.REJECTED){
                 friendship.setStatus(FriendStatus.PENDING);
                 friendRepo.save(friendship);
+                return new BasicMessageResponse("Friend request to user "+friend.getUser().getUsername()+" has been sent again!");
+            }
+            throw new InvalidPlayerException("Friendship with user "+friend.getUser().getUsername()+"  already exists"); // make new Exception that is connected with friend
+        }
+        Friend friendship1 = friendRepo.findByPlayerAndFriend(me,friend);
+        if (friendship1 != null) {
+            if (friendship1.getStatus() == FriendStatus.REJECTED){
+                friendship1.setStatus(FriendStatus.PENDING);
+                friendRepo.save(friendship1);
                 return new BasicMessageResponse("Friend request to user "+friend.getUser().getUsername()+" has been sent again!");
             }
             throw new InvalidPlayerException("Friendship with user "+friend.getUser().getUsername()+"  already exists"); // make new Exception that is connected with friend
@@ -70,7 +79,7 @@ public class FriendServiceImpl implements IFriendService {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
-        Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
+        Friend friendship = friendRepo.findByFriendAndPlayer(me,friend);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");
         }
@@ -96,7 +105,7 @@ public class FriendServiceImpl implements IFriendService {
             throw new InvalidPlayerException("Invalid friend");
         }
         Player friend = friendOptional.get();
-        Friend friendship = friendRepo.findByPlayerAndFriendOrFriendAndPlayer(me,friend,friend,me);
+        Friend friendship = friendRepo.findByFriendAndPlayer(friend,me);
         if (friendship == null) {
             throw new InvalidPlayerException("Friendship request does not exist");
         }

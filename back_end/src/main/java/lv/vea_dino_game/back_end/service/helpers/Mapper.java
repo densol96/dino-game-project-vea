@@ -123,12 +123,24 @@ public class Mapper {
     );
   }
 
-    public NewsDto fromNewsToNewsDto(News news) {
+  public NewsDto fromNewsToNewsDto(News news) {
     return new NewsDto(
-            news.getId(),
-            news.getTitle(),
-            news.getContent(),
-            news.getDate()
-    );
-    }
+        news.getId(),
+        news.getTitle(),
+        news.getContent(),
+        news.getDate());
+  }
+  
+  public ManageUserDto userToManageUserDto(User user) {
+    return new ManageUserDto(
+      user.getId(), 
+      user.getPlayer().getDescription(), 
+      user.getEmail(), 
+      user.getUsername(), 
+      user.getRegistrationDate(), 
+      user.getLastLoggedIn(), 
+      user.getIsEmailConfirmed(), 
+      user.getTempBanDateTime(), 
+      user.getAccountDisabled());
+  }
 }

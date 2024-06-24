@@ -14,12 +14,14 @@ import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.IUserService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+// Controller and security-config set up so only the users with Admin role can have access
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements IUserService {
@@ -27,6 +29,7 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepo userRepo;
     private final IAuthService authService;
     private final IMailService mailService;
+    private final Mapper mapper;
 
 
     @Override
@@ -108,16 +111,14 @@ public class UserServiceImpl implements IUserService {
       return user.getId();
     }
 
+    
     @Override
     public ManageUserDto getDetailedUserInfo(Integer id) {
-      System.out.println("I am here");
-      try {
-        User loggedInUser = authService.getLoggedInUser();
-        System.out.println(loggedInUser);
-      } catch (Exception e) {
-        System.out.println(e.getMessage());
-      }
-      return new ManageUserDto(id, null, null, null, null, null, null, null, null);
+      if (id == null || id < 0)
+        throw new InvalidUserInputException("Invalid user id of " + id);
+      User user = userRepo.findById(id)
+          .orElseThrow(() -> new InvalidUserInputException("There is no user with the id of " + id));
+      return mapper.userToManageUserDto(user);
     }
     
     

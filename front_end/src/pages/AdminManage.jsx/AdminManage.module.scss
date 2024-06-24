@@ -1,0 +1,49 @@
+.heading {
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.textarea {
+  width: 85%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: start;
+  }
+  div {
+    padding-bottom: 3rem;
+  }
+
+  div:not(:last-child) {
+    border-bottom: 2px solid var(--color-primary);
+  }
+}
+
+.mainHeading {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 3rem;
+}
+
+.checkbox {
+  width: 3rem;
+}
+
+.general {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  p {
+    display: flex;
+    gap: 1rem;
+  }
+}

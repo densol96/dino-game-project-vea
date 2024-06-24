@@ -28,7 +28,8 @@ public class Mapper {
         user.getPlayer().getImmuneUntil(),
         user.getPlayer().getWorkingUntil(),
         user.getPlayer().getCannotAttackAgainUntil(),
-        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getId() : null
+        user.getPlayer().getClan() != null ? user.getPlayer().getClan().getId() : null,
+        user.getRole()
       );
   }
 
@@ -53,7 +54,8 @@ public class Mapper {
       user.getPlayer().getLevel(),
       user.getPlayer().getExperience(),
       user.getPlayer().getDescription(),
-      user.getPlayer().getCombatStats()
+      user.getPlayer().getCombatStats(),
+      user.getRole()
     );
   }
 
@@ -131,12 +133,24 @@ public class Mapper {
     );
   }
 
-    public NewsDto fromNewsToNewsDto(News news) {
+  public NewsDto fromNewsToNewsDto(News news) {
     return new NewsDto(
-            news.getId(),
-            news.getTitle(),
-            news.getContent(),
-            news.getDate()
-    );
-    }
+        news.getId(),
+        news.getTitle(),
+        news.getContent(),
+        news.getDate());
+  }
+  
+  public ManageUserDto userToManageUserDto(User user) {
+    return new ManageUserDto(
+      user.getId(), 
+      user.getPlayer().getDescription(), 
+      user.getEmail(), 
+      user.getUsername(), 
+      user.getRegistrationDate(), 
+      user.getLastLoggedIn(), 
+      user.getIsEmailConfirmed(), 
+      user.getTempBanDateTime(), 
+      user.getAccountDisabled());
+  }
 }

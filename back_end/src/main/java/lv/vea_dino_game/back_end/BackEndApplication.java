@@ -91,7 +91,6 @@ public class BackEndApplication {
           null, 14, null);
 
       userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));
-
     };
   }
 }

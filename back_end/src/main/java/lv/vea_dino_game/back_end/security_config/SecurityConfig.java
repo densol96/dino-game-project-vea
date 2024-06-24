@@ -4,7 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.AuthenticationProvider;
-
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
   
   private final AuthenticationProvider authProvider;
@@ -27,7 +29,7 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(request -> request
-            .requestMatchers("/api/v1/auth/**", "/h2-console/**", "/api/v1/player/**","/api/v1/announcements/**", "/api/v1/combat/**", "/api/v1/job/**","/api/v1/user/**", "/api/v1/news/**").permitAll()
+            .requestMatchers("/api/v1/auth/**", "/h2-console/**", "/api/v1/player/**","/api/v1/announcements/**", "/api/v1/combat/**", "/api/v1/job/**","/api/v1/users/**", "/api/v1/news/**").permitAll()
             .anyRequest().authenticated())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // authProvider set up to authenticate users using repo attached to a DB

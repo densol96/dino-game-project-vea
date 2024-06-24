@@ -6,6 +6,8 @@ import { jwtDecode } from 'jwt-decode';
 
 import styles from './ModalLogin.module.scss';
 import { useUserContext } from '../../context/UserProvider';
+import { handleBadRequest } from '../../helpers/helpers';
+import LoadingSpinner from '../../components/Spinner/LoadingSpinner';
 
 async function sendSignInRequest(
   data,
@@ -13,6 +15,7 @@ async function sendSignInRequest(
   navigate,
   setUserFullInfo
 ) {
+  resultDisptach({ type: 'IS_LOADING' });
   const API_ENDPOINT = 'http://localhost:8080/api/v1/auth/login';
   const { username, password } = data;
 
@@ -40,34 +43,11 @@ async function sendSignInRequest(
     });
     const { jwt } = response.data;
     localStorage.setItem('dino_jwt', jwt);
-    const user = jwtDecode(jwt).sub;
-    setUserFullInfo(user);
+    await setUserFullInfo();
     navigate('/in');
   } catch (e) {
     console.log(e);
-    if (e.code === 'ERR_BAD_REQUEST') {
-      const error = e.response.data;
-      resultDisptach({
-        type: 'ERROR',
-        payload: {
-          heading: error.name,
-          message: error.message,
-          type: error.type,
-          errors: error.errors,
-        },
-      });
-    } else if (e.code === 'ERR_NETWORK') {
-      resultDisptach({
-        type: 'ERROR',
-        payload: {
-          heading: 'Service is currently unavailable',
-          message:
-            'Registration is currently unavailable! Please,try again later!',
-          type: 'ERR_NETWORK',
-          errors: [],
-        },
-      });
-    }
+    handleBadRequest(e, resultDisptach);
   }
 }
 
@@ -77,7 +57,7 @@ function ModalLogin() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { setUserFullInfo } = useUserContext();
-  const { resultDispatch } = useOutletContext();
+  const { resultDispatch, isLoading } = useOutletContext();
 
   function login(e) {
     e.preventDefault();
@@ -124,7 +104,7 @@ function ModalLogin() {
         </form>
         <div className={`${styles['login-container__buttons']}`}>
           <button className={`btn brown-btn ${styles.btn}`} onClick={login}>
-            Sign In
+            {!isLoading ? 'Sign In' : <LoadingSpinner width={18} height={18} />}
           </button>
           <button className={`btn brown-btn--reversed ${styles.btn}`}>
             Forgot password

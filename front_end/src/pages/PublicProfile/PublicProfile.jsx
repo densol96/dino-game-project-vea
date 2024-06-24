@@ -9,14 +9,15 @@ import {
   handleBadRequest,
 } from '../../helpers/helpers';
 import axios from 'axios';
-import { headersWithToken } from '../../context/UserProvider';
-import { useParams } from 'react-router-dom';
+import { headersWithToken, useUserContext } from '../../context/UserProvider';
+import { useParams, NavLink } from 'react-router-dom';
 
 async function getUser(id, resultDispatch, setUser) {
   resultDispatch({ type: 'IS_LOADING' });
   const API_ENDPOINT = `${BASE_API_URL}/ratings/users/${id}`;
   try {
     const response = await axios.get(API_ENDPOINT, headersWithToken());
+    console.log(response.data);
     setUser(response.data);
   } catch (e) {
     handleBadRequest(e, resultDispatch);
@@ -35,6 +36,9 @@ function PublicProfile() {
   const max = Math.max(
     ...extractStats(user?.playerStats ? user.playerStats : [])
   );
+  const { user: loggedInUser } = useUserContext();
+
+  console.log(user);
 
   useEffect(() => {
     getUser(id, resultDispatch, setUser);
@@ -168,6 +172,14 @@ function PublicProfile() {
                 <p>{currencyLost}</p>
               </div>
             </div>
+          </div>
+
+          <div className={styles.forAdmin}>
+            {loggedInUser.role === 'ADMIN' && user.role !== 'ADMIN' && (
+              <NavLink to={`/in/admin/manage/${user.id}`}>
+                <button className="btn brown-btn">Manage this user</button>
+              </NavLink>
+            )}
           </div>
         </>
       )}

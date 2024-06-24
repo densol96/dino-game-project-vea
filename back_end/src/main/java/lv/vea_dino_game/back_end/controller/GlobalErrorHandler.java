@@ -6,6 +6,7 @@ import lv.vea_dino_game.back_end.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -112,6 +113,14 @@ public class GlobalErrorHandler {
   public ResponseEntity<ErrorResponse> handleInvalidUserInputException(InvalidUserInputException e) {
     return new ResponseEntity<>(
         new ErrorResponse(TYPE, "User input invalid", e.getMessage(), null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidUserInputException(AuthorizationDeniedException e) {
+    return new ResponseEntity<>(
+        new ErrorResponse("AUTHORIZ_ERR", "Authorisation denied", "You have no permission to access this resource", null),
         HttpStatus.BAD_REQUEST);
   }
 

@@ -301,7 +301,10 @@ table {
 
 .navLink {
   color: var(--color-primary);
-  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .isActive {
@@ -339,4 +342,11 @@ table {
 
 .bold {
   font-weight: 600;
+}
+
+.isLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }

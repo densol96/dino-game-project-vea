@@ -171,3 +171,10 @@
 .hasMailIn {
   animation: pulse 1s infinite;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}

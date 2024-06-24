@@ -17,6 +17,7 @@ import Farm from './pages/Farm/Farm';
 import ArenaMain from './pages/Fights/ArenaMain';
 import ArenaSearch from './pages/Fights/ArenaSearch';
 import ArenaFightResult from './pages/Fights/ArenaFightResult';
+import AdminManage from './pages/AdminManage.jsx/AdminManage';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path="farm" element={<Farm />} />
               <Route path="settings" element={<Settings />} />
               <Route path="ratings" element={<Ratings />} />
+              <Route path="admin/manage/:id" element={<AdminManage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

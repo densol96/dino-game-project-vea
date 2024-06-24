@@ -147,14 +147,28 @@ public class Mapper {
   
   public ManageUserDto userToManageUserDto(User user) {
     return new ManageUserDto(
-      user.getId(), 
-      user.getPlayer().getDescription(), 
-      user.getEmail(), 
-      user.getUsername(), 
-      user.getRegistrationDate(), 
-      user.getLastLoggedIn(), 
-      user.getIsEmailConfirmed(), 
-      user.getTempBanDateTime(), 
-      user.getAccountDisabled());
+        user.getId(),
+        user.getPlayer().getDescription(),
+        user.getEmail(),
+        user.getUsername(),
+        user.getRegistrationDate(),
+        user.getLastLoggedIn(),
+        user.getIsEmailConfirmed(),
+        user.getTempBanDateTime(),
+        user.getAccountDisabled());
+  }
+  
+  public BasicMailDto userMailMessageToBasicDto (UserMailMessage userMail) {
+    MailMessage actualMail = userMail.getMail();
+    return new BasicMailDto(
+      userMail.getId(),
+      actualMail.getFrom().getUsername(),
+      actualMail.getTo().getUsername(),
+      actualMail.getTitle(),
+      actualMail.getMessageText(),
+      actualMail.getSentAt(),
+      userMail.getIsUnread(),
+      userMail.getType()
+      );
   }
 }

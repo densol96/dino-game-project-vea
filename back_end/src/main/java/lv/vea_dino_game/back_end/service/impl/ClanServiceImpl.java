@@ -9,6 +9,7 @@ import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
 import lv.vea_dino_game.back_end.model.Clan;
 import lv.vea_dino_game.back_end.model.Player;
 
+import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.dto.*;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.model.enums.ClanSortByEnum;
@@ -72,7 +73,7 @@ public class ClanServiceImpl implements IClanFilterService {
       if (clanRepo.count() == 0)
         throw new EmptyDataBaseTable("There are no any clans to display");
       
-      List<Clan> allClans = clanRepo.findAllByMinPlayerLevelGreaterThanEqual(level);
+      List<Clan> allClans = clanRepo.findAllByMinPlayerLevelLessThanEqual(level);
       if (allClans.isEmpty())
         throw new EmptyDataBaseTable("There are no any clans with the minimum entry level of " + level + " or higher to display");
       return allClans.stream().map(mapper::convertToDto).collect(Collectors.toList());
@@ -193,6 +194,35 @@ public class ClanServiceImpl implements IClanFilterService {
         clanRepo.save(clan);
         clanRepo.delete(clan);
         return new BasicMessageResponse("Clan "+ clan.getTitle() +" has been successfully deleted!");
+    }
+
+    @Override
+    public BasicMessageResponse kickPlayerFromClan(Integer playerId) {
+        User user = authService.getLoggedInUser();
+
+        Player admin = user.getPlayer();
+        Clan clan = admin.getClan();
+
+        if (clan == null)
+            throw new InvalidPlayerException("Player is not in any clan");
+        if (!admin.getId().equals(clan.getAdmin().getId()))
+            throw new InvalidPlayerException("Non-leader cannot kick players");
+
+        Player playerToBeKicked = playerRepo.findByUserId(playerId);
+        if (playerToBeKicked == null)
+            throw new InvalidPlayerException("Player to be kicked is null");
+
+        if (playerToBeKicked.getId().equals(admin.getId()))
+            throw new InvalidPlayerException("You cannot kick yourself");
+
+        if (!playerToBeKicked.getClan().getId().equals(clan.getId()))
+            throw new InvalidPlayerException("Player to be kicked is not in the same clan as you are");
+
+        playerToBeKicked.setClan(null);
+        playerRepo.save(playerToBeKicked);
+        clanRepo.save(clan);
+        return new BasicMessageResponse("Congratulations! You have successfully kicked " + playerToBeKicked.getUser().getUsername() + " from clan " + clan.getTitle() + "!");
+
     }
 
     @Override

@@ -87,6 +87,9 @@ public class ClanFilterController {
         return new ResponseEntity<>(clanService.getClanWithMe(), HttpStatus.OK);
     }
 
-    
+    @PostMapping("/kick_player/{playerId}")
+    public ResponseEntity<BasicMessageResponse> postKickPlayerFromClan(@PathVariable("playerId") Integer playerId){
+        return new ResponseEntity<>(clanService.kickPlayerFromClan(playerId), HttpStatus.OK);
+    }
 
 }

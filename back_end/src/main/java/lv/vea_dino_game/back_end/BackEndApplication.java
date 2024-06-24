@@ -73,6 +73,7 @@ public class BackEndApplication {
           10, "I am solodeni");
       User u2 = new User("davidka", "solo@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           10, "I am davidka");
+      u2.getPlayer().setLevel(2);
       User u3 = new User("mihails", "mihails@mihails.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,
           5, "I am mihails");
       User u4 = new User("daniels", "daniels@daniels.com", encoder.encode("pasword123"), Role.USER, DinoType.carnivore, null,

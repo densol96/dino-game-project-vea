@@ -18,6 +18,7 @@ import ArenaMain from './pages/Fights/ArenaMain';
 import ArenaSearch from './pages/Fights/ArenaSearch';
 import ArenaFightResult from './pages/Fights/ArenaFightResult';
 import AdminManage from './pages/AdminManage.jsx/AdminManage';
+import Clan from "./pages/Clans/Clan";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                 <Route path="write" element={<WriteMail />} />
               </Route>
               <Route path="farm" element={<Farm />} />
+              <Route path="clan" element={<Clan />} />
               <Route path="settings" element={<Settings />} />
               <Route path="ratings" element={<Ratings />} />
               <Route path="admin/manage/:id" element={<AdminManage />} />

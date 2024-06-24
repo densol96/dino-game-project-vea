@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface IClanRepo extends JpaRepository<Clan, Long> {
 
-    ArrayList<Clan> findAllByMinPlayerLevelGreaterThanEqual(int level);
 
     Clan findById(int id);
 
@@ -30,4 +29,6 @@ public interface IClanRepo extends JpaRepository<Clan, Long> {
 
 
     Clan findByAdmin(Player admin);
+
+    List<Clan> findAllByMinPlayerLevelLessThanEqual(Integer level);
 }

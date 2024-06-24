@@ -17,6 +17,7 @@ const typeSortClanBy = {
     LEVEL_DESC: 'LEVEL_DESC',
     TITLE_ASC: 'TITLE_ASC',
     TITLE_DESC: 'TITLE_DESC',
+    OF_MY_LVL: 'OF_MY_LVL',
 };
 
 function Clan() {
@@ -41,6 +42,7 @@ function Clan() {
 
 
     useEffect(() => {
+        console.log(user);
         getAllClans();
     }, [user]);
 
@@ -58,6 +60,9 @@ function Clan() {
                 break;
             case typeSortClanBy.TITLE_DESC:
                 endPoint = "/sort-title-desc";
+                break;
+            case typeSortClanBy.OF_MY_LVL:
+                endPoint = "/minlevel/" + user.level;
                 break;
             default:
                 endPoint = ""; // for safety
@@ -280,6 +285,87 @@ function Clan() {
             });
 
         } catch (e) {
+            console.log(e);
+            if (e.code === 'ERR_BAD_REQUEST') {
+                const error = e.response.data;
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: error.name,
+                        message: error.message,
+                        type: error.type,
+                        errors: error.errors,
+                    },
+                });
+            } else if (e.code === 'ERR_NETWORK') {
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: 'Service is currently unavailable',
+                        message:
+                            'Registration is currently unavailable! Please,try again later!',
+                        type: 'ERR_NETWORK',
+                        errors: [],
+                    },
+                });
+            }
+        }
+    }
+
+    const onExitClan = async () => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/player/exit_clan`;
+
+        try {
+            const response = await axios.post(API_ENDPOINT, null, headersWithToken() );
+            rerenderStatsAfterDb();
+            nullifyClanInputs();
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
+
+        } catch (e) {
+            console.log(e);
+            if (e.code === 'ERR_BAD_REQUEST') {
+                const error = e.response.data;
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: error.name,
+                        message: error.message,
+                        type: error.type,
+                        errors: error.errors,
+                    },
+                });
+            } else if (e.code === 'ERR_NETWORK') {
+                resultDispatch({
+                    type: 'ERROR',
+                    payload: {
+                        heading: 'Service is currently unavailable',
+                        message:
+                            'Registration is currently unavailable! Please,try again later!',
+                        type: 'ERR_NETWORK',
+                        errors: [],
+                    },
+                });
+            }
+        }
+    }
+
+
+    const onJoinClan = async (clan) => {
+        const API_ENDPOINT = `http://localhost:8080/api/v1/player/join_clan/${clan.id}`;
+
+        try {
+            const response = await axios.post(API_ENDPOINT, null, headersWithToken() );
+            rerenderStatsAfterDb();
+            resultDispatch({
+                type: 'SUCCESS',
+                payload: { heading: 'Success', message: response.data.message },
+            });
+
+        } catch (e) {
+            console.log(e);
             if (e.code === 'ERR_BAD_REQUEST') {
                 const error = e.response.data;
                 resultDispatch({
@@ -346,6 +432,7 @@ function Clan() {
                         <option value="LEVEL_DESC">Greater level</option>
                         <option value="TITLE_ASC">By title</option>
                         <option value="TITLE_DESC">By title descending</option>
+                        <option value="OF_MY_LVL">Of my level</option>
                     </select>
                     {allClans.length === 0 && <div>No clans yet</div>}
                     {allClans.map((clan, id) => {
@@ -357,6 +444,7 @@ function Clan() {
                             <div>{clan.minPlayerLevel}</div>
                             <div>{clan.admin}</div>
                             <div>{clan.amountOfPlayers}/{clan.maxCapacity}</div>
+                            <button onClick={() => onJoinClan(clan)}>Join</button>
                         </div>
                     })}
                 </div>}
@@ -406,17 +494,24 @@ function Clan() {
                         </div>}
                     </div>
                     {myClan && <div>
-                        {myClan.title}
-                        {myClan.players.map((player, id) => {
+
+                        <div>title: {myClan.title}</div>
+                        <div>description: {myClan.description}</div>
+                        <div>dinoType: {myClan.dinoType}</div>
+
+                        {myClan.players_v2.map((player, id) => { // players list
                             const username = myClan.usernames[id];
+                            console.log(username, player);
                             return <div key={id} style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                                 <div>{username}</div>
                                 <div>{player.level}</div>
                                 {myClan.adminId === player.id && <div>LEADER</div>}
                             </div>
                         })}
+
+                        {/*admin panel*/}
                         {user.id === myClan.adminId && <div>
-                            <button onClick={onDeleteClan}>Delete</button>
+                            <button onClick={onDeleteClan}>Delete clan</button>
                             {!isUpdatingClan ? <button onClick={onStartUpdateClan}>Edit clan</button>
                                 : <div>
                                     <button onClick={onFinishUpdateClan}>Save changes</button>
@@ -424,6 +519,9 @@ function Clan() {
                                 </div>
                             }
                         </div>}
+                        <div>
+                            <button onClick={onExitClan}>Exit clan</button>
+                        </div>
                     </div>}
                 </div>}
 

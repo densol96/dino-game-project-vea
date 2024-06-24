@@ -31,12 +31,12 @@ public class PlayerController {
 
     private final IPlayerService playerService;
 
-    @PostMapping("/join/{clanId}")
+    @PostMapping("/join_clan/{clanId}")
     public ResponseEntity<BasicMessageResponse> joinClan(@PathVariable Integer clanId) {
         return new ResponseEntity<>(playerService.joinClan(clanId), HttpStatus.CREATED);
     }
 
-    @PostMapping("/exit")
+    @PostMapping("/exit_clan")
     public ResponseEntity<BasicMessageResponse> exitClan() {
         return new ResponseEntity<>(playerService.exitClan(), HttpStatus.CREATED);
 

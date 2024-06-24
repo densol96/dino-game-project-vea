@@ -15,7 +15,7 @@ public record ClanDto(
         DinoType dinoType,
         Integer maxCapacity,
         Integer minPlayerLevel,
-        List<Player> players,
+        List<AllPlayerInfoDto> players,
         List<String> usernames,
         String adminUsername,
         Integer adminId

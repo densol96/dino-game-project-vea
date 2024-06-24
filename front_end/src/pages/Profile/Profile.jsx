@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../../context/UserProvider';
+import {headersWithToken, useUserContext} from '../../context/UserProvider';
 import { useEffect, useState } from 'react';
 import { useNewMessagesContext } from '../../context/NewMessagesProvider';
 // import { IonIcon } from '@ionic/react';
@@ -42,7 +42,6 @@ function Profile() {
 
     try {
       const response = await axios.post(API_ENDPOINT, {
-        playerId: user.id,
         currencySpent: PRICE,
         armor: armor + armorAdded,
         agility: agility + agilityAdded,
@@ -50,7 +49,7 @@ function Profile() {
         damage: damage + damageAdded,
         criticalHitPercentage: criticalHitPercentage + critAdded,
         endurance: 0,
-      });
+      }, headersWithToken());
       rerenderStatsAfterDb();
       resultDispatch({
         type: 'SUCCESS',

@@ -18,6 +18,7 @@ import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
 import lv.vea_dino_game.back_end.repo.IClanRepo;
 import lv.vea_dino_game.back_end.repo.IPlayerRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
+import lv.vea_dino_game.back_end.service.IClanFilterService;
 import lv.vea_dino_game.back_end.service.IMailService;
 import lv.vea_dino_game.back_end.service.IPlayerService;
 import lv.vea_dino_game.back_end.service.helpers.Mapper;
@@ -40,6 +41,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
     private final IAuthService authService;
     private final IMailService mailService;
+    private final IClanFilterService clanFilterService;
 
     private final Mapper mapper;
 
@@ -79,13 +81,9 @@ public class PlayerServiceImpl implements IPlayerService {
             throw new InvalidPlayerException("No player");
         Clan clan = player.getClan();
         if (player.getClan()==null)
-            throw new InvalidPlayerException("Player already is not in a clan");
+            throw new InvalidPlayerException("Player is not in any clan");
         if (player == clan.getAdmin()){
-            clan.setPlayers(null);
-            clan.setAdmin(null);
-            playerRepo.save(player);
-            clanRepo.save(clan);
-            clanRepo.delete(clan);
+            return clanFilterService.deleteClan();
         }
         player.setClan(null);
         playerRepo.save(player);
@@ -155,10 +153,12 @@ public class PlayerServiceImpl implements IPlayerService {
 
     @Override
     public BasicMessageResponse updateSkillPoints(RequestLearnNewPlayerStats requestLearnNewPlayerStats) {
-        Integer playerId = requestLearnNewPlayerStats.playerId();
-        if (!playerRepo.existsById(playerId)) throw new InvalidPlayerException("Player with id " + playerId + " does not exist");
-        Player player = playerRepo.findById(playerId)
-                .orElseThrow(() -> new InvalidPlayerException("Player with id " + playerId + " does not exist"));
+        UserMainDTO user = authService.getMe();
+        Player player = playerRepo.findByUserId(user.id());
+
+        if (player == null)
+            throw new InvalidPlayerException("No player");
+
         if (player.getCurrency() - requestLearnNewPlayerStats.currencySpent() < 0) throw new InvalidPlayerException("You cant spend more currency than you have, when learning new skill points");
 
         player.setCurrency(player.getCurrency() - requestLearnNewPlayerStats.currencySpent());

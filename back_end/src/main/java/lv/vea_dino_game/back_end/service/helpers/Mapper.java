@@ -93,6 +93,10 @@ public class Mapper {
     List<String> usernames = clan.getPlayers().stream()
             .map(player -> player.getUser().getUsername())
             .collect(Collectors.toList());
+    List<AllPlayerInfoDto> players = clan.getPlayers().stream()
+            .map(player -> this.playerToDto(player))
+            .collect(Collectors.toList());
+
     return new ClanDto(
             clan.getId(),
             clan.getTitle(),
@@ -100,7 +104,7 @@ public class Mapper {
             clan.getDinoType(),
             clan.getMaxCapacity(),
             clan.getMinPlayerLevel(),
-            clan.getPlayers(),
+            players,
             usernames,
             clan.getAdmin().getUser().getUsername(),
             clan.getAdmin().getId()

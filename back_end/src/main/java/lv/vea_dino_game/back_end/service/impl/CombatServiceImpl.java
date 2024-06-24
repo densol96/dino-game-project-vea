@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -49,6 +50,13 @@ public class CombatServiceImpl implements ICombatService {
       Player attacker = authService.getLoggedInUser().getPlayer();
       Player defender = playerRepo.findById(defenderId)
           .orElseThrow(() -> new InvalidPlayerException("defenderId " + defenderId + " does not exist"));
+
+      LocalDateTime dateNow = LocalDateTime.now();
+
+      if (attacker.getCannotAttackAgainUntil().isAfter(dateNow)) throw new InvalidPlayerException("You cannot attack now! Wait for the cool down to resolve");
+      if (attacker.getWorkingUntil().isAfter(dateNow)) throw new InvalidPlayerException("You cannot attack now! Wait for job to finish");
+      if (defender.getImmuneUntil().isAfter(dateNow)) throw new InvalidPlayerException("You cannot attack now! The opponent has immunity");
+      if (!Objects.equals(attacker.getLevel(), defender.getLevel())) throw new InvalidPlayerException("You cannot attack the player of a different level!");
 
       Combat combat = combatServiceHelper.simulateCombat(attacker, defender);
       Player winner = combat.getCombatResult().getWinner();

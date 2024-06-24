@@ -67,7 +67,7 @@ public class BackEndApplication {
     return (String... args) -> {
 
 
-     /* User admin = new User("admin", "admin@admin.com", encoder.encode("admin"), Role.ADMIN, DinoType.carnivore, null, 20, "I am the admin");
+     User admin = new User("admin", "admin@admin.com", encoder.encode("admin"), Role.ADMIN, DinoType.carnivore, null, 20, "I am the admin");
 
       User u1 = new User("solodeni", "solo@deni.com", encoder.encode("password123"), Role.ADMIN, DinoType.carnivore, null,
           10, "I am solodeni");
@@ -91,7 +91,7 @@ public class BackEndApplication {
       User u10 = new User("itachi", "itachi@deni.com", encoder.encode("pasword123"), Role.USER, DinoType.herbivore,
           null, 14, null);
 
-      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));*/
+      userRepo.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, admin));
     };
   }
 }

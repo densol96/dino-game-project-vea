@@ -14,4 +14,8 @@ public interface IFriendRepo extends JpaRepository<Friend, Integer> {
 
 
     List<Friend> findAllByStatusAndPlayerOrFriend(FriendStatus friendStatus, Player me, Player me1);
+
+    Friend findByFriendAndPlayer(Player me, Player friend);
+
+    Friend findByPlayerAndFriend(Player me, Player friend);
 }

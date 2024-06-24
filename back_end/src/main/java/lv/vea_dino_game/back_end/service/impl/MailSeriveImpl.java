@@ -176,11 +176,35 @@ public class MailSeriveImpl implements IMailService {
     return mapper.userMailMessageToBasicDto(userMail);
   }
 
+  // @Override
+  // public BasicMessageResponse removeMail(Integer id) {
+  //   if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
+  //     throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+  //   userMailMessageRepo.deleteById(id);
+  //   return new BasicMessageResponse("Letter has been successfully deleted");
+  // }
+
   @Override
   public BasicMessageResponse removeMail(Integer id) {
     if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
       throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+    UserMailMessage userMailCopy = userMailMessageRepo.findById(id).get();
+    MailMessage original = userMailCopy.getMail();
+    /*
+     * First feel is that this is redundant, but actually without SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP 
+     * this aint gonna work (killed some time debugging this and reading about unexpected behavior 
+     * that occurs when you have bidirectional relationship and you're not synchronizing both sides WHILE having both 
+     * parent and child persisted (attached to the current session)
+     */
+    original.getUserMailMessages().remove(userMailCopy);
+    userMailCopy.setMail(null);
     userMailMessageRepo.deleteById(id);
+    if (original.getUserMailMessages().size() == 1) {
+      mailMessageRepo.save(original); 
+    } else {
+      mailMessageRepo.delete(original);
+    }
+    
     return new BasicMessageResponse("Letter has been successfully deleted");
   }
   

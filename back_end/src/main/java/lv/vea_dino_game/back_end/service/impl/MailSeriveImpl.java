@@ -25,6 +25,7 @@ import lv.vea_dino_game.back_end.repo.IUserMailMessageRepo;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.IMailService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class MailSeriveImpl implements IMailService {
   private final static Integer RESULTS_PER_PAGE = 5;
 
   private final IAuthService authService;
-  // private final Mapper mapper;
+  private final Mapper mapper;
   private final IUserRepo userRepo;
   private final IMailMessageRepo mailMessageRepo;
   private final IUserMailMessageRepo userMailMessageRepo;
@@ -112,19 +113,7 @@ public class MailSeriveImpl implements IMailService {
       System.out.println("SERVER EEROR LOG ----> check MailSeriveImpl.getAllMail");
       throw new ServiceCurrentlyUnavailableException("Soory, but displaying your mail is cirrently unavailable");
     }
-    return userMailList.stream().map((userMail) -> {
-      var actualMail = userMail.getMail();
-      return new BasicMailDto(
-          userMail.getId(),
-          actualMail.getFrom().getUsername(),
-          actualMail.getTo().getUsername(),
-          actualMail.getTitle(),
-          actualMail.getMessageText(),
-          actualMail.getSentAt(),
-          userMail.getIsUnread(),
-          userMail.getType()
-          );
-    }).toList();
+    return userMailList.stream().map((userMail) -> mapper.userMailMessageToBasicDto(userMail)).toList();
   }
   
   @Override
@@ -183,18 +172,8 @@ public class MailSeriveImpl implements IMailService {
     UserMailMessage userMail = userMailMessageRepo.findById(id).get();
     // mark as read at this point
     userMail.setIsUnread(false);
-    MailMessage actualMail = userMail.getMail();
     userMailMessageRepo.save(userMail);
-    return new BasicMailDto(
-          userMail.getId(),
-          actualMail.getFrom().getUsername(),
-          actualMail.getTo().getUsername(),
-          actualMail.getTitle(),
-          actualMail.getMessageText(),
-          actualMail.getSentAt(),
-          userMail.getIsUnread(),
-          userMail.getType()
-        );
+    return mapper.userMailMessageToBasicDto(userMail);
   }
 
   @Override

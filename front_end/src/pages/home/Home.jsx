@@ -281,7 +281,7 @@ function Home() {
   return (
     <>
       {/* NESTED ModalLogin for /login */}
-      <Outlet context={{ closeLogin, resultDispatch }} />
+      <Outlet context={{ closeLogin, resultDispatch, isLoading }} />
       {(error.status || success.status) && forDisplay && (
         <div
           className={`${styles['message-container']} ${

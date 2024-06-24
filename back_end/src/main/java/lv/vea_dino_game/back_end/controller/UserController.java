@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,22 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
 
     private final IUserService userService;
-
-    @PostMapping("/ban-without-time/{id}")
-    public ResponseEntity<BasicMessageResponse> banUserById(@PathVariable("id") Integer id, @Valid BanDto info){
-        return new ResponseEntity<>(userService.banUser(id, info), HttpStatus.OK);
-    }
-
-    @PostMapping("/unban/{id}")
-    public ResponseEntity<BasicMessageResponse> unbanUserById(@PathVariable("id") Integer id){
-        return new ResponseEntity<>(userService.unbanUser(id), HttpStatus.OK);
-    }
-
-    @PostMapping("/ban-with-time/{id}")
-    public ResponseEntity<BasicMessageResponse> banUserByIdWithTime(@PathVariable("id") Integer id,
-        @Valid @RequestBody BanWithTimeDto info) {
-      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
-    }
     
     @GetMapping("/id-by/{username}")
     public ResponseEntity<Integer> getUserIdByUsername(@PathVariable String username) {
@@ -55,6 +40,26 @@ public class UserController {
     public ResponseEntity<ManageUserDto> getMethodName(@PathVariable Integer id) {
       return new ResponseEntity<>(userService.getDetailedUserInfo(id), HttpStatus.OK);
     }
+
+    @PatchMapping("/ban-without-time/{id}")
+    public ResponseEntity<BasicMessageResponse> banUserById(@PathVariable("id") Integer id, @Valid BanDto info){
+        return new ResponseEntity<>(userService.banUser(id, info), HttpStatus.OK);
+    }
+
+    @PatchMapping("/unban/{id}")
+    public ResponseEntity<BasicMessageResponse> unbanUserById(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(userService.unbanUser(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/ban-with-time/{id}")
+    public ResponseEntity<BasicMessageResponse> banUserByIdWithTime(@PathVariable("id") Integer id,
+        @Valid @RequestBody BanWithTimeDto info) {
+      return new ResponseEntity<>(userService.banUserWithTime(id, info), HttpStatus.OK);
+    }
+    
+    
+    
+    
     
 
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../../context/UserProvider';
+import { headersWithToken, useUserContext } from '../../context/UserProvider';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import * as _ from 'lodash';
@@ -67,7 +67,7 @@ function Farm() {
     const API_ENDPOINT = `http://localhost:8080/api/v1/job/finish/${user.id}`;
 
     try {
-      const response = await axios.post(API_ENDPOINT);
+      const response = await axios.post(API_ENDPOINT, null, headersWithToken());
       setUserFullInfo();
       resultDispatch({
         type: 'SUCCESS',
@@ -90,11 +90,15 @@ function Farm() {
     const API_ENDPOINT = 'http://localhost:8080/api/v1/job/start';
 
     try {
-      const response = await axios.post(API_ENDPOINT, {
-        playerId: user.id,
-        hoursDuration: duration,
-        rewardCurrency: reward,
-      });
+      const response = await axios.post(
+        API_ENDPOINT,
+        {
+          playerId: user.id,
+          hoursDuration: duration,
+          rewardCurrency: reward,
+        },
+        headersWithToken()
+      );
       setUserFullInfo();
       resultDispatch({
         type: 'SUCCESS',

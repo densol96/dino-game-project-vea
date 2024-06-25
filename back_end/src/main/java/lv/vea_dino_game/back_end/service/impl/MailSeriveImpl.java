@@ -1,6 +1,7 @@
 package lv.vea_dino_game.back_end.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -99,14 +100,14 @@ public class MailSeriveImpl implements IMailService {
     // With Pageable, pageNumber starts at 0 => 1 page is at 0 index, 2 at 1 etc. 
     Pageable pageable = PageRequest.of(page - 1, RESULTS_PER_PAGE, Sort.by("mail.sentAt").descending());
 
-    List<UserMailMessage> userMailList = null;
+    List<UserMailMessage> userMailList;
 
     if(sortBy == MailFilterByEnum.ALL) {
       userMailList = userMailMessageRepo
           .findAllByUserUsernameAndType(authService.getLoggedInUser().getUsername(), type, pageable);
     } else {
       userMailList = userMailMessageRepo
-          .findAllByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(), type, pageable, sortBy == MailFilterByEnum.UNREAD ? true : false);
+          .findAllByUserUsernameAndTypeAndIsUnread(authService.getLoggedInUser().getUsername(), type, pageable, sortBy == MailFilterByEnum.UNREAD);
     }
     // could check if the list size is 0 here, but I want to send an empty array back, BUT if any other exception to throw an exception(will make it easier to consume such API on React side)
     if (userMailList == null) {
@@ -168,8 +169,9 @@ public class MailSeriveImpl implements IMailService {
   public BasicMailDto getMailById(Integer id) {
     if(id == null || id < 0 || !userMailMessageRepo.existsById(id))
       throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
-    
-    UserMailMessage userMail = userMailMessageRepo.findById(id).get();
+
+    UserMailMessage userMail = userMailMessageRepo.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("UserMailMessage not found with id: " + id));
     // mark as read at this point
     userMail.setIsUnread(false);
     userMailMessageRepo.save(userMail);
@@ -188,7 +190,8 @@ public class MailSeriveImpl implements IMailService {
   public BasicMessageResponse removeMail(Integer id) {
     if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
       throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
-    UserMailMessage userMailCopy = userMailMessageRepo.findById(id).get();
+    UserMailMessage userMailCopy = userMailMessageRepo.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("UserMailMessage not found with id: " + id));
     MailMessage original = userMailCopy.getMail();
     /*
      * First feel is that this is redundant, but actually without SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP 

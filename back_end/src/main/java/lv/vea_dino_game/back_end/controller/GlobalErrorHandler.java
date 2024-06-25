@@ -21,12 +21,12 @@ import lv.vea_dino_game.back_end.model.dto.ErrorResponse;
 public class GlobalErrorHandler {
 
   private final String TYPE = "INVALID_INPUT";
+  private final String NAME = "User input validation error";
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
 
 
-    String name = "User input validation error";
     String message = "The user input you have provided is invalid. See the detailed info:";
     HashMap<String, String> validationErrors = new HashMap<>();
 
@@ -36,15 +36,13 @@ public class GlobalErrorHandler {
       validationErrors.put(fieldName, errorMessage);
     });
 
-    return new ResponseEntity<>(new ErrorResponse(TYPE, name, message, validationErrors),
+    return new ResponseEntity<>(new ErrorResponse(TYPE, NAME, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
 
-    String type = "INVALID_INPUT";
-    String name = "User input validation error";
     String message = "The user input you have provided is invalid. See the detailed info:";
     HashMap<String, String> validationErrors = new HashMap<>();
 
@@ -56,13 +54,13 @@ public class GlobalErrorHandler {
       validationErrors.put(formattedFieldName, error.getMessage());
     });
 
-    return new ResponseEntity<ErrorResponse>(new ErrorResponse(type, name, message, validationErrors),
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse(TYPE, NAME, message, validationErrors),
         HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
   public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-    return new ResponseEntity<>(new ErrorResponse(TYPE, "User input validation error", e.getMessage(), null),
+    return new ResponseEntity<>(new ErrorResponse(TYPE, NAME, e.getMessage(), null),
         HttpStatus.BAD_REQUEST);
   }
   

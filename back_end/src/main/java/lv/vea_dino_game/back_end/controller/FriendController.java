@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/friends")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RequiredArgsConstructor
 public class FriendController {
 

@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/announcements")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 public class AnnouncementController {
     private final IAnnouncementService announcementService;
 

@@ -33,7 +33,7 @@ function ArenaMain() {
       <LocationDescription
         localStorageName="arenaDescriptionOpen"
         heading="Welcome to the arena"
-        src="/farm.jpg"
+        src="/arena.jpg"
         alt="Image of the dinosaur arena"
         description={description}
       />

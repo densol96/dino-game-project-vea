@@ -18,7 +18,7 @@ function Friends() {
   const [friendsRequests, setFriendsRequests] = useState([]);
 
   useEffect(() => {
-    // getFriends();
+    getFriends();
   }, []);
 
   const getFriends = async () => {
@@ -36,7 +36,8 @@ function Friends() {
         payload: { heading: 'Success', message: response.data.message },
       });
     } catch (e) {
-      handleBadRequest(e, resultDispatch);
+      setFriends([]);
+      // handleBadRequest(e, resultDispatch);
     }
 
     const API_ENDPOINT_2 = `http://localhost:8080/api/v1/friends/pending`;
@@ -45,6 +46,7 @@ function Friends() {
       const response = await axios.get(API_ENDPOINT_2, headersWithToken());
 
       const friends = response.data;
+      console.log(friends);
       const sentToMe = friends.filter((friend) => friend.friendId === user.id);
       console.log('sentToMe', sentToMe);
       setFriendsRequests(sentToMe);
@@ -54,7 +56,8 @@ function Friends() {
         payload: { heading: 'Success', message: response.data.message },
       });
     } catch (e) {
-      handleBadRequest(e, resultDispatch);
+      setFriendsRequests([]);
+      // handleBadRequest(e, resultDispatch);
     }
   };
 
@@ -111,11 +114,13 @@ function Friends() {
               <div>{friendsRequest.username1}</div>
               <div>{friendsRequest.level1}</div>
               <div>{friendsRequest.dinoType1}</div>
+              <button onClick={() => onAcceptFriendship(friendsRequest.playerId)}>Accept friendship</button>
+              <button onClick={() => onRejectFriendship(friendsRequest.playerId)}>Reject friendship</button>
             </div>
           );
         })}
+        <div>My friends</div>
         {friends.map((friend, idx) => {
-          console.log(friend);
           return (
             <div key={idx} style={{ display: 'flex', flexDirection: 'row' }}>
               <div>{friend.username1}</div>

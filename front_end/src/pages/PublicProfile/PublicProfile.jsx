@@ -24,7 +24,7 @@ async function getUser(id, resultDispatch, setUser) {
   const API_ENDPOINT = `${BASE_API_URL}/ratings/users/${id}`;
   try {
     const response = await axios.get(API_ENDPOINT, headersWithToken());
-    console.log(response.data);
+    // console.log(response.data);
     setUser(response.data);
   } catch (e) {
     handleBadRequest(e, resultDispatch);
@@ -47,11 +47,8 @@ function PublicProfile() {
 
   const [friendStatus, setFriendStatus] = useState(typeFriend.NONE);
 
-  console.log(user);
-  console.log(user.id);
-
   useEffect(() => {
-    // updateFriendStatus();
+    updateFriendStatus();
   }, [user]);
 
   const updateFriendStatus = async () => {
@@ -61,9 +58,8 @@ function PublicProfile() {
       const response = await axios.get(API_ENDPOINT_1, headersWithToken());
 
       const friends = response.data;
-
       for (let friend of friends) {
-        if (friend.friendId === user.id) {
+        if (friend.friendId === user.id || friend.playerId === user.id) {
           setFriendStatus(typeFriend.FRIEND);
           return;
         } // bad code
@@ -83,7 +79,7 @@ function PublicProfile() {
 
       const friends = response.data;
       for (let friend of friends) {
-        if (friend.friendId === user.id) {
+        if (friend.friendId === user.id || friend.playerId === user.id) {
           setFriendStatus(typeFriend.REJECTED);
           return;
         } // bad code
@@ -103,7 +99,7 @@ function PublicProfile() {
 
       const friends = response.data;
       for (let friend of friends) {
-        if (friend.friendId === user.id) {
+        if (friend.friendId === user.id || friend.playerId === user.id) {
           setFriendStatus(typeFriend.PENDING);
           return;
         } // bad code

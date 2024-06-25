@@ -171,7 +171,7 @@ public class AuthServiceImpl implements IAuthService {
   @Override
   public BasicMessageResponse forgotPassword(String email) {
     if (email == null) {
-      throw new InvalidUserInputException("Invalid user email input of " + email);
+      throw new InvalidUserInputException("Invalid user email input");
     }
     User user = userRepo.findByEmail(email)
         .orElseThrow(() -> new NoSuchUserException("We are are unaware of such email for any user"));
@@ -194,7 +194,7 @@ public class AuthServiceImpl implements IAuthService {
       throw new InvalidUserInputException("Your reset-token is invalid");
     }
     // DTO cannot be null and inpout validated in controller => we are safe here
-    User user = userRepo.findByPasswordResetToken(returnHashedToken(resetToken)).get();
+    User user = userRepo.findByPasswordResetToken(returnHashedToken(resetToken)).orElseThrow(() -> new IllegalArgumentException("Invalid reset token"));
     user.setPasswordResetToken(null);
     user.setPassword(passwordEncoder.encode(dto.password()));
     userRepo.save(user);

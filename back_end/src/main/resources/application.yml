@@ -2,16 +2,19 @@ spring:
   application:
     name: back_end
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:testdb
     username: sa
     password: password
     driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
-        format_sql: false
+        format_sql: true
   security:
     jwtSecret: 08cdfce317612391fefcd8e5560204f9ffead220fdc479eadc1d59222cb28e19

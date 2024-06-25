@@ -64,7 +64,7 @@ public class RatingsServiceImpl implements IRatingsService {
   @Override
   public Integer getNumberOfPages(String dinoTypeFilter) {
     DinoTypeFilterEnum typeFilter = extractDinoTypeFilterEnum(dinoTypeFilter);
-    Integer resultsTotal;
+    int resultsTotal;
 
     if(typeFilter == DinoTypeFilterEnum.ALL) {
        resultsTotal = (int) playerRepo.count();

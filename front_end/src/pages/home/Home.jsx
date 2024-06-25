@@ -251,7 +251,6 @@ function Home() {
     },
   });
   let errors = error.errors ? reduceValidationErrors(error.errors) : [];
-
   // useEffect(() => {
   //   const timerId = setTimeout(() => {
   //     resultDispatch({ type: 'CLOSE' });

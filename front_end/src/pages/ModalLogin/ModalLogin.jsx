@@ -106,7 +106,10 @@ function ModalLogin() {
           <button className={`btn brown-btn ${styles.btn}`} onClick={login}>
             {!isLoading ? 'Sign In' : <LoadingSpinner width={18} height={18} />}
           </button>
-          <button className={`btn brown-btn--reversed ${styles.btn}`}>
+          <button
+            className={`btn brown-btn--reversed ${styles.btn}`}
+            onClick={() => navigate('/forgot')}
+          >
             Forgot password
           </button>
         </div>

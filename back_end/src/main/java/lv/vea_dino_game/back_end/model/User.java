@@ -44,9 +44,11 @@ public class User implements UserDetails {
     private LocalDateTime registrationDate;
 
     @NotNull(message = "Email confirmation status cannot be null") 
-    private Boolean isEmailConfirmed = true; // as service is temp down (run out of tokens, enables this by default)
+    private Boolean isEmailConfirmed = true; 
 
     private String emailConfirmationToken;
+
+    private String passwordResetToken;
 
     private LocalDateTime tempBanDateTime;
 

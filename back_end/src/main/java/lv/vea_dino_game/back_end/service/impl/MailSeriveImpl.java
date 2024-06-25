@@ -25,6 +25,7 @@ import lv.vea_dino_game.back_end.repo.IUserMailMessageRepo;
 import lv.vea_dino_game.back_end.repo.IUserRepo;
 import lv.vea_dino_game.back_end.service.IAuthService;
 import lv.vea_dino_game.back_end.service.IMailService;
+import lv.vea_dino_game.back_end.service.helpers.Mapper;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class MailSeriveImpl implements IMailService {
   private final static Integer RESULTS_PER_PAGE = 5;
 
   private final IAuthService authService;
-  // private final Mapper mapper;
+  private final Mapper mapper;
   private final IUserRepo userRepo;
   private final IMailMessageRepo mailMessageRepo;
   private final IUserMailMessageRepo userMailMessageRepo;
@@ -112,19 +113,7 @@ public class MailSeriveImpl implements IMailService {
       System.out.println("SERVER EEROR LOG ----> check MailSeriveImpl.getAllMail");
       throw new ServiceCurrentlyUnavailableException("Soory, but displaying your mail is cirrently unavailable");
     }
-    return userMailList.stream().map((userMail) -> {
-      var actualMail = userMail.getMail();
-      return new BasicMailDto(
-          userMail.getId(),
-          actualMail.getFrom().getUsername(),
-          actualMail.getTo().getUsername(),
-          actualMail.getTitle(),
-          actualMail.getMessageText(),
-          actualMail.getSentAt(),
-          userMail.getIsUnread(),
-          userMail.getType()
-          );
-    }).toList();
+    return userMailList.stream().map((userMail) -> mapper.userMailMessageToBasicDto(userMail)).toList();
   }
   
   @Override
@@ -183,25 +172,38 @@ public class MailSeriveImpl implements IMailService {
     UserMailMessage userMail = userMailMessageRepo.findById(id).get();
     // mark as read at this point
     userMail.setIsUnread(false);
-    MailMessage actualMail = userMail.getMail();
     userMailMessageRepo.save(userMail);
-    return new BasicMailDto(
-          userMail.getId(),
-          actualMail.getFrom().getUsername(),
-          actualMail.getTo().getUsername(),
-          actualMail.getTitle(),
-          actualMail.getMessageText(),
-          actualMail.getSentAt(),
-          userMail.getIsUnread(),
-          userMail.getType()
-        );
+    return mapper.userMailMessageToBasicDto(userMail);
   }
+
+  // @Override
+  // public BasicMessageResponse removeMail(Integer id) {
+  //   if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
+  //     throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+  //   userMailMessageRepo.deleteById(id);
+  //   return new BasicMessageResponse("Letter has been successfully deleted");
+  // }
 
   @Override
   public BasicMessageResponse removeMail(Integer id) {
     if (id == null || id < 0 || !userMailMessageRepo.existsById(id))
       throw new InvalidUserInputException("Sorry, but the provided mail's id is invalid --> " + id);
+    UserMailMessage userMailCopy = userMailMessageRepo.findById(id).get();
+    MailMessage original = userMailCopy.getMail();
+    /*
+     * First feel is that this is redundant, but actually without SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP 
+     * this aint gonna work (killed some time debugging this and reading about unexpected behavior 
+     * that occurs when you have bidirectional relationship and you're not synchronizing both sides WHILE having both 
+     * parent and child persisted (attached to the current session)
+     */
+    original.getUserMailMessages().remove(userMailCopy);
+    userMailCopy.setMail(null);
     userMailMessageRepo.deleteById(id);
+    if (original.getUserMailMessages().size() == 1) {
+      mailMessageRepo.save(original); 
+    } else {
+      mailMessageRepo.delete(original);
+    }
     return new BasicMessageResponse("Letter has been successfully deleted");
   }
   

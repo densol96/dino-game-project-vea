@@ -61,9 +61,27 @@ public class EmailSenderService {
     String htmlContent;
     try {
       htmlContent = readHtmlFile("ConfirmEmail.html")
-                      .replace("{%%USERNAME%%}", user.getUsername())
-                      .replace("{{%%TOKEN%%}}", confirmationToken)
-                      .replace("{{%%CURRENT_YEAR%%}}", LocalDate.now().getYear() + "");
+          .replace("{%%USERNAME%%}", user.getUsername())
+          .replace("{{%%TOKEN%%}}", confirmationToken)
+          .replace("{{%%CURRENT_YEAR%%}}", LocalDate.now().getYear() + "");
+    } catch (Exception e) {
+      System.out.println("ERROR LOG: " + e.getMessage());
+      throw new Exception("Unable to parse the email html Temlate");
+    }
+    sendEmail(user.getEmail(), subject, textContent, htmlContent);
+  }
+  
+  public void sendPasswordResetToken(User user, String resetToken) throws Exception  {
+    String subject = "Reset your password via the link";
+    String textContent = "In order to be able to restore your password, please follow this link: "
+        + "/reset?token=" + resetToken
+        + "\n\nIf you never asked for a reset, ignore this email.\nWith regards, DinoConflict";
+    String htmlContent;
+    try {
+      htmlContent = readHtmlFile("PasswordReset.html")
+          .replace("{%%USERNAME%%}", user.getUsername())
+          .replace("{{%%TOKEN%%}}", resetToken)
+          .replace("{{%%CURRENT_YEAR%%}}", LocalDate.now().getYear() + "");
     } catch (Exception e) {
       System.out.println("ERROR LOG: " + e.getMessage());
       throw new Exception("Unable to parse the email html Temlate");
@@ -86,7 +104,7 @@ public class EmailSenderService {
     // Authenticate the session
     Session session = Session.getInstance(properties, new jakarta.mail.Authenticator() {
       protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication("2e6c57e8ef08f9", "62dc21f9009ec3");
+        return new PasswordAuthentication("ce4e8aedc86e5b", "92fa8b4b0bcdb7");
       }
     });
 

@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 
 import lv.vea_dino_game.back_end.exceptions.InvalidAuthenticationDataException;
 import lv.vea_dino_game.back_end.exceptions.InvalidTokenException;
+import lv.vea_dino_game.back_end.exceptions.InvalidUserInputException;
+import lv.vea_dino_game.back_end.exceptions.NoSuchUserException;
 import lv.vea_dino_game.back_end.exceptions.ServiceCurrentlyUnavailableException;
 import lv.vea_dino_game.back_end.exceptions.UserAlreadyExistsException;
 import lv.vea_dino_game.back_end.model.Player;
@@ -32,6 +34,7 @@ import lv.vea_dino_game.back_end.model.PlayerStats;
 import lv.vea_dino_game.back_end.model.User;
 import lv.vea_dino_game.back_end.model.dto.AuthResponse;
 import lv.vea_dino_game.back_end.model.dto.BasicMessageResponse;
+import lv.vea_dino_game.back_end.model.dto.ResetPasswordDto;
 import lv.vea_dino_game.back_end.model.dto.SignInDto;
 import lv.vea_dino_game.back_end.model.dto.SignUpDto;
 import lv.vea_dino_game.back_end.model.dto.UserMainDTO;
@@ -74,7 +77,7 @@ public class AuthServiceImpl implements IAuthService {
     user.setPlayer(player);
     user.setRegistrationDate(LocalDateTime.now());
     /////// FOR TESTING PURPOSES TO DO IT QUICKER IT IS TRUE BY DEFAULT (in prod to be changed back to false as default)
-    user.setIsEmailConfirmed(true);
+    user.setIsEmailConfirmed(false);
     // In order to pass authentication, apart from valid credentials, email needs to be confirmed via confirmation token
     String confirmationToken = createRandomToken();
 
@@ -83,7 +86,7 @@ public class AuthServiceImpl implements IAuthService {
   
     // Send the email with the token-link to email
     try {
-      // emailService.sendToAskToConfirmEmail(user, confirmationToken);  
+      emailService.sendToAskToConfirmEmail(user, confirmationToken); 
       userRepo.save(user);
     } catch (Exception e) {
       System.out.println("💥💥💥 Likely error sending email ---> " + e.getMessage());
@@ -163,6 +166,39 @@ public class AuthServiceImpl implements IAuthService {
   @Override
   public UserMainDTO getMe() {
     return mapper.fromUserToDto(getLoggedInUser());
+  }
+
+  @Override
+  public BasicMessageResponse forgotPassword(String email) {
+    if (email == null) {
+      throw new InvalidUserInputException("Invalid user email input of " + email);
+    }
+    User user = userRepo.findByEmail(email)
+        .orElseThrow(() -> new NoSuchUserException("We are are unaware of such email for any user"));
+    String passwordResetToken = createRandomToken();
+    user.setPasswordResetToken(returnHashedToken(passwordResetToken));
+    try {
+      emailService.sendPasswordResetToken(user, passwordResetToken);
+      userRepo.save(user);
+    } catch (Exception e) {
+      System.out.println("💥💥💥 Likely error sending email ---> " + e.getMessage());
+      throw new ServiceCurrentlyUnavailableException(
+          "Password reset is temporarily unavailable, please try again a bit later. If the problem persists, get in touch with the administrator of DinoConflict.");
+    }
+    return new BasicMessageResponse("Please, check your email and you will find a link to reset your password!");
+  }
+
+  @Override
+  public BasicMessageResponse resetPassword(String resetToken, ResetPasswordDto dto) {
+    if (resetToken == null || !userRepo.existsByPasswordResetToken(returnHashedToken(resetToken))) {
+      throw new InvalidUserInputException("Your reset-token is invalid");
+    }
+    // DTO cannot be null and inpout validated in controller => we are safe here
+    User user = userRepo.findByPasswordResetToken(returnHashedToken(resetToken)).get();
+    user.setPasswordResetToken(null);
+    user.setPassword(passwordEncoder.encode(dto.password()));
+    userRepo.save(user);
+    return new BasicMessageResponse("Your password has been changed. You should be able to log in now!");
   }
 
   // HELPER FUNCTIONS BELOW (could be moved to a separate service ormay be not)

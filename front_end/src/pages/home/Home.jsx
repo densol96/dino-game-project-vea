@@ -252,12 +252,12 @@ function Home() {
   });
   let errors = error.errors ? reduceValidationErrors(error.errors) : [];
 
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      resultDispatch({ type: 'CLOSE' });
-    }, HIDE_MESSAGE_AFTER_MS);
-    return () => clearTimeout(timerId);
-  }, [resultDispatch, error]);
+  // useEffect(() => {
+  //   const timerId = setTimeout(() => {
+  //     resultDispatch({ type: 'CLOSE' });
+  //   }, HIDE_MESSAGE_AFTER_MS);
+  //   return () => clearTimeout(timerId);
+  // }, [resultDispatch, error]);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   function closeLogin() {

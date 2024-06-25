@@ -18,8 +18,10 @@ import ArenaMain from './pages/Fights/ArenaMain';
 import ArenaSearch from './pages/Fights/ArenaSearch';
 import ArenaFightResult from './pages/Fights/ArenaFightResult';
 import AdminManage from './pages/AdminManage.jsx/AdminManage';
-import Clan from "./pages/Clans/Clan";
-import Friends from "./pages/Friends/Friends";
+import Clan from './pages/Clans/Clan';
+import Friends from './pages/Friends/Friends';
+import PasswordReset from './pages/PasswordReset/PasswordReset';
+import PasswordForgot from './pages/PasswordReset/PasswordForgot';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />}>
               <Route path="login" element={<ModalLogin />} />
+              <Route path="forgot" element={<PasswordForgot />} />
+              <Route path="reset" element={<PasswordReset />} />
             </Route>
             <Route path="/in" element={<LoggedIn />}>
               <Route index replace element={<Navigate to="profile" />} />

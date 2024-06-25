@@ -1,6 +1,7 @@
 package lv.vea_dino_game.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lv.vea_dino_game.back_end.exceptions.FriendshipException;
 import lv.vea_dino_game.back_end.exceptions.InvalidPlayerException;
 import lv.vea_dino_game.back_end.model.Friend;
 import lv.vea_dino_game.back_end.model.Player;

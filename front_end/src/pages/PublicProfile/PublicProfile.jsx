@@ -51,12 +51,10 @@ function PublicProfile() {
   console.log(user.id);
 
   useEffect(() => {
-    updateFriendStatus();
-  }, [user])
+    // updateFriendStatus();
+  }, [user]);
 
   const updateFriendStatus = async () => {
-
-
     const API_ENDPOINT_1 = `http://localhost:8080/api/v1/friends/friends`;
 
     try {
@@ -117,9 +115,7 @@ function PublicProfile() {
     } catch (e) {
       handleBadRequest(e, resultDispatch);
     }
-
-
-  }
+  };
 
   useEffect(() => {
     getUser(id, resultDispatch, setUser);
@@ -138,7 +134,7 @@ function PublicProfile() {
     } catch (e) {
       handleBadRequest(e, resultDispatch);
     }
-  }
+  };
 
   return (
     <>
@@ -276,9 +272,17 @@ function PublicProfile() {
                 <button className="btn brown-btn">Manage this user</button>
               </NavLink>
             )}
-            <button className="btn brown-btn" onClick={onAddUserToFriends}>{
-              friendStatus === typeFriend.FRIEND ? "Already in friends" : friendStatus === typeFriend.PENDING ? "Waiting for approval" : friendStatus === typeFriend.REJECTED ? "Rejected" : "Add to friends"
-            }</button>
+            {loggedInUser.username !== user.username && (
+              <button className="btn brown-btn" onClick={onAddUserToFriends}>
+                {friendStatus === typeFriend.FRIEND
+                  ? 'Already in friends'
+                  : friendStatus === typeFriend.PENDING
+                  ? 'Waiting for approval'
+                  : friendStatus === typeFriend.REJECTED
+                  ? 'Rejected'
+                  : 'Add to friends'}
+              </button>
+            )}
           </div>
         </>
       )}

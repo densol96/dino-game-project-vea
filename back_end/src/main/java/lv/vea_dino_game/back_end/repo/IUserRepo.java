@@ -17,4 +17,8 @@ public interface IUserRepo extends JpaRepository<User, Integer> {
   boolean existsByUsername(String email);
 
   Optional<User> findByEmailConfirmationToken(String confirmationToken);
+
+  boolean existsByPasswordResetToken(String token);
+
+  Optional<User> findByPasswordResetToken(String passwordResetToken);
 }

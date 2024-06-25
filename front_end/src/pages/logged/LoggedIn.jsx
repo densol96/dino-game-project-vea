@@ -106,9 +106,9 @@ function LoggedIn() {
 
             <NavLink className={styleNavLink} to="friends">
               <li className={styles.listItem}>
-                <ion-icon name="trophy-outline"></ion-icon>
+                <ion-icon name="people-outline"></ion-icon>
                 <span className={styles.listItem__text}>Friends</span>
-                <ion-icon name="trophy-outline"></ion-icon>
+                <ion-icon name="people-outline"></ion-icon>
               </li>
             </NavLink>
 

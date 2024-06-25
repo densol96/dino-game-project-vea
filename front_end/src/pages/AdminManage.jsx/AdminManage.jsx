@@ -147,9 +147,11 @@ function AdminManage() {
           <p>
             <span className={styles.general__Title}>Last logged in:</span>
             <span>
-              {`${new Date(lastLoggedIn).toLocaleTimeString()} ${new Date(
-                lastLoggedIn
-              ).toLocaleDateString()}` || 'Has not logged in yet'}
+              {lastLoggedIn
+                ? `${new Date(lastLoggedIn).toLocaleTimeString()} ${new Date(
+                    lastLoggedIn
+                  ).toLocaleDateString()}`
+                : 'Has not logged in yet'}
             </span>
           </p>
           <p>

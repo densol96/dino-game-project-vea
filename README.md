@@ -1,3 +1,5 @@
+A team project for a Java course at university.
+
 I primarily worked on back-end components involving authentication, including sign-up, email verification, JWT-based authentication via Spring Security, and managing the Security Context. Additionally, I contributed to the Controller, Service, and Repository layers for various features, such as:
 
 Ratings,
